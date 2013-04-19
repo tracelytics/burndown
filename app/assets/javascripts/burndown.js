@@ -33,6 +33,11 @@ $(function() {
             var closed = this.get('closed_at') || 0;
             var date = new Date(closed);
             return date.getTime() / 1000;
+        },
+        getCreatedTime: function() {
+            var created = this.get('created_at') || 0;
+            var date = new Date(created);
+            return date.getTime() / 1000;
         }
     });
     var IssuesBase = Backbone.Collection.extend({
@@ -180,6 +185,20 @@ $(function() {
                     };
                 });
 
+                // Add creation line.
+                var allIssues = self.openIssues.models.concat(self.closedIssues.models);
+                allIssues = _.sortBy(allIssues, function(issue) { return issue.getCreatedTime(); });
+
+                var openCount = 0;
+
+                var created = _.map(allIssues, function(issue) {
+                    var createdTime = issue.getCreatedTime();
+                    return {
+                        x: createdTime >= startDate ? createdTime : startDate,
+                        y: ++openCount
+                    };
+                });
+
                 // Build graph!
                 var graph = new Rickshaw.Graph({
                     element: document.querySelector("#chart"),
@@ -194,6 +213,10 @@ $(function() {
                         data:  actual,
                         color: '#F89406',
                         name:  'Actual'
+                    }, {
+                        data:  created,
+                        color: '#30c020',
+                        name:  'Created'
                     }]
                 });
                 graph.render();
