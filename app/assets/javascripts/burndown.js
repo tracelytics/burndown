@@ -307,7 +307,9 @@ $(function() {
                 var yAxis = new Rickshaw.Graph.Axis.Y({
                     graph:          graph,
                     tickFormat:     Rickshaw.Fixtures.Number.formatKMBT,
-                    ticksTreatment: 'glow'
+                    ticksTreatment: 'glow',
+                    orientation:    'left',
+                    element:        document.getElementById('y_axis')
                 });
 
                 yAxis.render();

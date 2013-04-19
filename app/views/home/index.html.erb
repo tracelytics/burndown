@@ -37,13 +37,10 @@
   <div>Issues (total): {{=milestone.getNumIssues()}}</div>
   <h3>Chart</h3>
   <div id="chart_container">
+      <div id="y_axis"></div>
       <div id="chart"></div>
-      <div id="legend_container">
-          <div id="smoother" title="Smoothing"></div>
-          <div id="legend"></div>
-      </div>
-      <div id="slider"></div>
   </div>
+  <div id="legend"></div>
   <h3>Open Issues [{{=milestone.get('open_issues')}}]</h3>
   <div class="open"></div>
   <h3>Closed Issues [{{=milestone.get('closed_issues')}}]</h3>
