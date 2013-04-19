@@ -1,4 +1,4 @@
-rails-github-skeleton
-==============================
+burndown
+========
 
-Rails skeleton for managing users with the Github strategy for Omniauth.
+Burndown before you burnout.
