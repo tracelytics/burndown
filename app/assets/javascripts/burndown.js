@@ -71,7 +71,26 @@ $(function() {
         state: 'closed'
     });
 
-    var Milestone = Backbone.Model.extend();
+    var Milestone = Backbone.Model.extend({
+        getNumIssues: function() {
+            return this.get('open_issues') + this.get('closed_issues');
+        },
+        getCreator: function() {
+            var rval = '';
+            var creator = this.get('creator');
+
+            if (creator.gravatar_id && creator.html_url && creator.login) {
+                rval = ['<a href="' + creator.html_url + '">',
+                        '<img src="http://www.gravatar.com/avatar/',
+                        creator.gravatar_id,
+                        '?s=20">',
+                        creator.login,
+                        '</a>'].join('');
+            }
+
+            return rval;
+        }
+    });
     var Milestones = Backbone.Collection.extend({
         model: Milestone,
         url: function() {

@@ -25,8 +25,17 @@
 <script type="text/template" id="tmpl_milestone">
   <a href="#">Back</a>
   <h2>Milestone</h2>
-  <div>{{=milestone.get('title')}}</div>
-  <div>{{=milestone.get('number')}}</div>
+  <h3>Meta</h3>
+  <div>Title:
+        <a href="{{=milestone.get('url')}}">{{=milestone.get('title')}}</a>
+  </div>
+  <div>Creator: {{=milestone.getCreator()}}</div>
+  <div>Created: {{=milestone.get('created_at')}}</div>
+  <div>Due: {{=milestone.get('due_on')}}</div>
+  <div>Issues (open): {{=milestone.get('open_issues')}}</div>
+  <div>Issues (closed): {{=milestone.get('closed_issues')}}</div>
+  <div>Issues (total): {{=milestone.getNumIssues()}}</div>
+  <h3>Chart</h3>
   <div id="chart_container">
       <div id="chart"></div>
       <div id="legend_container">
