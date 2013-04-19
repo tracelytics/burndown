@@ -96,6 +96,7 @@ GEM
     omniauth-oauth2 (1.1.1)
       oauth2 (~> 0.8.0)
       omniauth (~> 1.0)
+    pg (0.15.1)
     polyglot (0.3.3)
     rack (1.4.5)
     rack-cache (1.2)
@@ -151,6 +152,7 @@ DEPENDENCIES
   coffee-rails (~> 3.2.1)
   jquery-rails
   omniauth-github!
+  pg
   rails (= 3.2.11)
   rickshaw_rails!
   sass-rails (~> 3.2.3)
