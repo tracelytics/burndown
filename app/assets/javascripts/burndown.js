@@ -220,6 +220,7 @@ $(function() {
             if (self.openIssues.length > 0 && self.closedIssues.length > 0) {
                 // Clear the chart of any previous elements.
                 $('#chart').empty();
+                $('#y_axis').empty();
                 $('#legend').empty();
 
                 var totalIssueCount = self.openIssues.length + self.closedIssues.length;
