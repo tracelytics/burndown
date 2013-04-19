@@ -28,6 +28,33 @@ $(function() {
     });
     var session = new Session();
 
+    var GithubUser = Backbone.Model.extend({
+        initialize: function(user) {
+            var name = user.login ? user.login : '';
+            var gravatar = user.gravatar_id ? user.gravatar_id : '';
+            var url = user.html_url ? user.html_url : '';
+
+            this.set('name', name);
+            this.set('gravatar', gravatar);
+            this.set('url', url);
+        },
+        getLink: function() {
+            var rval = ['<a href="' + this.get('url') + '">',
+                        this.getIcon(),
+                        this.get('name'),
+                        '</a>'].join('');
+
+            return rval;
+        },
+        getIcon: function() {
+            var rval = ['<img src="http://www.gravatar.com/avatar/',
+                        this.get('gravatar'),
+                        '?s=20">'].join('');
+
+            return rval;
+        }
+    });
+
     var Issue = Backbone.Model.extend({
         getClosedTime: function() {
             var closed = this.get('closed_at') || 0;
@@ -38,6 +65,24 @@ $(function() {
             var created = this.get('created_at') || 0;
             var date = new Date(created);
             return date.getTime() / 1000;
+        },
+        createLink: function() {
+            var rval = '';
+
+            var creator = this.get('user');
+            var title = this.get('title');
+            var url = this.get('html_url');
+
+            if (creator && title && url) {
+                var user = new GithubUser(creator);
+                rval = ['<a href="' + url + '">',
+                        user.getIcon(),
+                        ' ',
+                        title,
+                        '</a>'].join('');
+            }
+
+            return rval;
         }
     });
     var IssuesBase = Backbone.Collection.extend({
@@ -79,13 +124,9 @@ $(function() {
             var rval = '';
             var creator = this.get('creator');
 
-            if (creator.gravatar_id && creator.html_url && creator.login) {
-                rval = ['<a href="' + creator.html_url + '">',
-                        '<img src="http://www.gravatar.com/avatar/',
-                        creator.gravatar_id,
-                        '?s=20">',
-                        creator.login,
-                        '</a>'].join('');
+            if (creator) {
+                var user = new GithubUser(creator);
+                rval = user.getLink();
             }
 
             return rval;
@@ -217,6 +258,8 @@ $(function() {
                         y: ++openCount
                     };
                 });
+
+                console.log('issue: ', allIssues[0]);
 
                 // Build graph!
                 var graph = new Rickshaw.Graph({

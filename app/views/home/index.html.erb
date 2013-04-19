@@ -53,7 +53,7 @@
 <script type="text/template" id="tmpl_issues">
   <ul>
   {{ _.each(issues, function (issue, i) { }}
-    <li>{{=issue.get('title')}}</li>
+    <li>{{=issue.createLink()}}</li>
   {{ }); }}
   </ul>
 </script>
