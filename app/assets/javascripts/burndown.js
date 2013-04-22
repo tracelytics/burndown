@@ -268,6 +268,7 @@ $(function() {
                     width: 900,
                     height: 500,
                     renderer: 'line',
+                    interpolation: 'basis',
                     series: [{
                         data:  ideal,
                         color: '#75ABC5',
