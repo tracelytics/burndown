@@ -16,5 +16,4 @@
 //= require backbone
 //= require d3.v2
 //= require rickshaw
-//= require twitter/bootstrap
 //= require_tree .
