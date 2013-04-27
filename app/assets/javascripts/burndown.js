@@ -161,37 +161,43 @@ $(function() {
     var RepoView = Backbone.View.extend({
         el: '.le-hook',
         events: {
-            'click button#fetch': 'getRepoMilestones'
+            'click button#fetch': 'getInputText'
         },
         initialize: function() {
-            _.bindAll(this, 'render', 'getRepoMilestones');
+            _.bindAll(this, 'render', 'loadRepoMilestones', 'getInputText');
             var self = this;
+
+            milestones.on('sync', self.render);
         },
-        render: function(milestones) {
+        render: function() {
             var template = _.template($("#tmpl_repo").html(),
                                       {milestones: milestones.models});
             this.$el.html( template );
             return this;
         },
-        getRepoMilestones: function() {
+        loadRepoMilestones: function(owner, repo) {
             var self = this;
-
-            // Parse the input textbox.
-            var input = $('input', this.el).val();
-            var parts = input.split('/');
-            var owner = parts[0] || null;
-            var repoName = parts[1] || null;
 
             // Update session model.
             session.set('owner', owner);
-            session.set('repo', repoName);
+            session.set('repo', repo);
 
             // Fetch the milestones.
-            milestones.fetch({
-                success: function(milestones) {
-                    self.render(milestones);
-                }
-            });
+            milestones.fetch();
+        },
+        getInputText: function() {
+            var self = this;
+
+            // Parse the input textbox for the owner and respository.
+            var input = $('input', this.el).val();
+            var parts = input.split('/');
+            var owner = parts[0] || null;
+            var repo = parts[1] || null;
+
+            // Persist the owner/repo to the url.
+            router.navigate(owner + '/' + repo);
+
+            self.loadRepoMilestones(owner, repo);
         }
     });
 
@@ -357,7 +363,8 @@ $(function() {
     var Router = Backbone.Router.extend({
         routes: {
             '': 'home',
-            'milestone/:id': 'milestone'
+            'milestone/:id': 'milestone',
+            ':owner/:repo': 'repository'
         }
     });
 
@@ -368,7 +375,7 @@ $(function() {
 
     router.on('route:home', function() {
         console.log('Load the home page!');
-        repoView.render(milestones);
+        repoView.render();
     });
 
     router.on('route:milestone', function(id) {
@@ -376,6 +383,14 @@ $(function() {
         milestoneView.loadMilestone(id);
     });
 
-    // Let's get this party started!
-    Backbone.history.start();
+    router.on('route:repository', function(owner, repo) {
+        console.log('Load the repository page!');
+        repoView.loadRepoMilestones(owner, repo);
+    });
+
+    session.on('change:token', function(model, value) {
+        console.log('token: ', value);
+        // Let's get this party started!
+        Backbone.history.start();
+    });
 });
