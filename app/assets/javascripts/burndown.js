@@ -168,6 +168,7 @@ $(function() {
             var self = this;
 
             milestones.on('sync', self.render);
+            milestones.on('error', self.errorHandler, this);
         },
         render: function() {
             var template = _.template($("#tmpl_repo").html(),
@@ -199,6 +200,14 @@ $(function() {
             router.navigate(owner + '/' + repo);
 
             self.loadRepoMilestones(owner, repo);
+        },
+        errorHandler: function(model, error) {
+            console.log('KA-BOOM!');
+            if (!session.get('token')) {
+                console.log('Token not set! Login you nerd...');
+            } else {
+                console.log('error: ', error);
+            }
         }
     });
 

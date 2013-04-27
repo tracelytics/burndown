@@ -13,6 +13,13 @@
     <button id="fetch" type="submit" class="btn">Fetch</button>
   </div>
 
+  {{ if (typeof(error) != "undefined") { }}
+  <div class="alert">
+      <h4>Error!</h4>
+      {{=error.message}}
+  </div>
+  {{ } }}
+
   <div>
     <ul class="milestones">
     {{ _.each(milestones, function (milestone, i) { }}
