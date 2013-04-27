@@ -15,6 +15,7 @@ $(function() {
         },
         initialize: function() {
             var self = this;
+            _.bindAll(this, 'getURL');
             $.getJSON('/sessions/get', function(response) {
                 var data = response.data;
                 var token = null;
@@ -24,6 +25,10 @@ $(function() {
                 }
                 self.set('token', token);
             });
+        },
+        getURL: function() {
+            var self = this;
+            return self.get('owner') + '/' + self.get('repo');
         }
     });
     var session = new Session();
@@ -152,11 +157,6 @@ $(function() {
     });
     var milestones = new Milestones();
 
-    // Dependencies
-    session.on('change:token', function(model, value) {
-        console.log('token: ', value);
-    });
-
     // Views
     var RepoView = Backbone.View.extend({
         el: '.le-hook',
@@ -171,7 +171,8 @@ $(function() {
         },
         render: function() {
             var template = _.template($("#tmpl_repo").html(),
-                                      {milestones: milestones.models});
+                                      {milestones: milestones.models,
+                                       session: session});
             this.$el.html( template );
             return this;
         },
@@ -336,7 +337,8 @@ $(function() {
             self.closedIssues.milestoneId = self.milestone.get('number');
 
             // Render the milestone template.
-            self.render('#tmpl_milestone', {milestone: self.milestone});
+            self.render('#tmpl_milestone', {milestone: self.milestone,
+                                            session: session});
 
             self.openIssues.fetch({
                 success: function(issues) {
@@ -363,8 +365,8 @@ $(function() {
     var Router = Backbone.Router.extend({
         routes: {
             '': 'home',
-            'milestone/:id': 'milestone',
-            ':owner/:repo': 'repository'
+            ':owner/:repo': 'repository',
+            ':owner/:repo/:id': 'milestone'
         }
     });
 
@@ -378,9 +380,17 @@ $(function() {
         repoView.render();
     });
 
-    router.on('route:milestone', function(id) {
+    router.on('route:milestone', function(owner, repo, id) {
         console.log('Load the milestone page!');
-        milestoneView.loadMilestone(id);
+        // load token
+        // load owner/repo
+        // load milestones
+        // renders repoView
+        // safe: load milestoneView!
+        repoView.loadRepoMilestones(owner, repo);
+        milestones.once('sync', function() {
+            milestoneView.loadMilestone(id);
+        });
     });
 
     router.on('route:repository', function(owner, repo) {
@@ -388,8 +398,10 @@ $(function() {
         repoView.loadRepoMilestones(owner, repo);
     });
 
-    session.on('change:token', function(model, value) {
+    // Once the session token finishes loading, start the application!
+    session.once('change:token', function(model, value) {
         console.log('token: ', value);
+
         // Let's get this party started!
         Backbone.history.start();
     });

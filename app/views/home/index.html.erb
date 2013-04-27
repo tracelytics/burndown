@@ -16,14 +16,14 @@
   <div>
     <ul class="milestones">
     {{ _.each(milestones, function (milestone, i) { }}
-      <li><a href="#milestone/{{=i}}">{{=milestone.get('title')}}</a></li>
+      <li><a href="#{{=session.getURL()}}/{{=i}}">{{=milestone.get('title')}}</a></li>
     {{ }); }}
     </ul>
   </div>
 </script>
 
 <script type="text/template" id="tmpl_milestone">
-  <a href="#">Back</a>
+<a href="#{{=session.getURL()}}">Back</a>
   <h2>Milestone</h2>
   <h3>Meta</h3>
   <div>Title:
