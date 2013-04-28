@@ -29,8 +29,10 @@
 </script>
 
 <script type="text/template" id="tmpl_milestone">
-<a href="#{{=session.getURL()}}">Back</a>
+    <a href="#{{=session.getURL()}}">Back</a>
+
     <h2>Milestone</h2>
+
     <h3>Meta</h3>
     <div>Title:
         <a href="{{=milestone.get('url')}}">{{=milestone.get('title')}}</a>
@@ -41,14 +43,17 @@
     <div>Issues (open): {{=milestone.get('open_issues')}}</div>
     <div>Issues (closed): {{=milestone.get('closed_issues')}}</div>
     <div>Issues (total): {{=milestone.getNumIssues()}}</div>
+
     <h3>Chart</h3>
     <div id="chart_container">
         <div id="y_axis"></div>
         <div id="chart"></div>
     </div>
     <div id="legend"></div>
+
     <h3>Open Issues [{{=milestone.get('open_issues')}}]</h3>
     <div class="open"></div>
+
     <h3>Closed Issues [{{=milestone.get('closed_issues')}}]</h3>
     <div class="closed"></div>
 </script>
