@@ -258,6 +258,7 @@ $(function() {
             _.bindAll(this, 'render', 'loadMilestone', 'renderChart');
             var self = this;
 
+            self.message = new Message();
             self.milestone = new Milestone();
             self.openIssues = new OpenIssues();
             self.closedIssues = new ClosedIssues();
@@ -386,9 +387,18 @@ $(function() {
             self.openIssues.milestoneId = self.milestone.get('number');
             self.closedIssues.milestoneId = self.milestone.get('number');
 
+            // Clear any previous messages.
+            self.message.clear();
+
+            // Set a message if the milestone has no due date.
+            if (self.milestone.get('due_on') === null) {
+                self.message.setProblem('Milestone has no due date!');
+            }
+
             // Render the milestone template.
             self.render('#tmpl_milestone', {milestone: self.milestone,
-                                            session: session});
+                                            session: session,
+                                            message: self.message});
 
             self.openIssues.fetch({
                 success: function(issues) {

@@ -33,6 +33,13 @@
 
     <h2>Milestone</h2>
 
+    {{ if (message.has('title')) { }}
+    <div>
+        <h4>{{=message.get('title')}}</h4>
+        <span>{{=message.get('text')}}</span>
+    </div>
+    {{ } }}
+
     <h3>Meta</h3>
     <div>Title:
         <a href="{{=milestone.get('url')}}">{{=milestone.get('title')}}</a>
