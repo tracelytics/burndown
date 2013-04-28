@@ -161,10 +161,12 @@ $(function() {
     var RepoView = Backbone.View.extend({
         el: '.le-hook',
         events: {
-            'click button#fetch': 'getInputText'
+            'click button#fetch': 'getInputText',
+            'keypress input[type=text]': 'filterKeypress'
         },
         initialize: function() {
-            _.bindAll(this, 'render', 'loadRepoMilestones', 'getInputText');
+            _.bindAll(this, 'render', 'filterKeypress', 'loadRepoMilestones',
+                            'getInputText');
             var self = this;
 
             milestones.on('sync', self.render);
@@ -176,6 +178,12 @@ $(function() {
                                        session: session});
             this.$el.html( template );
             return this;
+        },
+        filterKeypress: function(e) {
+            var self = this;
+
+            // If 'enter' key pressed, process the input field.
+            if (e.keyCode == 13) self.getInputText();
         },
         loadRepoMilestones: function(owner, repo) {
             var self = this;
