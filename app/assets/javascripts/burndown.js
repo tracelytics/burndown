@@ -187,8 +187,12 @@ $(function() {
             var self = this;
 
             milestones.on('sync', function() {
-                errorView.clear();
-                self.render();
+                if (milestones.length > 0) {
+                    errorView.clear();
+                    self.render();
+                } else {
+                    errorView.render('This repository has no milestones!');
+                }
             });
             milestones.on('error', self.errorHandler, this);
         },
