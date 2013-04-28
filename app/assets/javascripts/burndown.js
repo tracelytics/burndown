@@ -161,13 +161,17 @@ $(function() {
     var ErrorView = Backbone.View.extend({
         el: '.error',
         initialize: function() {
-            _.bindAll(this, 'render');
+            _.bindAll(this, 'render', 'clear');
         },
         render: function(message) {
             var template = _.template($("#tmpl_error").html(),
                                       {error: {message: message}});
             this.$el.html(template);
             return this;
+        },
+        clear: function() {
+            var self = this;
+            self.$el.empty();
         }
     });
 
@@ -182,7 +186,10 @@ $(function() {
                             'getInputText', 'errorHandler');
             var self = this;
 
-            milestones.on('sync', self.render);
+            milestones.on('sync', function() {
+                errorView.clear();
+                self.render();
+            });
             milestones.on('error', self.errorHandler, this);
         },
         render: function() {
@@ -200,6 +207,8 @@ $(function() {
         },
         loadRepoMilestones: function(owner, repo) {
             var self = this;
+
+            milestones.reset();
 
             // Update session model.
             session.set('owner', owner);
@@ -227,6 +236,10 @@ $(function() {
             console.log('KA-BOOM!');
             if (!session.get('token')) {
                 errorView.render('Sign into Github before you wreck yourself!');
+            } else if (error.status == 404) {
+                console.log('Repo not found. Do you have access to it?');
+                self.render();
+                errorView.render('Repo not found (404). Do you have access to it?');
             } else {
                 console.log('error: ', error);
             }
