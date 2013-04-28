@@ -1,6 +1,9 @@
 <h1>Burndown</h1>
 <p>Burndown before you burnout.</p>
 
+<div class="error">
+</div>
+
 <% if current_user %>
   <hr>
   <div class="le-hook"></div>
@@ -12,13 +15,6 @@
     <input type="text" class="input-large" placeholder="github 'user/repo'">
     <button id="fetch" type="submit" class="btn">Fetch</button>
   </div>
-
-  {{ if (typeof(error) != "undefined") { }}
-  <div class="alert">
-      <h4>Error!</h4>
-      {{=error.message}}
-  </div>
-  {{ } }}
 
   <div>
     <ul class="milestones">
@@ -64,4 +60,9 @@
 
 <script type="text/template" id="tmpl_loading">
   <div>Loading...</div>
+</script>
+
+<script type="text/template" id="tmpl_error">
+    <h4>Error!</h4>
+    {{=error.message}}
 </script>

@@ -158,6 +158,19 @@ $(function() {
     var milestones = new Milestones();
 
     // Views
+    var ErrorView = Backbone.View.extend({
+        el: '.error',
+        initialize: function() {
+            _.bindAll(this, 'render');
+        },
+        render: function(message) {
+            var template = _.template($("#tmpl_error").html(),
+                                      {error: {message: message}});
+            this.$el.html(template);
+            return this;
+        }
+    });
+
     var RepoView = Backbone.View.extend({
         el: '.le-hook',
         events: {
@@ -166,7 +179,7 @@ $(function() {
         },
         initialize: function() {
             _.bindAll(this, 'render', 'filterKeypress', 'loadRepoMilestones',
-                            'getInputText');
+                            'getInputText', 'errorHandler');
             var self = this;
 
             milestones.on('sync', self.render);
@@ -210,9 +223,10 @@ $(function() {
             self.loadRepoMilestones(owner, repo);
         },
         errorHandler: function(model, error) {
+            var self = this;
             console.log('KA-BOOM!');
             if (!session.get('token')) {
-                console.log('Token not set! Login you nerd...');
+                errorView.render('Sign into Github before you wreck yourself!');
             } else {
                 console.log('error: ', error);
             }
@@ -388,6 +402,7 @@ $(function() {
     });
 
     // Instantiations.
+    var errorView = new ErrorView();
     var repoView = new RepoView();
     var milestoneView = new MilestoneView();
     var router = new Router();
