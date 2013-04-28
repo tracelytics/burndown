@@ -157,26 +157,25 @@ $(function() {
     });
     var milestones = new Milestones();
 
-    // Views
-    var ErrorView = Backbone.View.extend({
-        el: '.error',
+    var Message = Backbone.Model.extend({
         initialize: function() {
-            _.bindAll(this, 'render', 'clear');
+            _.bindAll(this, 'setProblem', 'setError');
         },
-        render: function(message) {
-            var template = _.template($("#tmpl_error").html(),
-                                      {error: {message: message}});
-            this.$el.html(template);
-            return this;
-        },
-        clear: function() {
+        setProblem: function(text) {
             var self = this;
-            self.$el.empty();
+            self.set('title', 'Problem');
+            self.set('text', text);
+        },
+        setError: function(text) {
+            var self = this;
+            self.set('title', 'Error');
+            self.set('text', text);
         }
     });
 
+    // Views
     var RepoView = Backbone.View.extend({
-        el: '.le-hook',
+        el: '.content',
         events: {
             'click button#fetch': 'getInputText',
             'keypress input[type=text]': 'filterKeypress'
@@ -186,20 +185,22 @@ $(function() {
                             'getInputText', 'errorHandler');
             var self = this;
 
+            self.message = new Message();
+
             milestones.on('sync', function() {
-                if (milestones.length > 0) {
-                    errorView.clear();
-                    self.render();
-                } else {
-                    errorView.render('This repository has no milestones!');
+                if (milestones.length === 0) {
+                    self.message.setProblem('This repository has no milestones!');
                 }
+                self.render();
             });
             milestones.on('error', self.errorHandler, this);
         },
         render: function() {
+            var self = this;
             var template = _.template($("#tmpl_repo").html(),
                                       {milestones: milestones.models,
-                                       session: session});
+                                       session: session,
+                                       message: self.message});
             this.$el.html( template );
             return this;
         },
@@ -212,6 +213,7 @@ $(function() {
         loadRepoMilestones: function(owner, repo) {
             var self = this;
 
+            self.message.clear();
             milestones.reset();
 
             // Update session model.
@@ -238,12 +240,12 @@ $(function() {
         errorHandler: function(model, error) {
             var self = this;
             console.log('KA-BOOM!');
-            if (!session.get('token')) {
-                errorView.render('Sign into Github before you wreck yourself!');
-            } else if (error.status == 404) {
-                console.log('Repo not found. Do you have access to it?');
+            if (!session.get('token') || error.status == 403) {
+                self.message.setError('Sign into Github before you wreck yourself!');
                 self.render();
-                errorView.render('Repo not found (404). Do you have access to it?');
+            } else if (error.status == 404) {
+                self.message.setProblem('Repository not found! Do you have access to it?');
+                self.render();
             } else {
                 console.log('error: ', error);
             }
@@ -251,7 +253,7 @@ $(function() {
     });
 
     var MilestoneView = Backbone.View.extend({
-        el: '.le-hook',
+        el: '.content',
         initialize: function() {
             _.bindAll(this, 'render', 'loadMilestone', 'renderChart');
             var self = this;
@@ -419,7 +421,6 @@ $(function() {
     });
 
     // Instantiations.
-    var errorView = new ErrorView();
     var repoView = new RepoView();
     var milestoneView = new MilestoneView();
     var router = new Router();

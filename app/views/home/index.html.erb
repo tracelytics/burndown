@@ -1,12 +1,7 @@
 <h1>Burndown</h1>
 <p>Burndown before you burnout.</p>
 
-<div class="error">
-</div>
-
-<% if current_user %>
-    <div class="le-hook"></div>
-<% end %>
+<div class="content"></div>
 
 <!-- Templates -->
 <script type="text/template" id="tmpl_repo">
@@ -15,6 +10,14 @@
         <button id="fetch" type="submit" class="btn">Fetch</button>
     </div>
 
+    {{ if (message.has('title')) { }}
+    <div>
+        <h4>{{=message.get('title')}}</h4>
+        <span>{{=message.get('text')}}</span>
+    </div>
+    {{ } }}
+
+    {{ if (milestones.length > 0) { }}
     <div>
         <ul class="milestones">
         {{ _.each(milestones, function (milestone, i) { }}
@@ -22,6 +25,7 @@
         {{ }); }}
         </ul>
     </div>
+    {{ } }}
 </script>
 
 <script type="text/template" id="tmpl_milestone">
