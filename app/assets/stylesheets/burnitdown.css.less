@@ -48,9 +48,11 @@ body {
 }
 
 a {
+    color: @dark-aqua;
     text-decoration: underline;
 
     &:hover {
+        color: @aqua;
         text-decoration: none;
     }
 }
@@ -95,7 +97,6 @@ header {
     margin: 50px auto;
     position: relative;
     width: 100%;
-    z-index: -1;
 
     img {
         #layouts > .abspos (-50px, auto, auto, 0);
@@ -108,6 +109,7 @@ header {
         position: absolute;
         top: 69px;
         width: 50%;
+        z-index: -1;
 
         h1 {
             border-bottom: 5px solid @med-red;
@@ -179,7 +181,7 @@ header {
 
 .content {
     display: table;
-    padding: 2em 0 10em 0;
+    padding: 2em 0 15em 0;
     position: relative;
     width: 100%;
 
@@ -344,6 +346,25 @@ ol {
     }
 }
 
+/* Search Error
+================================================== */
+
+    .error {
+        background: none repeat scroll 0 0 #F6F6F6;
+        margin: 0 auto;
+        padding: 0 0 3em;
+        position: relative;
+        text-align: center;
+        top: 0;
+        width: 50%;
+
+        span {
+            #image-insert > .before-data-icon (@dark-red, @dark-red, 26px, 26px, 2px, auto, auto, -5px);
+            color: @dark-red;
+            font-size: 1.2em;
+        }
+    }
+
 /* Milestones list
 ================================================== */
 
@@ -365,5 +386,37 @@ ol {
         padding: 3em 0 2em 0;
         position: relative;
         top: 0;
-        width: 50%;
+        width: 1000px;
+
+        .back {
+            #layouts > .abspos (-52px, auto, auto, 50%);
+            background: #e9f1f1;
+            color: @aqua;
+            font-size: 1.2em;
+            margin: 0 0 0 -5em;
+            padding: 0.3em 0;
+            text-align: center;
+            text-decoration: none;
+            width: 10em;
+        }
+
+        .meta_issues {
+            list-style: none;
+            overflow: hidden;
+            padding: 0;
+
+            li {
+                float: left;
+                margin: 0 1em 0 0;
+
+                a {
+                    text-decoration: none;
+                }
+            }
+        }
+
+        .chart_wrapper {
+            background: #fff;
+            padding: 1em;
+        }
     }

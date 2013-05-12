@@ -56,10 +56,8 @@
     </section>
 <% end %>
     {{ if (message.has('title')) { }}
-    what????
-    <div>
-        <h4>{{=message.get('title')}}</h4>
-        <span>{{=message.get('text')}}</span>
+    <div class="error">
+        <span data-beforeicon="&#xe010;">{{=message.get('text')}}</span>
     </div>
     {{ } }}
 
@@ -81,51 +79,53 @@
 
 <script type="text/template" id="tmpl_milestone">
     <div class="milestone">
-        <a href="#{{=session.getURL()}}">Back</a>
+        <a href="#{{=session.getURL()}}" class="back" title="back to list of milestones">Back</a>
 
-        <h2>Milestone</h2>
-
-        {{ if (message.has('title')) { }}
-        <div>
-            <h4>{{=message.get('title')}}</h4>
-            <span>{{=message.get('text')}}</span>
-        </div>
+        <h3>{{=milestone.get('title')}}</h3>
+        <ul class="meta_issues">
+            <li>Issues: </li>
+            <li>
+                <a href="#open-issues" title="view open issues">Open [{{=milestone.get('open_issues')}}]</a>
+            </li>
+            <li>+</li>
+            <li>
+                <a href="#closed-issues" title="view closed issues">Closed [{{=milestone.get('closed_issues')}}]</a>
+            </li>
+            <li>=</li>
+            <li>Total [{{=milestone.getNumIssues()}}]</li>
+        </ul>
+        <div>Created by {{=milestone.getCreator()}} on {{=milestone.get('created_at')}}</div>
+        {{ if (milestone.has('due_on')) { }}
+        <div>Due: {{=milestone.get('due_on')}}</div>
+        {{ } else { }}
+        no due date!
         {{ } }}
 
-        <h3>Meta</h3>
-        <div>Title:
-            <a href="{{=milestone.get('url')}}">{{=milestone.get('title')}}</a>
+        <div class="chart_wrapper">
+            <div id="chart_container">
+                <div id="y_axis"></div>
+                <div id="chart"></div>
+            </div>
+            <div id="legend"></div>
         </div>
-        <div>Creator: {{=milestone.getCreator()}}</div>
-        <div>Created: {{=milestone.get('created_at')}}</div>
-        <div>Due: {{=milestone.get('due_on')}}</div>
-        <div>Issues (open): {{=milestone.get('open_issues')}}</div>
-        <div>Issues (closed): {{=milestone.get('closed_issues')}}</div>
-        <div>Issues (total): {{=milestone.getNumIssues()}}</div>
 
-        <h3>Chart</h3>
-        <div id="chart_container">
-            <div id="y_axis"></div>
-            <div id="chart"></div>
+        <div id="open-issues">
+            <h3>Open Issues [{{=milestone.get('open_issues')}}]</h3>
+            <div class="open"></div>
         </div>
-        <div id="legend"></div>
-
-        <h3>Open Issues [{{=milestone.get('open_issues')}}]</h3>
-        <div class="open"></div>
-
-        <h3>Closed Issues [{{=milestone.get('closed_issues')}}]</h3>
-        <div class="closed"></div>
+        <div id="closed-issues">
+            <h3>Closed Issues [{{=milestone.get('closed_issues')}}]</h3>
+            <div class="closed"></div>
+        </div>
     </div>
 </script>
 
 <script type="text/template" id="tmpl_issues">
-    <div class="issues">
-        <ul>
-        {{ _.each(issues, function (issue, i) { }}
-            <li>{{=issue.createLink()}}</li>
-       {{ }); }}
-        </ul>
-    </div>
+    <ul>
+    {{ _.each(issues, function (issue, i) { }}
+        <li>{{=issue.createLink()}}</li>
+   {{ }); }}
+    </ul>
 </script>
 
 <script type="text/template" id="tmpl_loading">
