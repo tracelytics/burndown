@@ -1,0 +1,369 @@
+@import "burndown/mixins.less";
+@import "burndown/normalize.css";
+
+/* these seperate placeholder styles have to be seperate to work
+    even though its not dry, blame the browser makers
+*/
+input::-webkit-input-placeholder {
+   #text > .placeholder-text ();
+}
+
+input:-moz-placeholder { /* Firefox 18- */
+   #text > .placeholder-text ();
+}
+
+input::-moz-placeholder {  /* Firefox 19+ */
+   #text > .placeholder-text ();
+}
+
+input:-ms-input-placeholder {
+   #text > .placeholder-text ();
+}
+
+html {
+    background: #f6f6f6;
+    overflow-x: auto !important;
+    overflow-y: scroll !important;
+}
+
+body {
+    color: #262626;
+    font: 100%/1.5 @sans-serif-font; /* 16px */
+    letter-spacing: 0.3px;
+    margin: 0;
+    min-width: 480px;
+    padding: 0;
+}
+
+[data-icon] {
+    #image-insert > .glyph (attr(data-icon));
+    display: block;
+    overflow: hidden;
+    text-indent: 100%;
+    white-space: nowrap;
+}
+
+[data-beforeicon] {
+    #image-insert > .glyph (attr(data-beforeicon));
+}
+
+a {
+    text-decoration: underline;
+
+    &:hover {
+        text-decoration: none;
+    }
+}
+
+h1,
+h2,
+h3 {
+    font-family: @bit-font; /* 16px */
+    -webkit-font-smoothing: none;
+    text-shadow: 1px 1px 0 #fff;
+    text-rendering: geometricPrecision;
+    font-weight: normal;
+}
+
+h1 {
+    color: @dark-red;
+    font-size: 2.0em;
+}
+
+h2 {
+    color: #383838;
+    font-size: 0.6em;
+}
+
+h3 {
+    color: @aqua;
+    display: inline-block;
+    font-size: 1.2em;
+    margin: 0;
+}
+
+#flash_notice {
+    background: none repeat scroll 0 0 red;
+    position: absolute;
+    text-align: center;
+    top: 0;
+    width: 100%;
+}
+
+header {
+    height: 112px;
+    margin: 50px auto;
+    position: relative;
+    width: 100%;
+    z-index: -1;
+
+    img {
+        #layouts > .abspos (-50px, auto, auto, 0);
+    }
+
+    .main {
+        height: 60px;
+        left: 0;
+        padding: 0 0 0 208px;
+        position: absolute;
+        top: 69px;
+        width: 50%;
+
+        h1 {
+            border-bottom: 5px solid @med-red;
+            box-shadow: 0 8px 0 0 @light-red;
+            display: block;
+            line-height: 40px;
+            margin: 8px 0 0 0;
+            padding: 0 0 0 0;
+            position: static;
+        }
+
+        h2 {
+            position: absolute;
+            bottom: -30px;
+            left: 210px;
+        }
+    }
+
+    #user_nav {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 50%;
+
+        .octocat {
+            #image-insert > .icon ("assets/burndown_logos.png", 82px, 94px, 0 -78px);
+            float: left;
+            margin: 0 10px 0 0;
+        }
+
+        .sign_in,
+        .sign_out {
+            background: rgba(0, 153, 153, 0.05);
+            margin: 0 auto;
+            overflow: hidden;
+            padding: 0.3em 0.5em;
+            position: relative;
+            width: 18em;
+
+            img {
+                top: 0;
+                left: 0;
+            }
+
+            a {
+                color: @aqua;
+                display: inline-block;
+                margin-top: 1em;
+                width: 10em;
+            }
+        }
+
+        .sign_out {
+            height: 80px;
+
+            p {
+                #layouts > .abspos (1em, auto, auto, 90px);
+                font-size: 0.8em;
+                margin: 0;
+
+                a {
+                    margin: 0;
+                }
+            }
+        }
+    }
+}
+
+
+.content {
+    display: table;
+    padding: 2em 0 10em 0;
+    position: relative;
+    width: 100%;
+
+    &:before {
+        border-left: 5px solid @med-red;
+        box-shadow: -8px 0 0 0 @light-red;
+        content: " ";
+        display: block;
+        height: 100%;
+        left: 50%;
+        margin: 0 0 0 -5px;
+        position: absolute;
+        top: -40px;
+        width: 5px;
+        z-index: -1;
+    }
+
+    &:after {
+        background: url("/assets/burndown_logos.png") no-repeat scroll -95px 0 transparent;
+        bottom: 15px;
+        content: " ";
+        display: block;
+        height: 25px;
+        left: 50%;
+        margin: 0 0 0 -13px;
+        position: absolute;
+        width: 15px;
+    }
+
+    section {
+        width: 50%;
+
+        &:nth-child(odd) {
+            clear: right;
+            float: right;
+            margin: 3em 0 0 0;
+            padding: 0 5em 0 2em;
+        }
+
+        &:nth-child(even) {
+            float: left;
+            margin: 0 0 3em -12px;
+            padding: 0 2em 0 5em;
+            text-align: right;
+        }
+    }
+
+
+    .form-inline {
+        background: #f6f6f6;
+        padding: 1em 0;
+        text-align: center;
+        width: 100%;
+
+        input {
+            border: solid 1px #ccc;
+            font-size: 1.5em;
+            padding: 0.4em;
+            width: 20em;
+        }
+
+        button {
+            background: @aqua;
+            border: none;
+            color: #fff;
+            font-size: 1.5em;
+            font-weight: 300;
+            height: 1.89em;
+            margin: 0;
+            padding: 0 2em;
+            width: 8em;
+        }
+
+        p span {
+            color: @aqua;
+            #image-insert > .before-data-icon (@aqua, @aqua, 26px, 26px, -10px, auto, auto, -4px);
+        }
+    }
+}
+
+#chart_container {
+        position: relative;
+        display: inline-block;
+        font-family: Arial, Helvetica, sans-serif;
+}
+#chart {
+        display: inline-block;
+        margin-left: 40px;
+}
+#y_axis {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 40px;
+}
+#legend {
+        display: inline-block;
+        vertical-align: top;
+        margin: 0 0 0 10px;
+}
+
+
+footer {
+    color: rgba(0,0,0,0.4);
+    display: block;
+    font-size: 0.7em;
+    margin: 6em 0 6em 0;
+    text-align: center;
+
+    a {
+        color: @aqua;
+        text-align: right;
+        text-decoration: none;
+    }
+
+    .logo {
+        #image-insert > .before-icon (28px, 104px, "assets/burndown_logos.png", 0 0, -9px, 0);
+        display: inline-block;
+        vertical-align: middle;
+
+        &.burndown:before {
+            background-position: -56px 0;
+            left: -24px;
+            width: 28px;
+        }
+
+        &.appneta:before {
+            background-position: 0 -48px;
+            top: -4px;
+        }
+    }
+
+    .burndown_name {
+        border-bottom: 2px solid @med-red;
+        box-shadow: 0 1px 0 0 @light-red;
+        color: @dark-red;
+        font-family: @bit-font; /* 16px */
+        font-size: 1.24em;
+        height: 15px;
+        line-height: 11px;
+        padding: 0 0 0 0;
+        text-shadow: 1px 1px 0 #fff;
+        text-rendering: geometricPrecision;
+        font-weight: normal;
+        vertical-align: middle;
+        -webkit-font-smoothing: none;
+    }
+}
+
+ol {
+    color: @aqua;
+    font-family: @bit-font;
+    list-style-position: outside;
+    margin: 1em 0 0 2.4em;
+    padding: 0;
+
+    li {
+        span {
+            color: #262626;
+            font-family: @sans-serif-font;
+        }
+    }
+}
+
+/* Milestones list
+================================================== */
+
+    .milestones {
+        background: none repeat scroll 0 0 #F6F6F6;
+        margin: -4.5em auto;
+        padding: 3em 0 2em 0;
+        position: relative;
+        top: 0;
+        width: 50%;
+    }
+
+/* Milestone
+================================================== */
+
+    .milestone {
+        background: none repeat scroll 0 0 #F6F6F6;
+        margin: 0 auto;
+        padding: 3em 0 2em 0;
+        position: relative;
+        top: 0;
+        width: 50%;
+    }

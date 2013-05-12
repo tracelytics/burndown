@@ -1,16 +1,62 @@
-<h1>Burndown</h1>
-<p>Burndown before you burnout.</p>
-
 <div class="content"></div>
 
 <!-- Templates -->
 <script type="text/template" id="tmpl_repo">
+<% if current_user %>
     <div class="form-inline">
         <input type="text" class="input-large" placeholder="github 'user/repo'">
         <button id="fetch" type="submit" class="btn">Fetch</button>
+        <p>
+            <span data-beforeicon="&#xe054;">Type a github username/repository that you have access to.</span>
+        </p>
     </div>
-
+<% else %>
+    <section>
+        <h3>
+            Ok, how does it work?
+        </h3>
+        <ol>
+            <li><span>Log in with your Github profile</span></li>
+            <li><span>Search for your repos and milestone</span></li>
+            <li><span>View burndown charts and lists of open and closed issues</span></li>
+            <li><span>burn down before you burn out</span></li>
+        </ol>
+    </section>
+    <section>
+        <h3>
+            what is this?
+        </h3>
+        <p>
+            Lorizzle ipsizzle dolor sit amet, i’m in the shizzle adipiscing elizzle. Rizzle stuff velizzle, bizzle volutpizzle,
+            that’s the shizzle shizzle my nizzle crocodizzle, gravida vizzle, brizzle. Pellentesque eget tortizzle. Sizzle erizzle.
+            Tellivizzle break yo neck, yall dolizzle mammasay mammasa mamma oo sa rizzle tempizzle shut the shizzle up. Maurizzle break
+            it down nibh izzle that’s the shizzle.
+        </p>
+    </section>
+    <section>
+        <h3>
+            wait, what’s a burndown?
+        </h3>
+        <p>
+            A burn down chart is graphical representation of work left to do versus time.
+            The outstanding work (or backlog) is often on the vertical axis, with time along the horizontal.
+            That is, it is a run chart of outstanding work. It is useful for predicting when all of the work will be completed.
+        </p>
+    </section>
+    <section>
+        <h3>
+            Can I contribute?
+        </h3>
+        <p>
+            Etiam bling bling magna sed augue sizzle accumsizzle. Nizzle izzle shiznit.
+            Shit i saw beyonces tizzles and my pizzle went crizzle dolizzle, shizzlin dizzle vitae, pot izzle, ass in, ass.
+            Vestibulum shiz ipsum sure izzle faucibus orci nizzle izzle crackalackin posuere cubilia Crunk; fo shizzle. Mofo sizzle.
+        </p>
+        <a href="">Check out the project on GitHub</a>
+    </section>
+<% end %>
     {{ if (message.has('title')) { }}
+    what????
     <div>
         <h4>{{=message.get('title')}}</h4>
         <span>{{=message.get('text')}}</span>
@@ -18,10 +64,15 @@
     {{ } }}
 
     {{ if (milestones.length > 0) { }}
-    <div>
-        <ul class="milestones">
+    <div class="milestones">
+        <h3>Milestones in USERNAME/REPO HERE RITI</h3>
+        <ul>
         {{ _.each(milestones, function (milestone, i) { }}
-            <li><a href="#{{=session.getURL()}}/{{=i}}">{{=milestone.get('title')}}</a></li>
+            <li>
+                <a href="#{{=session.getURL()}}/{{=i}}" title="{{=milestone.get('title')}}">
+                    {{=milestone.get('title')}}
+                </a>
+            </li>
         {{ }); }}
         </ul>
     </div>
@@ -29,48 +80,52 @@
 </script>
 
 <script type="text/template" id="tmpl_milestone">
-    <a href="#{{=session.getURL()}}">Back</a>
+    <div class="milestone">
+        <a href="#{{=session.getURL()}}">Back</a>
 
-    <h2>Milestone</h2>
+        <h2>Milestone</h2>
 
-    {{ if (message.has('title')) { }}
-    <div>
-        <h4>{{=message.get('title')}}</h4>
-        <span>{{=message.get('text')}}</span>
+        {{ if (message.has('title')) { }}
+        <div>
+            <h4>{{=message.get('title')}}</h4>
+            <span>{{=message.get('text')}}</span>
+        </div>
+        {{ } }}
+
+        <h3>Meta</h3>
+        <div>Title:
+            <a href="{{=milestone.get('url')}}">{{=milestone.get('title')}}</a>
+        </div>
+        <div>Creator: {{=milestone.getCreator()}}</div>
+        <div>Created: {{=milestone.get('created_at')}}</div>
+        <div>Due: {{=milestone.get('due_on')}}</div>
+        <div>Issues (open): {{=milestone.get('open_issues')}}</div>
+        <div>Issues (closed): {{=milestone.get('closed_issues')}}</div>
+        <div>Issues (total): {{=milestone.getNumIssues()}}</div>
+
+        <h3>Chart</h3>
+        <div id="chart_container">
+            <div id="y_axis"></div>
+            <div id="chart"></div>
+        </div>
+        <div id="legend"></div>
+
+        <h3>Open Issues [{{=milestone.get('open_issues')}}]</h3>
+        <div class="open"></div>
+
+        <h3>Closed Issues [{{=milestone.get('closed_issues')}}]</h3>
+        <div class="closed"></div>
     </div>
-    {{ } }}
-
-    <h3>Meta</h3>
-    <div>Title:
-        <a href="{{=milestone.get('url')}}">{{=milestone.get('title')}}</a>
-    </div>
-    <div>Creator: {{=milestone.getCreator()}}</div>
-    <div>Created: {{=milestone.get('created_at')}}</div>
-    <div>Due: {{=milestone.get('due_on')}}</div>
-    <div>Issues (open): {{=milestone.get('open_issues')}}</div>
-    <div>Issues (closed): {{=milestone.get('closed_issues')}}</div>
-    <div>Issues (total): {{=milestone.getNumIssues()}}</div>
-
-    <h3>Chart</h3>
-    <div id="chart_container">
-        <div id="y_axis"></div>
-        <div id="chart"></div>
-    </div>
-    <div id="legend"></div>
-
-    <h3>Open Issues [{{=milestone.get('open_issues')}}]</h3>
-    <div class="open"></div>
-
-    <h3>Closed Issues [{{=milestone.get('closed_issues')}}]</h3>
-    <div class="closed"></div>
 </script>
 
 <script type="text/template" id="tmpl_issues">
-    <ul>
-    {{ _.each(issues, function (issue, i) { }}
-        <li>{{=issue.createLink()}}</li>
-    {{ }); }}
-    </ul>
+    <div class="issues">
+        <ul>
+        {{ _.each(issues, function (issue, i) { }}
+            <li>{{=issue.createLink()}}</li>
+       {{ }); }}
+        </ul>
+    </div>
 </script>
 
 <script type="text/template" id="tmpl_loading">
@@ -78,6 +133,8 @@
 </script>
 
 <script type="text/template" id="tmpl_error">
-    <h4>Error!</h4>
-    {{=error.message}}
+    <div class="errors">
+        <h4>Error!</h4>
+        {{=error.message}}
+    </div>
 </script>

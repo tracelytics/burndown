@@ -1,28 +1,47 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>AppNeta: Burndown before you burnout</title>
-  <%= favicon_link_tag %>
-  <%= stylesheet_link_tag    "application", :media => "all" %>
-  <%= javascript_include_tag "application" %>
-  <%= csrf_meta_tags %>
-</head>
-<body>
-
-<div id="user_nav">
-  <% if current_user %>
-    <img src=<%= current_user.image_url %> />
-    Signed in as <%= current_user.name %>!
-    <%= link_to "Sign out", signout_path %>
-  <% else %>
-    <%= link_to "Sign in with Github", "/auth/github" %>
-  <% end %>
-</div>
-<% flash.each do |name, msg| %>
-  <%= content_tag :div, msg, id: "flash_#{name}" %>
-<% end %>
-
-<%= yield %>
-
-</body>
+    <head>
+      <title>AppNeta: Burndown before you burnout</title>
+      <link href='http://fonts.googleapis.com/css?family=Press+Start+2P|Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
+      <%= favicon_link_tag %>
+      <%= stylesheet_link_tag    "application", :media => "all" %>
+      <%= javascript_include_tag "application" %>
+      <%= csrf_meta_tags %>
+    </head>
+    <body>
+        <header>
+            <img src="/assets/burndown_logo.png" alt="burndown before you burnout" width="225" height="180" />
+            <div class="main">
+                <h1>Burndown</h1>
+                <h2>Burndown before you burnout.</h2>
+            </div>
+            <div id="user_nav">
+                <% if current_user %>
+                <div class="sign_out">
+                    <img src=<%= current_user.image_url %> />
+                    <p>
+                        Signed in as <%= current_user.name %>!
+                        <%= link_to "Sign out", signout_path %>
+                    </p>
+                </div>
+                <% else %>
+                <div class="sign_in">
+                    <span class="octocat">GitHub</span>
+                    <%= link_to "Sign in with your Github credentials", "/auth/github" %>
+                </div>
+                <% end %>
+            </div>
+        </header>
+        <% flash.each do |name, msg| %>
+          <%= content_tag :div, msg, id: "flash_#{name}" %>
+        <% end %>
+        <%= yield %>
+        <footer>
+            <span class="logo burndown burndown_name">Burndown</span>
+            &nbsp;is an open source project from&nbsp;
+            <a href="http://dev.appneta.com" title="AppNeta design and development" class="logo appneta">
+                design &amp; development
+            </a>
+        </footer>
+    </body>
 </html>
