@@ -81,25 +81,31 @@
     <div class="milestone">
         <a href="#{{=session.getURL()}}" class="back" title="back to list of milestones">Back</a>
 
-        <h3>{{=milestone.get('title')}}</h3>
-        <ul class="meta_issues">
-            <li>Issues: </li>
-            <li>
-                <a href="#open-issues" title="view open issues">Open [{{=milestone.get('open_issues')}}]</a>
-            </li>
-            <li>+</li>
-            <li>
-                <a href="#closed-issues" title="view closed issues">Closed [{{=milestone.get('closed_issues')}}]</a>
-            </li>
-            <li>=</li>
-            <li>Total [{{=milestone.getNumIssues()}}]</li>
-        </ul>
-        <div>Created by {{=milestone.getCreator()}} on {{=milestone.get('created_at')}}</div>
-        {{ if (milestone.has('due_on')) { }}
-        <div>Due: {{=milestone.get('due_on')}}</div>
-        {{ } else { }}
-        no due date!
-        {{ } }}
+        <div class="meta_issues">
+            <h3>{{=milestone.get('title')}}</h3>
+            <div class="due_date{{ if (!milestone.has('due_on')) { }} nodate{{ } }}">
+                {{ if (milestone.has('due_on')) { }}
+                <span data-beforeicon="&#xe009;">due: {{=milestone.get('due_on')}}</span>
+                {{ } else { }}
+                <span data-beforeicon="&#xe015;">no due date!</span>
+                {{ } }}
+            </div>
+            <ul>
+                <li>Issues: </li>
+                <li>
+                    <a href="#open-issues" title="view open issues">Open [{{=milestone.get('open_issues')}}]</a>
+                </li>
+                <li>+</li>
+                <li>
+                    <a href="#closed-issues" title="view closed issues">Closed [{{=milestone.get('closed_issues')}}]</a>
+                </li>
+                <li>=</li>
+                <li>Total [{{=milestone.getNumIssues()}}]</li>
+            </ul>
+        </div>
+        <div class="created">
+            created by {{=milestone.getCreator()}} on {{=milestone.get('created_at')}}
+        </div>
 
         <div class="chart_wrapper">
             <div id="chart_container">
@@ -110,11 +116,11 @@
         </div>
 
         <div id="open-issues">
-            <h3>Open Issues [{{=milestone.get('open_issues')}}]</h3>
+            <h3>Open Issues <small>[{{=milestone.get('open_issues')}}]</small></h3>
             <div class="open"></div>
         </div>
         <div id="closed-issues">
-            <h3>Closed Issues [{{=milestone.get('closed_issues')}}]</h3>
+            <h3>Closed Issues <small>[{{=milestone.get('closed_issues')}}]</small></h3>
             <div class="closed"></div>
         </div>
     </div>

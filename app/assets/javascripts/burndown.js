@@ -54,7 +54,7 @@ $(function() {
         getIcon: function() {
             var rval = ['<img src="http://www.gravatar.com/avatar/',
                         this.get('gravatar'),
-                        '?s=20">'].join('');
+                        '?s=40">'].join('');
 
             return rval;
         }
@@ -80,7 +80,7 @@ $(function() {
 
             if (creator && title && url) {
                 var user = new GithubUser(creator);
-                rval = ['<a href="' + url + '">',
+                rval = ['<a href="' + url + '" title="' + title + '">',
                         user.getIcon(),
                         ' ',
                         title,
