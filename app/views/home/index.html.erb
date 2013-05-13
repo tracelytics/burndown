@@ -91,15 +91,14 @@
                 {{ } }}
             </div>
             <ul>
-                <li>Issues: </li>
-                <li>
-                    <a href="#open-issues" title="view open issues">Open [{{=milestone.get('open_issues')}}]</a>
+                <li class="jump">
+                    <a href="#open-issues" title="view open issues" data-beforeicon="&#xe045;">Open [{{=milestone.get('open_issues')}}]</a>
                 </li>
-                <li>+</li>
-                <li>
-                    <a href="#closed-issues" title="view closed issues">Closed [{{=milestone.get('closed_issues')}}]</a>
+                <li class="join">+</li>
+                <li class="jump">
+                    <a href="#closed-issues" title="view closed issues" data-beforeicon="&#xe045;">Closed [{{=milestone.get('closed_issues')}}]</a>
                 </li>
-                <li>=</li>
+                <li class="join">=</li>
                 <li>Total [{{=milestone.getNumIssues()}}]</li>
             </ul>
         </div>

@@ -51,11 +51,11 @@
     h1,
     h2,
     h3 {
-        font-family: @bit-font; /* 16px */
-        -webkit-font-smoothing: none;
+        font-family: @bit-font;
         text-shadow: 1px 1px 0 #fff;
         text-rendering: geometricPrecision;
         font-weight: normal;
+        -webkit-font-smoothing: none;
     }
 
     h1 {
@@ -168,6 +168,7 @@
 
     #flash_notice {
         background: none repeat scroll 0 0 red;
+        display: none;
         position: absolute;
         text-align: center;
         top: 0;
@@ -300,7 +301,7 @@
             border-bottom: 2px solid @med-red;
             box-shadow: 0 1px 0 0 @light-red;
             color: @dark-red;
-            font-family: @bit-font; /* 16px */
+            font-family: @bit-font;
             font-size: 1.24em;
             height: 15px;
             line-height: 11px;
@@ -387,6 +388,10 @@
                 padding: 0 0 0 40px;
 
                 &:nth-child(odd) { background: fade(@aqua, 5%); }
+
+                a {
+                    display: block;
+                }
             }
         }
     }
@@ -404,6 +409,7 @@
         .back {
             #layouts > .abspos (-52px, auto, auto, 50%);
             background: #e9f1f1;
+            border: solid 5px #f6f6f6;
             color: @aqua;
             font-size: 1.2em;
             margin: 0 0 0 -5em;
@@ -430,16 +436,34 @@
 
             ul {
                 list-style: none;
-                overflow: hidden;
                 margin: 0;
                 text-align: center;
 
                 li {
+                    color: @dark-aqua;
                     display: inline-block;
                     margin: 0.5em 0.5em 0 0;
 
                     a {
                         text-decoration: none;
+                    }
+
+                    &.join {
+                        color: @aqua;
+                        font-family: @bit-font;
+                        font-size: 1.2em;
+                        margin: 0;
+                        text-shadow: 1px 1px 0 #fff;
+                        text-rendering: geometricPrecision;
+                        font-weight: normal;
+                        text-align: center;
+                        vertical-align: middle;
+                        -webkit-font-smoothing: none;
+                    }
+
+                    &.jump a {
+                        #image-insert > .before-data-icon (@dark-aqua, @aqua, 12px, 12px, auto, auto, -14px, 50%);
+                        padding: 0;
                     }
                 }
             }
@@ -447,13 +471,13 @@
 
         .due_date {
             color: @light-red;
-            font-family: @bit-font; /* 16px */
-            -webkit-font-smoothing: none;
+            font-family: @bit-font;
             text-shadow: 1px 1px 0 #fff;
             text-rendering: geometricPrecision;
             font-weight: normal;
             padding: 1em 0;
             text-align: center;
+            -webkit-font-smoothing: none;
 
             span {
                 #image-insert > .before-data-icon (@light-red, @light-red, 30px, 30px, -8px, auto, auto, -10px);
@@ -531,6 +555,7 @@
 
                     a {
                         display: block;
+                        min-height: 40px;
                         padding: 6px 0 0 50px;
 
                         img {
