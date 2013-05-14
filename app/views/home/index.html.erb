@@ -76,7 +76,7 @@
 
     {{ if (milestones.length > 0) { }}
     <div class="milestones">
-        <h3>Milestones in USERNAME/REPO HERE RITI</h3>
+        <h3>Milestones in {{=session.getURL()}}</h3>
         <ul>
         {{ _.each(milestones, function (milestone, i) { }}
             <li>
