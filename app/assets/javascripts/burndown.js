@@ -74,12 +74,17 @@ $(function() {
         createLink: function() {
             var rval = '';
 
+            var assignee = this.get('assignee') || null;
             var creator = this.get('user');
+            // It's not guaranteed that all issues have assignees. So if an
+            // assignee does not exist, display it's creator.
+            var person = assignee ? assignee : creator;
+
             var title = this.get('title');
             var url = this.get('html_url');
 
-            if (creator && title && url) {
-                var user = new GithubUser(creator);
+            if (person && title && url) {
+                var user = new GithubUser(person);
                 rval = ['<a href="' + url + '" title="' + title + '">',
                         user.getIcon(),
                         ' ',
