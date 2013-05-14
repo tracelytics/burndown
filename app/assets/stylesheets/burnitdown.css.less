@@ -132,23 +132,24 @@
         section {
             width: 50%;
 
-            &:nth-child(odd) {
+            &.right {
                 clear: right;
                 float: right;
                 margin: 3em 0 0 0;
-                padding: 0 5em 0 2em;
+                padding: 0 6em 0 2em;
             }
 
-            &:nth-child(even) {
+            &.left {
                 float: left;
                 margin: 0 0 3em -12px;
-                padding: 0 2em 0 5em;
+                padding: 0 2em 0 6em;
                 text-align: right;
             }
 
             ol {
                 color: @aqua;
                 font-family: @bit-font;
+                line-height: 1.75em;
                 list-style-position: outside;
                 margin: 1em 0 0 2.4em;
                 padding: 0;
@@ -159,6 +160,14 @@
                         font-family: @sans-serif-font;
                     }
                 }
+            }
+
+            p {
+                line-height: 1.75em;
+            }
+
+            a.to_github {
+                #image-insert > .before-icon (36px, 36px, "assets/burndown_logos.png", -47px -168px, -6px, -6px);
             }
         }
     }
@@ -391,6 +400,16 @@
 
                 a {
                     display: block;
+
+                    span {
+                        #layouts > .abspos (0, 6px, auto, auto);
+                        color: #999;
+                        font-size: 0.6em;
+
+                        strong {
+                            font-weight: bold;
+                        }
+                    }
                 }
             }
         }
