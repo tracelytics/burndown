@@ -76,19 +76,25 @@ $(function() {
 
             var assignee = this.get('assignee') || null;
             var creator = this.get('user');
-            // It's not guaranteed that all issues have assignees. So if an
-            // assignee does not exist, display it's creator.
-            var person = assignee ? assignee : creator;
-
             var title = this.get('title');
             var url = this.get('html_url');
 
-            if (person && title && url) {
-                var user = new GithubUser(person);
+            var created_at = new Date(this.get('created_at'));
+            var issue_created = created_at.getMonth() + '/' + created_at.getDate() + '/' + created_at.getFullYear();
+
+            if (creator && title && url) {
+                var creator_user = new GithubUser(creator);
+                var assigned_user = assignee ? new GithubUser(assignee) : null;
                 rval = ['<a href="' + url + '" title="' + title + '">',
-                        user.getIcon(),
-                        ' ',
+                        '<span>',
+                        creator_user.getIcon(),
+                        '<ins>&rArr;</ins>',
+                        assigned_user ? assigned_user.getIcon() : '<ins class="annon">?</ins>',
+                        '</span>',
                         title,
+                        '<small>' +
+                        'created by ' + creator_user.get('name') + ' on ' + issue_created,
+                        '</small>',
                         '</a>'].join('');
             }
 
