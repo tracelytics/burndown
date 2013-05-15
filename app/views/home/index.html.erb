@@ -1,27 +1,97 @@
-<h1>Burndown</h1>
-<p>Burndown before you burnout.</p>
-
 <div class="content"></div>
 
 <!-- Templates -->
 <script type="text/template" id="tmpl_repo">
+<% if current_user %>
     <div class="form-inline">
-        <input type="text" class="input-large" placeholder="github 'user/repo'">
-        <button id="fetch" type="submit" class="btn">Fetch</button>
+        <input type="text" class="input-large" placeholder="github 'user/repo'" autofocus>
+        <button id="fetch" type="submit" class="btn">View Milestones</button>
+        <p>
+            <span data-beforeicon="&#xe054;">Type a github username/repository that you have access to.</span>
+        </p>
     </div>
+<% else %>
+    <section class="right">
+        <h3>
+            Ok, how does it work?
+        </h3>
+        <ol>
+            <li><span><%= link_to "Sign in with your Github credentials", "/auth/github" %></span></li>
+            <li><span>Search for your repos and milestone</span></li>
+            <li><span>View burndown charts and lists of open and closed issues</span></li>
+            <li><span>??</span></li>
+            <li><span>burn down before you burn out</span></li>
+        </ol>
+    </section>
 
+    <section class="left">
+        <h3>
+            what is this?
+        </h3>
+        <p>
+            At <a href="http://dev.appneta.com" title="Appneta Design and Development" target="_blank">AppNeta</a>, we wanted a way to see
+            how we are doing on closing issus in our milestones. So we put together a service to see if we were going to finish on time.
+            We figurd this might be useful for others, so we put it on the interwebs, through a series of tubes.
+        </p>
+    </section>
+
+    <section class="right">
+        <h3>
+            Is it safe to sign in to github?
+        </h3>
+        <p>
+            Sure, we don’t store any of your credentials. We just use the info to query the github api to look up your repos and milestones.
+            We never store anything, revoke access any time you want.
+        </p>
+    </section>
+
+    <section class="left">
+        <h3>
+            wait, what’s a burn down chart?
+        </h3>
+        <p>
+            A burn down chart is representation of work left to do versus time.
+            The outstanding work is on the y-axis, with time along the x-axis.
+            <br>
+            <a href="http://en.wikipedia.org/wiki/Burn_down_chart" title="Thanks Wikipedia" target="_blank">Thanks Wikipedia!</a>
+        </p>
+    </section>
+
+    <section class="left">
+        <h3>
+            Can I contribute?
+        </h3>
+        <p>
+            Sure! Take a look at the project on <a href="https://github.com/appneta/burndown" title="view on github">github</a>, submit a pull request,
+            file an issue, contribute anyway you want.
+        </p>
+        <a href="https://github.com/appneta/burndown" title="view on github" class="to_github">Check out the project on GitHub</a>
+    </section>
+<% end %>
     {{ if (message.has('title')) { }}
-    <div>
-        <h4>{{=message.get('title')}}</h4>
-        <span>{{=message.get('text')}}</span>
+    <div class="error">
+        <span data-beforeicon="&#xe010;">{{=message.get('text')}}</span>
     </div>
     {{ } }}
 
     {{ if (milestones.length > 0) { }}
-    <div>
-        <ul class="milestones">
+    <div class="milestones">
+        <h3>Milestones in {{=session.getURL()}}</h3>
+        <ul>
         {{ _.each(milestones, function (milestone, i) { }}
-            <li><a href="#{{=session.getURL()}}/{{=i}}">{{=milestone.get('title')}}</a></li>
+            <li>
+                <a href="#{{=session.getURL()}}/{{=i}}" title="{{=milestone.get('title')}}">
+                    {{=milestone.get('title')}}
+
+                    <span>
+                        <strong>{{=milestone.get('open_issues')}}</strong>
+                        +
+                        {{=milestone.get('closed_issues')}}
+                        =
+                        {{=milestone.getNumIssues()}}
+                    </span>
+                </a>
+            </li>
         {{ }); }}
         </ul>
     </div>
@@ -29,47 +99,58 @@
 </script>
 
 <script type="text/template" id="tmpl_milestone">
-    <a href="#{{=session.getURL()}}">Back</a>
+    <div class="milestone">
+        <a href="#{{=session.getURL()}}" class="back" title="back to list of milestones">Back</a>
 
-    <h2>Milestone</h2>
+        <div class="meta_issues">
+            <h3>{{=milestone.get('title')}}</h3>
+            <div class="due_date{{ if (!milestone.has('due_on')) { }} nodate{{ } }}">
+                {{ if (milestone.has('due_on')) { }}
+                <span data-beforeicon="&#xe009;">due: {{=milestone.getDueDateFormatted()}}</span>
+                {{ } else { }}
+                <span data-beforeicon="&#xe015;">no due date!</span>
+                {{ } }}
+            </div>
+            <ul>
+                <li class="jump">
+                    <a href="#open-issues" title="view open issues" data-beforeicon="&#xe045;">Open [{{=milestone.get('open_issues')}}]</a>
+                </li>
+                <li class="join">+</li>
+                <li class="jump">
+                    <a href="#closed-issues" title="view closed issues" data-beforeicon="&#xe045;">Closed [{{=milestone.get('closed_issues')}}]</a>
+                </li>
+                <li class="join">=</li>
+                <li>Total [{{=milestone.getNumIssues()}}]</li>
+            </ul>
+        </div>
+        <div class="created">
+            created by {{=milestone.getCreator()}} on {{=milestone.get('created_at')}}
+        </div>
 
-    {{ if (message.has('title')) { }}
-    <div>
-        <h4>{{=message.get('title')}}</h4>
-        <span>{{=message.get('text')}}</span>
+        <div class="chart_wrapper">
+            <div id="chart_container">
+                <div id="y_axis"></div>
+                <div id="chart"></div>
+            </div>
+            <div id="legend"></div>
+        </div>
+
+        <div id="open-issues">
+            <h3>Open Issues <small>[{{=milestone.get('open_issues')}}]</small></h3>
+            <div class="open"></div>
+        </div>
+        <div id="closed-issues">
+            <h3>Closed Issues <small>[{{=milestone.get('closed_issues')}}]</small></h3>
+            <div class="closed"></div>
+        </div>
     </div>
-    {{ } }}
-
-    <h3>Meta</h3>
-    <div>Title:
-        <a href="{{=milestone.get('url')}}">{{=milestone.get('title')}}</a>
-    </div>
-    <div>Creator: {{=milestone.getCreator()}}</div>
-    <div>Created: {{=milestone.get('created_at')}}</div>
-    <div>Due: {{=milestone.get('due_on')}}</div>
-    <div>Issues (open): {{=milestone.get('open_issues')}}</div>
-    <div>Issues (closed): {{=milestone.get('closed_issues')}}</div>
-    <div>Issues (total): {{=milestone.getNumIssues()}}</div>
-
-    <h3>Chart</h3>
-    <div id="chart_container">
-        <div id="y_axis"></div>
-        <div id="chart"></div>
-    </div>
-    <div id="legend"></div>
-
-    <h3>Open Issues [{{=milestone.get('open_issues')}}]</h3>
-    <div class="open"></div>
-
-    <h3>Closed Issues [{{=milestone.get('closed_issues')}}]</h3>
-    <div class="closed"></div>
 </script>
 
 <script type="text/template" id="tmpl_issues">
     <ul>
     {{ _.each(issues, function (issue, i) { }}
         <li>{{=issue.createLink()}}</li>
-    {{ }); }}
+   {{ }); }}
     </ul>
 </script>
 
@@ -78,6 +159,8 @@
 </script>
 
 <script type="text/template" id="tmpl_error">
-    <h4>Error!</h4>
-    {{=error.message}}
+    <div class="errors">
+        <h4>Error!</h4>
+        {{=error.message}}
+    </div>
 </script>

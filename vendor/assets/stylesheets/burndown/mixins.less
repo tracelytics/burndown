@@ -1,0 +1,154 @@
+@sans-serif-font: 'Open Sans', sans-serif;
+@bit-font: 'Press Start 2P', cursive;
+
+@aqua: #009999;
+@dark-aqua: #006666;
+@dark-red: #990000;
+@med-red: #cc0000;
+@light-red: #ff6666;
+@yellow: #ffaa00;
+
+@font-face {
+    font-family: 'traceglyph';
+    src:url('/assets/traceglyph.eot');
+    src: url("/assets/traceglyph.woff") format("woff"),
+    url("/assets/traceglyph.svg#iconic") format("svg"),
+    url("/assets/traceglyph.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+    font-variant:normal;
+    speak: none;
+}
+
+/* Layout
+================================================== */
+
+    #layouts {
+
+        .abspos (@top: 0, @right: auto, @bottom: auto, @left: 0) {
+            bottom: @bottom;
+            left: @left;
+            position: absolute;
+            right: @right;
+            top: @top;
+        }
+    }
+
+/* Image Insert Techniques
+================================================== */
+
+    #image-insert {
+
+        .glyph (@content) {
+            position: relative;
+
+            &:before {
+                #bundles > .transition-animation (all, 0.2s, ease-in);
+                content: @content;
+                display: block;
+                font-family: 'traceglyph';
+                font-style: normal;
+                font-weight: normal;
+                line-height: 1;
+                position: absolute;
+                speak: none;
+                text-indent: 0;
+                text-shadow: 0 1px 0 #fff;
+                -webkit-font-smoothing: antialiased;
+            }
+        }
+
+        .icon (@imgtouse, @height: 20px, @width: 20px, @img-position: 0 0) {
+            background: url("/@{imgtouse}") @img-position no-repeat;
+            display: block;
+            height: @height;
+            overflow: hidden;
+            text-indent: 100%;
+            white-space: nowrap;
+            width: @width;
+        }
+
+        .before-icon (@height: 18px, @width: 18px, @imgtouse, @img-position: 0 0, @top: 0, @left: 0) {
+            padding: 0 0 0 (@width + 2);
+            position: relative;
+
+            &:before {
+                #layouts > .abspos (@top, auto, auto, @left);
+                #bundles > .transition-animation (all, 0.2s, ease-in);
+                background: url("/@{imgtouse}") @img-position no-repeat;
+                content: " ";
+                display: block;
+                height: @height;
+                width: @width;
+            }
+        }
+
+        .data-icon (@color: #262626, @hover: @aqua, @height: 20px, @width: 20px, @top: 0, @right: auto, @bottom: auto, @left: 0) {
+            height: @height;
+            width: @width;
+
+            &:before {
+                bottom: @bottom;
+                color: @color;
+                font-size: @width - 2;
+                left: @left;
+                line-height: @height;
+                right: @right;
+                top: @top;
+            }
+
+            &:hover:before {
+                color: @hover;
+            }
+        }
+
+        .before-data-icon (@color: #262626, @hover: @trace-green, @height: 18px, @font-size: 18px, @top: 0, @right: auto, @bottom: auto, @left: 0) {
+            padding: 0 0 0 (@font-size + 2);
+
+            &:before {
+                bottom: @bottom;
+                color: @color;
+                font-size: @font-size;
+                left: @left;
+                line-height: @height;
+                right: @right;
+                top: @top;
+            }
+
+            &:hover:before {
+                color: @hover;
+            }
+        }
+    }
+
+/* Text Manipulation
+================================================== */
+
+    #text {
+        .placeholder-text () {
+           color: #999;
+           font-style: italic;
+        }
+    }
+
+/* General bundles
+================================================== */
+
+    #bundles {
+        .transform (@rotate: 0deg, @scale: 1, @skewX: 0deg, @skewY: 0deg, @translate: 0px) {
+            -webkit-transform: rotate(@rotate) scale(@scale) skewX(@skewX) skewY(@skewY) translate(@translate);
+            -moz-transform: rotate(@rotate) scale(@scale) skewX(@skewX) skewY(@skewY) translate(@translate);
+            -o-transform: rotate(@rotate) scale(@scale) skewX(@skewX) skewY(@skewY) translate(@translate);
+            -ms-transform: rotate(@rotate) scale(@scale) skewX(@skewX) skewY(@skewY) translate(@translate);
+            transform: rotate(@rotate) scale(@scale) skewX(@skewX) skewY(@skewY) translate(@translate);
+        }
+
+        .transition-animation (@prop: all, @time: 1s, @ease: linear) {
+            -webkit-transition: @prop @time @ease;
+            -moz-transition: @prop @time @ease;
+            -o-transition: @prop @time @ease;
+            -ms-transition: @prop @time @ease;
+            transition: @prop @time @ease;
+        }
+
+    }

@@ -1,0 +1,655 @@
+@import "burndown/mixins.less";
+@import "burndown/normalize.css";
+
+/* General Global
+================================================== */
+
+    html {
+        background: #f6f6f6;
+        overflow-x: auto !important;
+        overflow-y: scroll !important;
+    }
+
+    body {
+        color: #262626;
+        font: 100%/1.5 @sans-serif-font; /* 16px */
+        letter-spacing: 0.3px;
+        margin: 0;
+        min-width: 480px;
+        padding: 0;
+    }
+
+/* Data Icons
+================================================== */
+
+    [data-icon] {
+        #image-insert > .glyph (attr(data-icon));
+        display: block;
+        overflow: hidden;
+        text-indent: 100%;
+        white-space: nowrap;
+    }
+
+    [data-beforeicon] {
+        #image-insert > .glyph (attr(data-beforeicon));
+    }
+
+/* Text
+================================================== */
+
+    a {
+        #bundles > .transition-animation (all, 0.2s, ease-in);
+        color: @dark-aqua;
+        text-decoration: underline;
+
+        &:hover {
+            color: @aqua;
+            text-decoration: none;
+        }
+    }
+
+    h1,
+    h2,
+    h3 {
+        font-family: @bit-font;
+        text-shadow: 1px 1px 0 #fff;
+        text-rendering: geometricPrecision;
+        font-weight: normal;
+        -webkit-font-smoothing: none;
+    }
+
+    h1 {
+        color: @dark-red;
+        font-size: 2.0em;
+    }
+
+    h2 {
+        color: #383838;
+        font-size: 0.6em;
+    }
+
+    h3 {
+        color: @aqua;
+        display: inline-block;
+        font-size: 1.2em;
+        margin: 0;
+    }
+
+    /* these seperate placeholder styles have to be seperate to work
+        even though its not dry, blame the browser makers
+    */
+    input::-webkit-input-placeholder {
+       #text > .placeholder-text ();
+    }
+
+    input:-moz-placeholder { /* Firefox 18- */
+       #text > .placeholder-text ();
+    }
+
+    input::-moz-placeholder {  /* Firefox 19+ */
+       #text > .placeholder-text ();
+    }
+
+    input:-ms-input-placeholder {
+       #text > .placeholder-text ();
+    }
+
+/* Content Structure
+================================================== */
+
+    .content {
+        display: table;
+        padding: 2em 0 15em 0;
+        position: relative;
+        width: 100%;
+
+        &:before {
+            border-left: 5px solid @med-red;
+            box-shadow: -8px 0 0 0 @light-red;
+            content: " ";
+            display: block;
+            height: 100%;
+            left: 50%;
+            margin: 0 0 0 -5px;
+            position: absolute;
+            top: -40px;
+            width: 5px;
+            z-index: -1;
+        }
+
+        &:after {
+            background: url("/assets/burndown_logos.png") no-repeat scroll -95px 0 transparent;
+            bottom: 15px;
+            content: " ";
+            display: block;
+            height: 25px;
+            left: 50%;
+            margin: 0 0 0 -13px;
+            position: absolute;
+            width: 15px;
+        }
+
+        section {
+            width: 50%;
+
+            &.right {
+                clear: right;
+                float: right;
+                margin: 3em 0 0 0;
+                padding: 0 6em 0 2em;
+            }
+
+            &.left {
+                float: left;
+                margin: 0 0 3em -12px;
+                padding: 0 2em 0 6em;
+                text-align: right;
+            }
+
+            ol {
+                color: @aqua;
+                font-family: @bit-font;
+                line-height: 1.75em;
+                list-style-position: outside;
+                margin: 1em 0 0 2.4em;
+                padding: 0;
+
+                li {
+                    span {
+                        color: #262626;
+                        font-family: @sans-serif-font;
+                    }
+                }
+            }
+
+            p {
+                line-height: 1.75em;
+            }
+
+            a.to_github {
+                #image-insert > .before-icon (36px, 36px, "assets/burndown_logos.png", -47px -168px, -6px, -6px);
+            }
+        }
+    }
+
+/* Flash Message
+================================================== */
+
+    #flash_notice {
+        background: none repeat scroll 0 0 red;
+        display: none;
+        position: absolute;
+        text-align: center;
+        top: 0;
+        width: 100%;
+    }
+
+/* Header
+================================================== */
+
+    header {
+        height: 112px;
+        margin: 50px auto;
+        position: relative;
+        width: 100%;
+
+        img {
+            #layouts > .abspos (-50px, auto, auto, 0);
+        }
+
+        .main {
+            height: 60px;
+            left: 0;
+            padding: 0 0 0 208px;
+            position: absolute;
+            top: 69px;
+            width: 50%;
+            z-index: -1;
+
+            h1 {
+                border-bottom: 5px solid @med-red;
+                box-shadow: 0 8px 0 0 @light-red;
+                display: block;
+                line-height: 40px;
+                margin: 8px 0 0 0;
+                padding: 0 0 0 0;
+                position: static;
+            }
+
+            h2 {
+                position: absolute;
+                bottom: -30px;
+                left: 210px;
+            }
+        }
+
+        #user_nav {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+
+            .octocat {
+                #image-insert > .icon ("assets/burndown_logos.png", 82px, 94px, 0 -78px);
+                float: left;
+                margin: 0 10px 0 0;
+            }
+
+            .sign_in,
+            .sign_out {
+                background: rgba(0, 153, 153, 0.05);
+                margin: 0 auto;
+                overflow: hidden;
+                padding: 0.3em 0.5em;
+                position: relative;
+                width: 18em;
+
+                img {
+                    top: 0;
+                    left: 0;
+                }
+
+                a {
+                    color: @aqua;
+                    display: inline-block;
+                    margin-top: 1em;
+                    width: 10em;
+                }
+            }
+
+            .sign_out {
+                height: 80px;
+
+                p {
+                    #layouts > .abspos (1em, auto, auto, 90px);
+                    font-size: 0.8em;
+                    margin: 0;
+
+                    a {
+                        margin: 0;
+                    }
+                }
+            }
+        }
+    }
+
+/* Footer
+================================================== */
+
+    footer {
+        color: rgba(0,0,0,0.4);
+        display: block;
+        font-size: 0.7em;
+        margin: 6em 0 6em 0;
+        text-align: center;
+
+        a {
+            color: @aqua;
+            text-align: right;
+            text-decoration: none;
+        }
+
+        .logo {
+            #image-insert > .before-icon (28px, 104px, "assets/burndown_logos.png", 0 0, -9px, 0);
+            display: inline-block;
+            vertical-align: middle;
+
+            &.burndown:before {
+                background-position: -56px 0;
+                left: -24px;
+                width: 28px;
+            }
+
+            &.appneta:before {
+                background-position: 0 -48px;
+                top: -4px;
+            }
+        }
+
+        .burndown_name {
+            border-bottom: 2px solid @med-red;
+            box-shadow: 0 1px 0 0 @light-red;
+            color: @dark-red;
+            font-family: @bit-font;
+            font-size: 1.24em;
+            height: 15px;
+            line-height: 11px;
+            padding: 0 0 0 0;
+            text-shadow: 1px 1px 0 #fff;
+            text-rendering: geometricPrecision;
+            font-weight: normal;
+            vertical-align: middle;
+            -webkit-font-smoothing: none;
+        }
+    }
+
+/* Search For
+================================================== */
+
+    .form-inline {
+        background: #f6f6f6;
+        padding: 1em 0;
+        text-align: center;
+        width: 100%;
+
+        input {
+            border: solid 1px #ccc;
+            font-size: 1.5em;
+            padding: 0.4em;
+            width: 20em;
+        }
+
+        button {
+            background: @aqua;
+            border: none;
+            color: #fff;
+            font-size: 1.5em;
+            font-weight: 300;
+            height: 1.89em;
+            margin: 0;
+            padding: 0 1em;
+            width: 10em;
+        }
+
+        p span {
+            color: @aqua;
+            #image-insert > .before-data-icon (@aqua, @aqua, 26px, 26px, -10px, auto, auto, -4px);
+        }
+    }
+
+/* Search Error
+================================================== */
+
+    .error {
+        background: none repeat scroll 0 0 #F6F6F6;
+        margin: 0 auto;
+        padding: 0 0 3em;
+        position: relative;
+        text-align: center;
+        top: 0;
+        width: 50%;
+
+        span {
+            #image-insert > .before-data-icon (@dark-red, @dark-red, 26px, 26px, 2px, auto, auto, -5px);
+            color: @dark-red;
+            font-size: 1.2em;
+        }
+    }
+
+/* Milestones list
+================================================== */
+
+    .milestones {
+        background: none repeat scroll 0 0 #F6F6F6;
+        margin: -4.5em auto;
+        padding: 3em 0 2em 0;
+        position: relative;
+        top: 0;
+        width: 50%;
+
+        ul {
+            list-style: none;
+            padding: 0;
+
+            li {
+                #image-insert > .before-icon (30px, 30px, "assets/burndown_logos.png", -56px 0, 4px, 4px);
+                line-height: 32px;
+                padding: 0 0 0 40px;
+
+                &:nth-child(odd) { background: fade(@aqua, 5%); }
+
+                a {
+                    display: block;
+
+                    span {
+                        #layouts > .abspos (0, 6px, auto, auto);
+                        color: #999;
+                        font-size: 0.6em;
+
+                        strong {
+                            font-weight: bold;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+/* Milestone
+================================================== */
+
+    .milestone {
+        margin: 0 auto;
+        padding: 3em 0 2em 0;
+        position: relative;
+        top: 0;
+        width: 1000px;
+
+        .back {
+            #layouts > .abspos (-52px, auto, auto, 50%);
+            background: #e9f1f1;
+            border: solid 5px #f6f6f6;
+            color: @aqua;
+            font-size: 1.2em;
+            margin: 0 0 0 -5em;
+            padding: 0.3em 0;
+            text-align: center;
+            text-decoration: none;
+            width: 10em;
+
+            &:hover {
+                color: darken(@aqua, 10%);
+            }
+        }
+
+        h3 {
+            background: #F6F6F6;
+            color: @dark-red;
+            display: block;
+            text-align: center;
+        }
+
+        .meta_issues {
+            background: #F6F6F6;
+            padding: 2em 0 1em 0;
+
+            ul {
+                list-style: none;
+                margin: 0;
+                text-align: center;
+
+                li {
+                    color: @dark-aqua;
+                    display: inline-block;
+                    margin: 0.5em 0.5em 0 0;
+
+                    a {
+                        text-decoration: none;
+                    }
+
+                    &.join {
+                        color: @aqua;
+                        font-family: @bit-font;
+                        font-size: 1.2em;
+                        margin: 0;
+                        text-shadow: 1px 1px 0 #fff;
+                        text-rendering: geometricPrecision;
+                        font-weight: normal;
+                        text-align: center;
+                        vertical-align: middle;
+                        -webkit-font-smoothing: none;
+                    }
+
+                    &.jump a {
+                        #image-insert > .before-data-icon (@dark-aqua, @aqua, 12px, 12px, auto, auto, -14px, 50%);
+                        padding: 0;
+                    }
+                }
+            }
+        }
+
+        .due_date {
+            color: @light-red;
+            font-family: @bit-font;
+            text-shadow: 1px 1px 0 #fff;
+            text-rendering: geometricPrecision;
+            font-weight: normal;
+            padding: 1em 0;
+            text-align: center;
+            -webkit-font-smoothing: none;
+
+            span {
+                #image-insert > .before-data-icon (@light-red, @light-red, 30px, 30px, -8px, auto, auto, -10px);
+            }
+        }
+
+        .created {
+            color: #999;
+            float: left;
+            font-size: 0.7em;
+            padding: 0.3em 0;
+            width: 50%;
+
+            img {
+                vertical-align: middle;
+                margin: 0 5px 0 0;
+            }
+        }
+
+        .chart_wrapper {
+            background: #fff;
+            border: solid 5px @med-red;
+            clear: both;
+            padding: 1em 0 1em 0;
+            position: relative;
+
+            #chart_container {
+                position: relative;
+                display: inline-block;
+
+                #chart {
+                        display: inline-block;
+                        margin-left: 40px;
+                }
+
+                #y_axis {
+                        position: absolute;
+                        top: 0;
+                        bottom: 0;
+                        width: 40px;
+                }
+            }
+
+            #legend {
+                background: fade(@dark-red, 50%);
+                border-radius: 0 0 0 0;
+                display: block;
+                position: absolute;
+                right: 0;
+                top: 0;
+
+                .line .swatch {
+                    border: 1px solid @dark-red;
+                    border-radius: 0 0 0 0;
+                }
+            }
+
+        }
+
+        #open-issues,
+        #closed-issues {
+            background: #F6F6F6;
+            margin: 6em 0 6em 0;
+            padding: 1em 0;
+
+            ul {
+                list-style: none;
+
+                li {
+                    margin: 0 0 0.6em 0;
+                    min-height: 40px;
+                    position: relative;
+
+                    &:nth-child(odd) a { background: fade(@aqua, 5%); }
+
+                    a {
+                        display: block;
+                        min-height: 40px;
+                        padding: 3px 0 3px 0;
+                        text-decoration: none;
+
+                        &:hover {
+                            text-decoration: underline;
+                        }
+
+                        span {
+                            float: left;
+                            font-family: @bit-font;
+                            height: 40px;
+                            margin: 0 1.0em 0 0;
+                            position: relative;
+                            text-shadow: 1px 1px 0 #fff;
+                            text-rendering: geometricPrecision;
+                            font-weight: normal;
+                            width: 120px;
+
+                            img,
+                            ins {
+                                #layouts > .abspos (0, auto, auto, 0);
+                                color: #ccc;
+                                font-size: 2.2em;
+                                font-weight: 300;
+                                height: 40px;
+                                line-height: 0.6em;
+                                text-align: center;
+                                text-decoration: none;
+                                width: 40px;
+
+                                &:nth-child(2) {
+                                    left: 40px;
+                                }
+
+                                &:nth-child(3) {
+                                    left: 80px;
+                                }
+
+                                &.annon {
+                                    background: fade(@aqua, 10%);
+                                    color: @aqua;
+                                    font-size: 1.6em;
+                                    line-height: 1.6em;
+                                    -webkit-font-smoothing: none;
+                                }
+                            }
+                        }
+
+                        small {
+                            color: #999;
+                            display: block;
+                            font-size: 60%;
+                            font-weight: 300;
+                        }
+                    }
+                }
+            }
+        }
+
+        #closed-issues ul li a {
+            color: #999;
+            text-decoration: line-through;
+
+            span ins.annon {
+                color: #999;
+            }
+
+            img {
+                filter: url("data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\'><filter id=\'grayscale\'><feColorMatrix type=\'matrix\' values=\'0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0.3333 0.3333 0.3333 0 0 0 0 0 1 0\'/></filter></svg>#grayscale"); /* Firefox 10+, Firefox on Android */
+                filter: gray; /* IE6-9 */
+                -webkit-filter: grayscale(100%); /* Chrome 19+, Safari 6+, Safari 6+ iOS */
+            }
+
+            &:hover {
+                text-decoration: none;
+            }
+        }
+    }
