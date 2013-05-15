@@ -11,6 +11,6 @@
  *= require_self
  *= require rickshaw
  *= require_tree .
+ *= require burnitdown
  */
 
-*= require burnitdown
