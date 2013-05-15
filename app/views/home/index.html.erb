@@ -106,7 +106,7 @@
             <h3>{{=milestone.get('title')}}</h3>
             <div class="due_date{{ if (!milestone.has('due_on')) { }} nodate{{ } }}">
                 {{ if (milestone.has('due_on')) { }}
-                <span data-beforeicon="&#xe009;">due: {{=milestone.get('due_on')}}</span>
+                <span data-beforeicon="&#xe009;">due: {{=milestone.getDueDateFormatted()}}</span>
                 {{ } else { }}
                 <span data-beforeicon="&#xe015;">no due date!</span>
                 {{ } }}

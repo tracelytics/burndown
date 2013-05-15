@@ -140,6 +140,11 @@ $(function() {
             }
 
             return rval;
+        },
+        getDueDateFormatted: function() {
+            var date = new Date(this.get('due_on'));
+            var dateArray = date.toString().split(' ');
+            return dateArray.slice(0, 4).join(' ');
         }
     });
     var Milestones = Backbone.Collection.extend({
