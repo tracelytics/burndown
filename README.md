@@ -23,8 +23,8 @@ Create a new application [here](https://github.com/settings/applications/new).
 your environment!
 
 - Name: Burndown is awesome
-- URL: http://127.0.0.1:3000
-- Callback URL: http://127.0.0.1:3000/auth/github/callback
+- URL: http://localhost:3000
+- Callback URL: http://localhost:3000/auth/github/callback
 
 Now add your Github application **client id** and **client secret** to
 environment variables
