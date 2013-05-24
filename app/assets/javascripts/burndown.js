@@ -1,6 +1,6 @@
 $(function() {
 
-    // Set page to autorefresh every 10 min if no activity
+    // Set page to autorefresh every 5 min if no activity
      var time = new Date().getTime();
      $(document.body).bind("mousemove keypress", function(e) {
          time = new Date().getTime();
