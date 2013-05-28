@@ -32,6 +32,8 @@ gem 'rickshaw_rails', :git => 'git://github.com/logical42/rickshaw_rails.git'
 
 gem 'omniauth-github', :git => 'git://github.com/intridea/omniauth-github.git'
 
+gem 'google-analytics-rails'
+
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
