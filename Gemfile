@@ -6,7 +6,8 @@ gem 'rails', '3.2.11'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 group :production, :staging do
-  gem "pg"
+  gem 'pg'
+  gem 'google-analytics-rails'
 end
 
 group :development, :test do
@@ -31,8 +32,6 @@ gem 'twitter-bootstrap-rails', :git => 'git://github.com/seyhunak/twitter-bootst
 gem 'rickshaw_rails', :git => 'git://github.com/logical42/rickshaw_rails.git'
 
 gem 'omniauth-github', :git => 'git://github.com/intridea/omniauth-github.git'
-
-gem 'google-analytics-rails'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
