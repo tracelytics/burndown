@@ -169,6 +169,10 @@ $(function() {
         parse: function(response) {
             console.log('parsing...');
             return response;
+        },
+        getByNumber: function(id) {
+            var number = parseInt(id, 10);
+            return this.findWhere({number: number});
         }
     });
     var milestones = new Milestones();
@@ -397,7 +401,7 @@ $(function() {
             // Render the loading template.
             self.render("#tmpl_loading", {});
 
-            self.milestone = milestones.at(id);
+            self.milestone = milestones.getByNumber(id);
             console.log('milestone: ', self.milestone);
 
             self.openIssues.milestoneId = self.milestone.get('number');

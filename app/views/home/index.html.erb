@@ -80,7 +80,7 @@
         <ul>
         {{ _.each(milestones, function (milestone, i) { }}
             <li>
-                <a href="#{{=session.getURL()}}/{{=i}}" title="{{=milestone.get('title')}}">
+                <a href="#{{=session.getURL()}}/{{=milestone.get('number')}}" title="{{=milestone.get('title')}}">
                     {{=milestone.get('title')}}
 
                     <span>
