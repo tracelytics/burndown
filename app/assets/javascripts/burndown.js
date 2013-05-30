@@ -85,7 +85,7 @@ $(function() {
             if (creator && title && url) {
                 var creator_user = new GithubUser(creator);
                 var assigned_user = assignee ? new GithubUser(assignee) : null;
-                rval = ['<a href="' + url + '" title="' + title + '">',
+                rval = ['<a target="_blank" href="' + url + '" title="' + title + '">',
                         '<span>',
                         creator_user.getIcon(),
                         '<ins>&rArr;</ins>',
