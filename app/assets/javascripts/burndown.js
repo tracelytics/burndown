@@ -124,20 +124,76 @@ $(function() {
             if (this.milestoneId) {
                 url += '&milestone='+this.milestoneId;
             }
+            if (this.since) {
+                var _since = this.since();
+                url += '&since='+_since;
+            }
+            if (this.direction) {
+                url += '&direction='+this.direction;
+            }
 
             return url;
         },
         parse: function(response) {
             return response;
         },
+        getDateSince: function(days) {
+            var d = new Date();
+            d.setDate(d.getDate()-days);
+            return d.toISOString();
+        },
+        fetchAll: function(callback) {
+            var self = this;
+
+            var pageNum = 1;
+            var success = function(issues, response, options) {
+                // TBD: there has got to be a better way to know you've reached
+                //      the last page. need to look into this!
+                if (issues.models.length === (pageNum * 30)) {
+                    pageNum++;
+                    self.fetch({
+                        data: {page: pageNum},
+                        remove: false,
+                        success: success
+                    });
+                } else {
+                    console.log('end! total pages:', pageNum);
+                    callback(issues);
+                }
+            }
+
+            self.fetch({
+                data: {page: pageNum},
+                remove: false,
+                success: success
+            });
+        },
+        // URL parameter proprties.
+        // http://developer.github.com/v3/issues/#list-issues-for-a-repository
         state: null,
-        milestoneId: null
+        milestoneId: null,
+        since: null,
+        direction: null
     });
     var MilestoneOpenIssues = IssuesBase.extend({
         state: 'open'
     });
     var MilestoneClosedIssues = IssuesBase.extend({
         state: 'closed'
+    });
+    var SummaryOpenIssues = IssuesBase.extend({
+        state: 'open',
+        direction: 'asc',
+        since: function() {
+            return this.getDateSince(30);
+        }
+    });
+    var SummaryClosedIssues = IssuesBase.extend({
+        state: 'closed',
+        direction: 'asc',
+        since: function() {
+            return this.getDateSince(30);
+        }
     });
 
     var Milestone = Backbone.Model.extend({
@@ -452,14 +508,48 @@ $(function() {
     var SummaryView = Backbone.View.extend({
         el: '.content',
         initialize: function() {
-            _.bindAll(this, 'render');
+            _.bindAll(this, 'render', 'loadRepoIssues');
             var self = this;
+
+            self.openIssues = new SummaryOpenIssues();
+            self.closedIssues = new SummaryClosedIssues();
+
+            // dependencies
+            self.openIssues.on('sync', self.renderChart);
+            self.closedIssues.on('sync', self.renderChart);
         },
         render: function() {
             var template = _.template($('#tmpl_summary').html(),
                                       {session: session});
             this.$el.html( template );
             return this;
+        },
+        loadRepoIssues: function() {
+            var self = this;
+
+            self.render();
+
+            self.openIssues.fetchAll(function(issues) {
+                var filtered = _.filter(issues.models, function(issue) {
+                    var past = new Date(self.openIssues.since());
+                    var d = new Date(issue.get('created_at'));
+                    return (d.getTime() > past.getTime());
+                });
+                console.log('open: ', filtered);
+                console.log('open: ', filtered.length);
+            });
+
+            self.closedIssues.fetchAll(function(issues) {
+                var filtered = _.filter(issues.models, function(issue) {
+                    var past = new Date(self.closedIssues.since());
+                    var d = new Date(issue.get('closed_at'));
+                    return (d.getTime() > past.getTime());
+                });
+                console.log('closed: ', filtered);
+                console.log('closed: ', filtered.length);
+            });
+        },
+        renderChart: function() {
         }
     });
 
@@ -504,7 +594,7 @@ $(function() {
 
     router.on('route:summary', function(owner, repo) {
         console.log('Load the repository summary page!');
-        summaryView.render();
+        summaryView.loadRepoIssues();
     });
 
     // Once the session token finishes loading, start the application!
