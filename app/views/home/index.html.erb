@@ -94,6 +94,12 @@
             </li>
         {{ }); }}
         </ul>
+        <h3>Experimental</h3>
+        <ul>
+            <li>
+                <a href="#{{=session.getURL()}}/summary">Summary</a>
+            </li>
+        </ul>
     </div>
     {{ } }}
 </script>
@@ -163,4 +169,11 @@
         <h4>Error!</h4>
         {{=error.message}}
     </div>
+</script>
+
+<script type="text/template" id="tmpl_summary">
+    <div>
+        <a href="#{{=session.getURL()}}" class="back" title="back to repository">Back</a>
+        <p>Summary!</p>
+   </div>
 </script>
