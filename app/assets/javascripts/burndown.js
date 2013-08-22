@@ -508,15 +508,15 @@ $(function() {
     var SummaryView = Backbone.View.extend({
         el: '.content',
         initialize: function() {
-            _.bindAll(this, 'render', 'loadRepoIssues');
+            _.bindAll(this, 'render', 'loadRepoIssues', 'renderChart');
             var self = this;
 
             self.openIssues = new SummaryOpenIssues();
             self.closedIssues = new SummaryClosedIssues();
 
             // dependencies
-            self.openIssues.on('sync', self.renderChart);
-            self.closedIssues.on('sync', self.renderChart);
+            //self.openIssues.on('sync', self.renderChart);
+            //self.closedIssues.on('sync', self.renderChart);
         },
         render: function() {
             var template = _.template($('#tmpl_summary').html(),
@@ -529,27 +529,37 @@ $(function() {
 
             self.render();
 
+            // Fetch all the issues.
             self.openIssues.fetchAll(function(issues) {
-                var filtered = _.filter(issues.models, function(issue) {
+                self.renderChart();
+            });
+            self.closedIssues.fetchAll(function(issues) {
+                self.renderChart();
+            });
+        },
+        renderChart: function() {
+            var self = this;
+
+            console.log('render!');
+
+            if (self.openIssues.length > 0 && self.closedIssues.length > 0) {
+                console.log('data ready!');
+
+                var createdIssues = _.filter(self.openIssues.models, function(issue) {
                     var past = new Date(self.openIssues.since());
                     var d = new Date(issue.get('created_at'));
                     return (d.getTime() > past.getTime());
                 });
-                console.log('open: ', filtered);
-                console.log('open: ', filtered.length);
-            });
 
-            self.closedIssues.fetchAll(function(issues) {
-                var filtered = _.filter(issues.models, function(issue) {
+                var resolvedIssues = _.filter(self.closedIssues.models, function(issue) {
                     var past = new Date(self.closedIssues.since());
                     var d = new Date(issue.get('closed_at'));
                     return (d.getTime() > past.getTime());
                 });
-                console.log('closed: ', filtered);
-                console.log('closed: ', filtered.length);
-            });
-        },
-        renderChart: function() {
+
+                $('#created').text(createdIssues.length);
+                $('#resolved').text(resolvedIssues.length);
+            }
         }
     });
 
