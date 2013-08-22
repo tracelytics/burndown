@@ -441,11 +441,26 @@ $(function() {
         }
     });
 
+    var SummaryView = Backbone.View.extend({
+        el: '.content',
+        initialize: function() {
+            _.bindAll(this, 'render');
+            var self = this;
+        },
+        render: function() {
+            var template = _.template($('#tmpl_summary').html(),
+                                      {session: session});
+            this.$el.html( template );
+            return this;
+        }
+    });
+
     // Router
     var Router = Backbone.Router.extend({
         routes: {
             '': 'home',
             ':owner/:repo': 'repository',
+            ':owner/:repo/summary': 'summary',
             ':owner/:repo/:id': 'milestone'
         }
     });
@@ -453,6 +468,7 @@ $(function() {
     // Instantiations.
     var repoView = new RepoView();
     var milestoneView = new MilestoneView();
+    var summaryView = new SummaryView();
     var router = new Router();
 
     router.on('route:home', function() {
@@ -476,6 +492,11 @@ $(function() {
     router.on('route:repository', function(owner, repo) {
         console.log('Load the repository page!');
         repoView.loadRepoMilestones(owner, repo);
+    });
+
+    router.on('route:summary', function(owner, repo) {
+        console.log('Load the repository summary page!');
+        summaryView.render();
     });
 
     // Once the session token finishes loading, start the application!
