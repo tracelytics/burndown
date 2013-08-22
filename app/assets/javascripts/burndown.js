@@ -133,10 +133,10 @@ $(function() {
         state: null,
         milestoneId: null
     });
-    var OpenIssues = IssuesBase.extend({
+    var MilestoneOpenIssues = IssuesBase.extend({
         state: 'open'
     });
-    var ClosedIssues = IssuesBase.extend({
+    var MilestoneClosedIssues = IssuesBase.extend({
         state: 'closed'
     });
 
@@ -288,8 +288,8 @@ $(function() {
 
             self.message = new Message();
             self.milestone = new Milestone();
-            self.openIssues = new OpenIssues();
-            self.closedIssues = new ClosedIssues();
+            self.openIssues = new MilestoneOpenIssues();
+            self.closedIssues = new MilestoneClosedIssues();
 
             // dependencies
             self.openIssues.on('sync', self.renderChart);
