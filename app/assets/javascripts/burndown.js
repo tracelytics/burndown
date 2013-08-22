@@ -111,19 +111,27 @@ $(function() {
             var owner = session.get('owner');
             var repo = session.get('repo');
 
+            // Build initial url string.
             var url = ['https://api.github.com',
                        '/repos/'+owner+'/'+repo+'/issues',
                        '?access_token='+token,
-                       '&state='+this.state,
-                       '&milestone='+this.milestoneId,
                        ''].join('');
+
+            // If any parameter properties exist, append then to the URL string.
+            if (this.state) {
+                url += '&state='+this.state;
+            }
+            if (this.milestoneId) {
+                url += '&milestone='+this.milestoneId;
+            }
+
             return url;
         },
         parse: function(response) {
             return response;
         },
-        state: 'open',
-        milestoneId: 0
+        state: null,
+        milestoneId: null
     });
     var OpenIssues = IssuesBase.extend({
         state: 'open'
