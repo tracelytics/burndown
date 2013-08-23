@@ -610,10 +610,75 @@ $(function() {
             console.log('render!');
 
             if (self.createdIssues.length > 0 && self.resolvedIssues.length > 0) {
-                console.log('data ready!');
+                // Clear the chart of any previous elements.
+                $('#chart').empty();
+                $('#y_axis').empty();
+                $('#legend').empty();
 
+                // Add some texts. This should probably be moved?
                 $('#created').text(self.createdIssues.length);
                 $('#resolved').text(self.resolvedIssues.length);
+
+                var count = 1;
+                var created = _.map(self.createdIssues.models, function(issue) {
+                    return {
+                        x: issue.getCreatedTime(),
+                        y: count++
+                    };
+                });
+
+                count = 1;
+                var resolved = _.map(self.resolvedIssues.models, function(issue) {
+                    return {
+                        x: issue.getClosedTime(),
+                        y: count++
+                    };
+                });
+
+                // Build graph!
+                var graph = new Rickshaw.Graph({
+                    element: document.querySelector("#chart"),
+                    width: 900,
+                    height: 500,
+                    renderer: 'line',
+                    stroke: true,
+                    interpolation: 'basis',
+                    series: [{
+                        data:  created,
+                        color: 'red',
+                        name:  'Created'
+                    }, {
+                        data:  resolved,
+                        color: 'green',
+                        name:  'Resolved'
+                    }]
+                });
+                graph.render();
+
+                var legend = new Rickshaw.Graph.Legend( {
+                    graph: graph,
+                    element: document.getElementById('legend')
+
+                });
+
+                var highlighter = new Rickshaw.Graph.Behavior.Series.Highlight( {
+                    graph: graph,
+                    legend: legend
+                });
+
+                var xAxis = new Rickshaw.Graph.Axis.Time({
+                    graph: graph
+                });
+                xAxis.render();
+
+                var yAxis = new Rickshaw.Graph.Axis.Y({
+                    graph:          graph,
+                    tickFormat:     Rickshaw.Fixtures.Number.formatKMBT,
+                    ticksTreatment: 'glow',
+                    orientation:    'left',
+                    element:        document.getElementById('y_axis')
+                });
+                yAxis.render();
             }
         }
     });
