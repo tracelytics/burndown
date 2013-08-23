@@ -5,7 +5,7 @@
 <% if current_user %>
     <div class="form-inline">
         <input type="text" class="input-large" placeholder="github 'user/repo'" autofocus>
-        <button id="fetch" type="submit" class="btn">View Milestones</button>
+        <button id="fetch" type="submit" class="btn">View Repository</button>
         <p>
             <span data-beforeicon="&#xe054;">Type a Github username/repository that you have access to.</span>
         </p>
@@ -68,15 +68,16 @@
         <a href="https://github.com/appneta/burndown" title="view on Github" class="to_github">Check out the project on GitHub</a>
     </section>
 <% end %>
-    {{ if (message.has('title')) { }}
+
+{{ if (message.has('title')) { }}
     <div class="error">
         <span data-beforeicon="&#xe010;">{{=message.get('text')}}</span>
     </div>
-    {{ } }}
-
-    {{ if (milestones.length > 0) { }}
+{{ } else { }}
+    {{ if (session.has('owner') && session.has('repo')) { }}
     <div class="milestones">
         <h3>Milestones in {{=session.getURL()}}</h3>
+        {{ if (milestones.length > 0) { }}
         <ul>
         {{ _.each(milestones, function (milestone, i) { }}
             <li>
@@ -94,6 +95,11 @@
             </li>
         {{ }); }}
         </ul>
+        {{ } else { }}
+        <div class="error">
+            <span data-beforeicon="&#xe010;">This repository has no milestones!</span>
+        </div>
+        {{ } }}
         <h3>Experimental</h3>
         <ul>
             <li>
@@ -102,6 +108,7 @@
         </ul>
     </div>
     {{ } }}
+{{ } }}
 </script>
 
 <script type="text/template" id="tmpl_milestone">
@@ -175,7 +182,7 @@
     <div class="summary">
         <a href="#{{=session.getURL()}}" class="back" title="back to repository">Back</a>
 
-        <h3>Issues: 30 Day Summary</h3>
+        <h3>{{=session.getURL()}}: 30 Day Summary</h3>
 
     {{ if (loaded) { }}
         <div class="chart_wrapper">

@@ -346,9 +346,6 @@ $(function() {
             self.message = new Message();
 
             milestones.on('sync', function() {
-                if (milestones.length === 0) {
-                    self.message.setProblem('This repository has no milestones!');
-                }
                 self.render();
             });
             milestones.on('error', self.errorHandler, this);
@@ -752,6 +749,10 @@ $(function() {
 
     router.on('route:home', function() {
         console.log('Load the home page!');
+        // unset any previously existing session 'owner' or 'repo' attributes.
+        // render repoView!
+        session.unset('owner');
+        session.unset('repo');
         repoView.render();
     });
 
