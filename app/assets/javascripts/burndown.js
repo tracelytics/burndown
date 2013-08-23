@@ -574,19 +574,16 @@ $(function() {
     var SummaryView = Backbone.View.extend({
         el: '.content',
         initialize: function() {
-            _.bindAll(this, 'render', 'loadRepoIssues', 'renderChart');
+            _.bindAll(this, 'render', 'resetView', 'loadRepoIssues', 'renderChart');
             var self = this;
 
+            self.loaded = false;
             // All issue collections
             self.openIssues = new SummaryOpenIssues();
             self.closedIssues = new SummaryClosedIssues();
             // Filtered issue collections
             self.createdIssues = new SummaryOpenIssues();
             self.resolvedIssues = new SummaryClosedIssues();
-
-            // dependencies
-            self.createdIssues.on('reset', self.renderChart);
-            self.resolvedIssues.on('reset', self.renderChart);
         },
         render: function() {
             var self = this;
@@ -594,9 +591,13 @@ $(function() {
             // Render main template.
             var template = _.template($('#tmpl_summary').html(),
                                       {session: session,
+                                       loaded: self.loaded,
                                        created: self.createdIssues.models,
                                        resolved: self.resolvedIssues.models});
             this.$el.html( template );
+
+            // Render the chart.
+            self.renderChart();
 
             // Populate issue lists.
             var template = _.template($('#tmpl_issues').html(),
@@ -606,13 +607,19 @@ $(function() {
                                       {issues: self.resolvedIssues.models});
             $('.closed', self.el).html(template);
         },
-        loadRepoIssues: function() {
+        resetView: function() {
             var self = this;
 
+            self.loaded = false;
             self.openIssues.reset();
             self.closedIssues.reset();
             self.createdIssues.reset();
             self.resolvedIssues.reset();
+        },
+        loadRepoIssues: function() {
+            var self = this;
+
+            self.resetView();
 
             self.render();
 
@@ -633,15 +640,17 @@ $(function() {
                     return (d.getTime() > past.getTime());
                 });
 
+                self.loaded = true;
                 self.createdIssues.reset(createdIssues);
                 self.resolvedIssues.reset(resolvedIssues);
+
+                self.render();
             });
         },
         renderChart: function() {
             var self = this;
 
-            console.log('render!');
-            self.render();
+            console.log('render chart!');
 
             if (self.createdIssues.length > 0 && self.resolvedIssues.length > 0) {
 

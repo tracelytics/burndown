@@ -177,13 +177,16 @@
 
         <h3>Issues: 30 Day Summary</h3>
 
-    {{ if (created.length > 0 && resolved.length > 0) { }}
+    {{ if (loaded) { }}
         <div class="chart_wrapper">
             <div id="chart_container">
                 <div id="y_axis"></div>
                 <div id="chart"></div>
             </div>
             <div id="legend"></div>
+        {{ if (created.length === 0 || resolved.length === 0) { }}
+            <div>Not enough issues to draw a graph! =(</div>
+        {{ } }}
         </div>
 
         <div class="chart_overview">
