@@ -648,7 +648,7 @@ $(function() {
                     interpolation: 'basis',
                     series: [{
                         data:  created,
-                        color: 'red',
+                        color: '#cc0000',
                         name:  'Created'
                     }, {
                         data:  resolved,
