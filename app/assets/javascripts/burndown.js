@@ -186,6 +186,12 @@ $(function() {
         getLastPage: function(header) {
             var self = this;
 
+            // If header doesn't exist, there aren't multiple pages of results,
+            // so just return 1.
+            if (header == null) {
+                return 1;
+            }
+
             var parsed = self.parseLinkHeader(header);
             var last = parsed.last || '';
             return self.parseLastPage(last);
@@ -598,6 +604,11 @@ $(function() {
         },
         loadRepoIssues: function() {
             var self = this;
+
+            self.openIssues.reset();
+            self.closedIssues.reset();
+            self.createdIssues.reset();
+            self.resolvedIssues.reset();
 
             self.render();
 
