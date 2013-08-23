@@ -82,6 +82,14 @@ $(function() {
             var created_at = new Date(this.get('created_at'));
             var issue_created = created_at.getMonth() + '/' + created_at.getDate() + '/' + created_at.getFullYear();
 
+            var closed_string = '';
+            var closed_at = this.get('closed_at');
+            if (closed_at) {
+                var closed_date = new Date(closed_at);
+                var issue_closed = closed_date.getMonth() + '/' + closed_date.getDate() + '/' + closed_date.getFullYear();
+                var closed_string = ' and closed on ' + issue_closed;
+            }
+
             if (creator && title && url) {
                 var creator_user = new GithubUser(creator);
                 var assigned_user = assignee ? new GithubUser(assignee) : null;
@@ -94,6 +102,7 @@ $(function() {
                         title,
                         '<small>' +
                         'created by ' + creator_user.get('name') + ' on ' + issue_created,
+                        closed_string,
                         '</small>',
                         '</a>'].join('');
             }
