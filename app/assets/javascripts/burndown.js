@@ -196,8 +196,10 @@ $(function() {
             var last = parsed.last || '';
             return self.parseLastPage(last);
         },
-        fetchAll: function(callback) {
+        fetchAll: function() {
             var self = this;
+
+            var deferred = $.Deferred();
 
             var currentPage = 1;
             var lastPage = 1;
@@ -217,7 +219,7 @@ $(function() {
                     });
                 } else {
                     console.log('end! total pages:', currentPage);
-                    callback(issues);
+                    deferred.resolve();
                 }
             }
 
@@ -226,6 +228,8 @@ $(function() {
                 remove: false,
                 success: success
             });
+
+            return deferred.promise();
         },
         // URL parameter proprties.
         // http://developer.github.com/v3/issues/#list-issues-for-a-repository
