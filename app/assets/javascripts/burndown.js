@@ -564,12 +564,16 @@ $(function() {
             _.bindAll(this, 'render', 'loadRepoIssues', 'renderChart');
             var self = this;
 
+            // All issue collections
             self.openIssues = new SummaryOpenIssues();
             self.closedIssues = new SummaryClosedIssues();
+            // Filtered issue collections
+            self.createdIssues = new SummaryOpenIssues();
+            self.resolvedIssues = new SummaryClosedIssues();
 
             // dependencies
-            //self.openIssues.on('sync', self.renderChart);
-            //self.closedIssues.on('sync', self.renderChart);
+            self.createdIssues.on('reset', self.renderChart);
+            self.resolvedIssues.on('reset', self.renderChart);
         },
         render: function() {
             var template = _.template($('#tmpl_summary').html(),
@@ -582,12 +586,22 @@ $(function() {
 
             self.render();
 
-            // Fetch all the issues.
+            // Fetch all the issues and reset filtered collections.
             self.openIssues.fetchAll(function(issues) {
-                self.renderChart();
+                var createdIssues = _.filter(self.openIssues.models, function(issue) {
+                    var past = new Date(self.openIssues.since());
+                    var d = new Date(issue.get('created_at'));
+                    return (d.getTime() > past.getTime());
+                });
+                self.createdIssues.reset(createdIssues);
             });
             self.closedIssues.fetchAll(function(issues) {
-                self.renderChart();
+                var resolvedIssues = _.filter(self.closedIssues.models, function(issue) {
+                    var past = new Date(self.closedIssues.since());
+                    var d = new Date(issue.get('closed_at'));
+                    return (d.getTime() > past.getTime());
+                });
+                self.resolvedIssues.reset(resolvedIssues);
             });
         },
         renderChart: function() {
@@ -595,23 +609,11 @@ $(function() {
 
             console.log('render!');
 
-            if (self.openIssues.length > 0 && self.closedIssues.length > 0) {
+            if (self.createdIssues.length > 0 && self.resolvedIssues.length > 0) {
                 console.log('data ready!');
 
-                var createdIssues = _.filter(self.openIssues.models, function(issue) {
-                    var past = new Date(self.openIssues.since());
-                    var d = new Date(issue.get('created_at'));
-                    return (d.getTime() > past.getTime());
-                });
-
-                var resolvedIssues = _.filter(self.closedIssues.models, function(issue) {
-                    var past = new Date(self.closedIssues.since());
-                    var d = new Date(issue.get('closed_at'));
-                    return (d.getTime() > past.getTime());
-                });
-
-                $('#created').text(createdIssues.length);
-                $('#resolved').text(resolvedIssues.length);
+                $('#created').text(self.createdIssues.length);
+                $('#resolved').text(self.resolvedIssues.length);
             }
         }
     });
