@@ -174,32 +174,35 @@
 <script type="text/template" id="tmpl_summary">
     <div class="summary">
         <a href="#{{=session.getURL()}}" class="back" title="back to repository">Back</a>
-        <div>
-            <h3>Issues: 30 Day Summary</h3>
 
-            <div class="chart_wrapper">
-                <div id="chart_container">
-                    <div id="y_axis"></div>
-                    <div id="chart"></div>
-                </div>
-                <div id="legend"></div>
-            </div>
+        <h3>Issues: 30 Day Summary</h3>
 
-            <div>
-                Issues:
-                <span style="color: red; font-weight: bold;" id="created"></span> created
-                <span style="color: green; font-weight: bold;" id="resolved"></span> resolved
+    {{ if (created.length > 0 && resolved.length > 0) { }}
+        <div class="chart_wrapper">
+            <div id="chart_container">
+                <div id="y_axis"></div>
+                <div id="chart"></div>
             </div>
-
-            <div id="open-issues">
-                <h3>Created Issues <small>[XX]</small></h3>
-                <div class="open"></div>
-            </div>
-
-            <div id="closed-issues">
-                <h3>Resolved Issues <small>[XX]</small></h3>
-                <div class="closed"></div>
-            </div>
+            <div id="legend"></div>
         </div>
+
+        <div class="chart_overview">
+            Issues:
+            <span class="created-count">{{=created.length}}</span> created
+            <span class="resolved-count">{{=resolved.length}}</span> closed
+        </div>
+
+        <div id="open-issues">
+            <h3>Created Issues <small>[{{=created.length}}]</small></h3>
+            <div class="open"></div>
+        </div>
+
+        <div id="closed-issues">
+            <h3>Resolved Issues <small>[{{=resolved.length}}]</small></h3>
+            <div class="closed"></div>
+        </div>
+    {{ } else { }}
+        <h4>Fetching issues from Github...</h4>
+    {{ } }}
    </div>
 </script>

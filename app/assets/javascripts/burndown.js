@@ -579,10 +579,22 @@ $(function() {
             self.resolvedIssues.on('reset', self.renderChart);
         },
         render: function() {
+            var self = this;
+
+            // Render main template.
             var template = _.template($('#tmpl_summary').html(),
-                                      {session: session});
+                                      {session: session,
+                                       created: self.createdIssues.models,
+                                       resolved: self.resolvedIssues.models});
             this.$el.html( template );
-            return this;
+
+            // Populate issue lists.
+            var template = _.template($('#tmpl_issues').html(),
+                                      {issues: self.createdIssues.models});
+            $('.open', self.el).html(template);
+            var template = _.template($('#tmpl_issues').html(),
+                                      {issues: self.resolvedIssues.models});
+            $('.closed', self.el).html(template);
         },
         loadRepoIssues: function() {
             var self = this;
@@ -611,16 +623,14 @@ $(function() {
             var self = this;
 
             console.log('render!');
+            self.render();
 
             if (self.createdIssues.length > 0 && self.resolvedIssues.length > 0) {
+
                 // Clear the chart of any previous elements.
                 $('#chart').empty();
                 $('#y_axis').empty();
                 $('#legend').empty();
-
-                // Add some texts. This should probably be moved?
-                $('#created').text(self.createdIssues.length);
-                $('#resolved').text(self.resolvedIssues.length);
 
                 var count = 1;
                 var created = _.map(self.createdIssues.models, function(issue) {
@@ -682,19 +692,6 @@ $(function() {
                     element:        document.getElementById('y_axis')
                 });
                 yAxis.render();
-
-                // Populate issue lists.
-                var data = {
-                    issues: self.createdIssues.models
-                };
-                var template = _.template($('#tmpl_issues').html(), data);
-                $('.open', self.el).html(template);
-
-                var data = {
-                    issues: self.resolvedIssues.models
-                };
-                var template = _.template($('#tmpl_issues').html(), data);
-                $('.closed', self.el).html(template);
             }
         }
     });
