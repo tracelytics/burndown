@@ -347,15 +347,18 @@ $(function() {
             // If 'enter' key pressed, process the input field.
             if (e.keyCode == 13) self.getInputText();
         },
+        loadRepo: function(owner, repo) {
+            // Update session model.
+            session.set('owner', owner);
+            session.set('repo', repo);
+        },
         loadRepoMilestones: function(owner, repo) {
             var self = this;
 
             self.message.clear();
             milestones.reset();
 
-            // Update session model.
-            session.set('owner', owner);
-            session.set('repo', repo);
+            self.loadRepo(owner, repo);
 
             // Fetch the milestones.
             milestones.fetch();
@@ -737,6 +740,10 @@ $(function() {
 
     router.on('route:summary', function(owner, repo) {
         console.log('Load the repository summary page!');
+        // load token
+        // load owner/repo
+        // not waiting on any xhr, so safe to load summaryView!
+        repoView.loadRepo(owner, repo);
         summaryView.loadRepoIssues();
     });
 
