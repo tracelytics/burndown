@@ -616,21 +616,24 @@ $(function() {
 
             self.render();
 
-            // Fetch all the issues and reset filtered collections.
-            self.openIssues.fetchAll(function(issues) {
+            // When all issues (both closed and open) are fetched, filter them
+            // and reset the filtered collections.
+            $.when(self.openIssues.fetchAll(), self.closedIssues.fetchAll())
+             .done(function(openResp, closedResp) {
+                console.log('done!');
+
                 var createdIssues = _.filter(self.openIssues.models, function(issue) {
                     var past = new Date(self.openIssues.since());
                     var d = new Date(issue.get('created_at'));
                     return (d.getTime() > past.getTime());
                 });
-                self.createdIssues.reset(createdIssues);
-            });
-            self.closedIssues.fetchAll(function(issues) {
                 var resolvedIssues = _.filter(self.closedIssues.models, function(issue) {
                     var past = new Date(self.closedIssues.since());
                     var d = new Date(issue.get('closed_at'));
                     return (d.getTime() > past.getTime());
                 });
+
+                self.createdIssues.reset(createdIssues);
                 self.resolvedIssues.reset(resolvedIssues);
             });
         },
