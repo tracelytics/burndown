@@ -172,10 +172,19 @@
 </script>
 
 <script type="text/template" id="tmpl_summary">
-    <div>
+    <div class="summary">
         <a href="#{{=session.getURL()}}" class="back" title="back to repository">Back</a>
         <div>
             <h3>Issues: 30 Day Summary</h3>
+
+            <div class="chart_wrapper">
+                <div id="chart_container">
+                    <div id="y_axis"></div>
+                    <div id="chart"></div>
+                </div>
+                <div id="legend"></div>
+            </div>
+
             <div>
                 Issues:
                 <span style="color: red; font-weight: bold;" id="created"></span> created
