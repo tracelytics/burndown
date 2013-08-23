@@ -142,28 +142,81 @@ $(function() {
             d.setDate(d.getDate()-days);
             return d.toISOString();
         },
+        /*
+         * parse_link_header()
+         *
+         * Parse the Github Link HTTP header used for pageination
+         * http://developer.github.com/v3/#pagination
+         */
+        parseLinkHeader: function (header) {
+          if (header.length == 0) {
+              throw new Error("input must not be of zero length");
+          }
+
+          // Split parts by comma
+          var parts = header.split(',');
+          var links = {};
+          // Parse each part into a named link
+          _.each(parts, function(p) {
+              var section = p.split(';');
+              if (section.length != 2) {
+                  throw new Error("section could not be split on ';'");
+              }
+              var url = section[0].replace(/<(.*)>/, '$1').trim();
+              var name = section[1].replace(/rel="(.*)"/, '$1').trim();
+              links[name] = url;
+          });
+
+          return links;
+        },
+        parseLastPage: function(last) {
+          if (last.length == 0) {
+              throw new Error("input must not be of zero length");
+          }
+
+          var patt = /&page=(\d+)/g;
+          var result = patt.exec(last);
+
+          if (result.length != 2) {
+              throw new Error("regex pattern match failed");
+          }
+
+          return result[1];
+        },
+        getLastPage: function(header) {
+            var self = this;
+
+            var parsed = self.parseLinkHeader(header);
+            var last = parsed.last || '';
+            return self.parseLastPage(last);
+        },
         fetchAll: function(callback) {
             var self = this;
 
-            var pageNum = 1;
+            var currentPage = 1;
+            var lastPage = 1;
             var success = function(issues, response, options) {
-                // TBD: there has got to be a better way to know you've reached
-                //      the last page. need to look into this!
-                if (issues.models.length === (pageNum * 30)) {
-                    pageNum++;
+                // Only parse the last page on the first pass.
+                if (currentPage === 1) {
+                    var header = options.xhr.getResponseHeader('Link');
+                    lastPage = self.getLastPage(header);
+                }
+                // Only continue fetching if there are pages remaining.
+                if (currentPage < lastPage) {
+                    currentPage++;
                     self.fetch({
-                        data: {page: pageNum},
+                        data: {page: currentPage},
                         remove: false,
                         success: success
                     });
                 } else {
-                    console.log('end! total pages:', pageNum);
+                    console.log('end! total pages:', currentPage);
                     callback(issues);
                 }
             }
 
             self.fetch({
-                data: {page: pageNum},
+                data: {page: currentPage},
                 remove: false,
                 success: success
             });
