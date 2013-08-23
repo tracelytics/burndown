@@ -679,6 +679,19 @@ $(function() {
                     element:        document.getElementById('y_axis')
                 });
                 yAxis.render();
+
+                // Populate issue lists.
+                var data = {
+                    issues: self.createdIssues.models
+                };
+                var template = _.template($('#tmpl_issues').html(), data);
+                $('.open', self.el).html(template);
+
+                var data = {
+                    issues: self.resolvedIssues.models
+                };
+                var template = _.template($('#tmpl_issues').html(), data);
+                $('.closed', self.el).html(template);
             }
         }
     });

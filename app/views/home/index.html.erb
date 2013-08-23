@@ -156,7 +156,7 @@
     <ul>
     {{ _.each(issues, function (issue, i) { }}
         <li>{{=issue.createLink()}}</li>
-   {{ }); }}
+    {{ }); }}
     </ul>
 </script>
 
@@ -189,6 +189,16 @@
                 Issues:
                 <span style="color: red; font-weight: bold;" id="created"></span> created
                 <span style="color: green; font-weight: bold;" id="resolved"></span> resolved
+            </div>
+
+            <div id="open-issues">
+                <h3>Created Issues <small>[XX]</small></h3>
+                <div class="open"></div>
+            </div>
+
+            <div id="closed-issues">
+                <h3>Resolved Issues <small>[XX]</small></h3>
+                <div class="closed"></div>
             </div>
         </div>
    </div>
