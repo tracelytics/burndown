@@ -151,6 +151,16 @@ $(function() {
             var date = new Date(this.get('due_on'));
             var dateArray = date.toString().split(' ');
             return dateArray.slice(0, 4).join(' ');
+        },
+        getEditLink: function() {
+            // https://github.com/{owner}/{repo}/issues/milestones/{id}/edit
+            var owner = session.get('owner');
+            var repo = session.get('repo');
+            var url = ['https://github.com',
+                       '/'+owner+'/'+repo,
+                       '/issues/milestones/',
+                       this.get('number')+'/edit'].join('');
+            return url;
         }
     });
     var Milestones = Backbone.Collection.extend({
