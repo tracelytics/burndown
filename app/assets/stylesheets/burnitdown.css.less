@@ -169,18 +169,20 @@
                 #image-insert > .before-icon (36px, 36px, "assets/burndown_logos.png", -47px -168px, -6px, -6px);
             }
         }
+
+        .loading {
+            background: #F6F6F6;
+            display: block;
+            margin: 0 auto;
+            padding: 30px 90px 40px 0;
+        }
     }
 
 /* Flash Message
 ================================================== */
 
     #flash_notice {
-        background: none repeat scroll 0 0 red;
         display: none;
-        position: absolute;
-        text-align: center;
-        top: 0;
-        width: 100%;
     }
 
 /* Header
@@ -199,6 +201,7 @@
         .main {
             height: 60px;
             left: 0;
+            min-width: 31.25em;
             padding: 0 0 0 208px;
             position: absolute;
             top: 69px;
@@ -219,6 +222,7 @@
                 position: absolute;
                 bottom: -30px;
                 left: 210px;
+                white-space: nowrap;
             }
         }
 
@@ -430,7 +434,7 @@
             border: solid 5px #f6f6f6;
             color: @aqua;
             font-size: 1.2em;
-            margin: 0 0 0 -5em;
+            margin: 1em 0 0 -5em;
             padding: 0.3em 0;
             text-align: center;
             text-decoration: none;
