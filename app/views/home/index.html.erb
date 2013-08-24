@@ -126,11 +126,11 @@
             </div>
             <ul>
                 <li class="jump">
-                    <a href="#open-issues" title="view open issues" data-beforeicon="&#xe045;">Open [{{=milestone.get('open_issues')}}]</a>
+                    <a href="#open-issues" title="view open issues">Open [{{=milestone.get('open_issues')}}]</a>
                 </li>
                 <li class="join">+</li>
                 <li class="jump">
-                    <a href="#closed-issues" title="view closed issues" data-beforeicon="&#xe045;">Closed [{{=milestone.get('closed_issues')}}]</a>
+                    <a href="#closed-issues" title="view closed issues">Closed [{{=milestone.get('closed_issues')}}]</a>
                 </li>
                 <li class="join">=</li>
                 <li>Total [{{=milestone.getNumIssues()}}]</li>
@@ -181,9 +181,38 @@
 <script type="text/template" id="tmpl_summary">
     <div class="summary">
         <a href="#{{=session.getURL()}}" class="back" title="back to repository">Back</a>
-
-        <h3>{{=session.getURL()}}: 30 Day Summary</h3>
-
+        <div class="meta_issues">
+            <h3>{{=session.getURL()}}<br>30 Day Summary</h3>
+            {{ if (loaded && (created.length > 0 || resolved.length > 0)) { }}
+            <ul>
+                <li class="jump">
+                    <a href="#closed-issues" title="view open issues">Closed [{{=resolved.length}}]</a>
+                </li>
+                <li class="join">
+                    {{ if (resolved.length > created.length) { }}
+                    >
+                    {{ } else if (resolved.length === created.length) { }}
+                    =
+                    {{ } else { }}
+                    <
+                    {{ } }}
+                </li>
+                <li class="jump">
+                    <a href="#open-issues" title="view closed issues">Created [{{=created.length}}]</a>
+                </li>
+                <li class="join">=</li>
+                <li>
+                    {{ if (resolved.length > created.length) { }}
+                    <span class="eval burning">&nbsp;on fire!</span>
+                    {{ } else if (resolved.length === created.length) { }}
+                    <span class="eval">&nbsp;breakin’ even</span>
+                    {{ } else { }}
+                    <span class="eval coldasice">&nbsp;get closing</span>
+                    {{ } }}
+                </li>
+            </ul>
+            {{ } }}
+        </div>
     {{ if (loaded) { }}
         <div class="chart_wrapper">
             <div id="chart_container">
@@ -192,14 +221,10 @@
             </div>
             <div id="legend"></div>
         {{ if (created.length === 0 || resolved.length === 0) { }}
-            <div>Not enough issues to draw a graph! =(</div>
+            <div class="empty_chart">
+                Not enough issues to draw a graph! =(
+            </div>
         {{ } }}
-        </div>
-
-        <div class="chart_overview">
-            Issues:
-            <span class="created-count">{{=created.length}}</span> created
-            <span class="resolved-count">{{=resolved.length}}</span> closed
         </div>
 
         <div id="open-issues">
@@ -208,7 +233,7 @@
         </div>
 
         <div id="closed-issues">
-            <h3>Resolved Issues <small>[{{=resolved.length}}]</small></h3>
+            <h3>Closed Issues <small>[{{=resolved.length}}]</small></h3>
             <div class="closed"></div>
         </div>
     {{ } else { }}

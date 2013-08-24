@@ -15,7 +15,7 @@
         font: 100%/1.5 @sans-serif-font; /* 16px */
         letter-spacing: 0.3px;
         margin: 0;
-        min-width: 480px;
+        min-width: 65em;
         padding: 0;
     }
 
@@ -228,9 +228,8 @@
 
         #user_nav {
             position: absolute;
-            top: 0;
-            right: 0;
-            width: 50%;
+            top: -1em;
+            right: 2em;
 
             .octocat {
                 #image-insert > .icon ("assets/burndown_logos.png", 82px, 94px, 0 -78px);
@@ -366,7 +365,7 @@
     .error {
         background: none repeat scroll 0 0 #F6F6F6;
         margin: 0 auto;
-        padding: 0 0 3em;
+        padding: 3em 0 4em;
         position: relative;
         text-align: center;
         top: 0;
@@ -466,10 +465,6 @@
                     display: inline-block;
                     margin: 0.5em 0.5em 0 0;
 
-                    a {
-                        text-decoration: none;
-                    }
-
                     &.join {
                         color: @aqua;
                         font-family: @bit-font;
@@ -483,9 +478,24 @@
                         -webkit-font-smoothing: none;
                     }
 
-                    &.jump a {
-                        #image-insert > .before-data-icon (@dark-aqua, @aqua, 12px, 12px, auto, auto, -14px, 50%);
-                        padding: 0;
+                    .eval {
+                        font-family: @bit-font;
+                        font-size: 1.0em;
+                        margin: 0;
+                        text-shadow: 1px 1px 0 #fff;
+                        text-rendering: geometricPrecision;
+                        font-weight: normal;
+                        text-align: center;
+                        vertical-align: middle;
+                        -webkit-font-smoothing: none;
+
+                        &.burning {
+                            color: @light-red;
+                        }
+
+                        &.coldasice {
+                            color: @yellow;
+                        }
                     }
                 }
             }
@@ -571,6 +581,15 @@
                 }
             }
 
+            .empty_chart {
+                color: #999;
+                font-family: @bit-font;
+                padding: 0 0 2em;
+                text-shadow: 1px 1px 0 #fff;
+                text-rendering: geometricPrecision;
+                font-weight: normal;
+                text-align: center;
+            }
         }
 
         #open-issues,
@@ -581,6 +600,7 @@
 
             ul {
                 list-style: none;
+                padding: 0;
 
                 li {
                     margin: 0 0 0.6em 0;
@@ -596,7 +616,13 @@
                         text-decoration: none;
 
                         &:hover {
-                            text-decoration: underline;
+                            background: fade(@yellow, 10%);
+
+                            span ins,
+                            small {
+                                color: @aqua;
+                                font-weight: normal;
+                            }
                         }
 
                         span {
@@ -651,7 +677,7 @@
             }
         }
 
-        #closed-issues ul li a {
+        #closed-issues ul li a:not(:hover) {
             color: #999;
             text-decoration: line-through;
 
@@ -664,9 +690,9 @@
                 filter: gray; /* IE6-9 */
                 -webkit-filter: grayscale(100%); /* Chrome 19+, Safari 6+, Safari 6+ iOS */
             }
+        }
 
-            &:hover {
-                text-decoration: none;
-            }
+        #closed-issues ul li a:hover {
+            text-decoration: none;
         }
     }
