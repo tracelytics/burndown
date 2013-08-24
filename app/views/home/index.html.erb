@@ -5,7 +5,7 @@
 <% if current_user %>
     <div class="form-inline">
         <input type="text" class="input-large" placeholder="github 'user/repo'" autofocus>
-        <button id="fetch" type="submit" class="btn">View Milestones</button>
+        <button id="fetch" type="submit" class="btn">View Repository</button>
         <p>
             <span data-beforeicon="&#xe054;">Type a Github username/repository that you have access to.</span>
         </p>
@@ -68,15 +68,16 @@
         <a href="https://github.com/appneta/burndown" title="view on Github" class="to_github">Check out the project on GitHub</a>
     </section>
 <% end %>
-    {{ if (message.has('title')) { }}
+
+{{ if (message.has('title')) { }}
     <div class="error">
         <span data-beforeicon="&#xe010;">{{=message.get('text')}}</span>
     </div>
-    {{ } }}
-
-    {{ if (milestones.length > 0) { }}
+{{ } else { }}
+    {{ if (session.has('owner') && session.has('repo')) { }}
     <div class="milestones">
         <h3>Milestones in {{=session.getURL()}}</h3>
+        {{ if (milestones.length > 0) { }}
         <ul>
         {{ _.each(milestones, function (milestone, i) { }}
             <li>
@@ -94,8 +95,20 @@
             </li>
         {{ }); }}
         </ul>
+        {{ } else { }}
+        <div class="error">
+            <span data-beforeicon="&#xe010;">This repository has no milestones!</span>
+        </div>
+        {{ } }}
+        <h3>Experimental</h3>
+        <ul>
+            <li>
+                <a href="#{{=session.getURL()}}/summary">30 Day Summary</a>
+            </li>
+        </ul>
     </div>
     {{ } }}
+{{ } }}
 </script>
 
 <script type="text/template" id="tmpl_milestone">
@@ -103,7 +116,10 @@
         <a href="#{{=session.getURL()}}" class="back" title="back to list of milestones">Back</a>
 
         <div class="meta_issues">
-            <h3>{{=milestone.get('title')}}</h3>
+            <h3>
+                <span>{{=session.getURL()}}</span>
+                {{=milestone.get('title')}}
+            </h3>
             <div class="due_date{{ if (!milestone.has('due_on')) { }} nodate{{ } }}">
                 {{ if (milestone.has('due_on')) { }}
                 <span data-beforeicon="&#xe009;">due: {{=milestone.getDueDateFormatted()}}</span>
@@ -116,11 +132,11 @@
             </div>
             <ul>
                 <li class="jump">
-                    <a href="#open-issues" title="view open issues" data-beforeicon="&#xe045;">Open [{{=milestone.get('open_issues')}}]</a>
+                    <a href="#open-issues" title="view open issues">Open [{{=milestone.get('open_issues')}}]</a>
                 </li>
                 <li class="join">+</li>
                 <li class="jump">
-                    <a href="#closed-issues" title="view closed issues" data-beforeicon="&#xe045;">Closed [{{=milestone.get('closed_issues')}}]</a>
+                    <a href="#closed-issues" title="view closed issues">Closed [{{=milestone.get('closed_issues')}}]</a>
                 </li>
                 <li class="join">=</li>
                 <li>Total [{{=milestone.getNumIssues()}}]</li>
@@ -153,12 +169,14 @@
     <ul>
     {{ _.each(issues, function (issue, i) { }}
         <li>{{=issue.createLink()}}</li>
-   {{ }); }}
+    {{ }); }}
     </ul>
 </script>
 
 <script type="text/template" id="tmpl_loading">
-    <div>Loading...</div>
+    <div>
+        <img src="assets/burndown_dance.gif" alt="Fetching Issues from GitHub" class="loading" />
+    </div>
 </script>
 
 <script type="text/template" id="tmpl_error">
@@ -166,4 +184,72 @@
         <h4>Error!</h4>
         {{=error.message}}
     </div>
+</script>
+
+<script type="text/template" id="tmpl_summary">
+    <div class="summary">
+        <a href="#{{=session.getURL()}}" class="back" title="back to repository">Back</a>
+        <div class="meta_issues">
+            <h3>
+                <span>{{=session.getURL()}}</span>
+                30 Day Summary
+            </h3>
+            {{ if (loaded && (created.length > 0 || resolved.length > 0)) { }}
+            <ul>
+                <li class="jump">
+                    <a href="#closed-issues" title="view open issues">Closed [{{=resolved.length}}]</a>
+                </li>
+                <li class="join">
+                    {{ if (resolved.length > created.length) { }}
+                    >
+                    {{ } else if (resolved.length === created.length) { }}
+                    =
+                    {{ } else { }}
+                    <
+                    {{ } }}
+                </li>
+                <li class="jump">
+                    <a href="#open-issues" title="view closed issues">Created [{{=created.length}}]</a>
+                </li>
+                <li class="join">=</li>
+                <li>
+                    {{ if (resolved.length > created.length) { }}
+                    <span class="eval burning">&nbsp;on fire!</span>
+                    {{ } else if (resolved.length === created.length) { }}
+                    <span class="eval">&nbsp;breakin’ even</span>
+                    {{ } else { }}
+                    <span class="eval coldasice">&nbsp;get closin’</span>
+                    {{ } }}
+                </li>
+            </ul>
+            {{ } }}
+        </div>
+    {{ if (loaded) { }}
+        <div class="chart_wrapper">
+            <div id="chart_container">
+                <div id="y_axis"></div>
+                <div id="chart"></div>
+            </div>
+            <div id="legend"></div>
+        {{ if (created.length === 0 || resolved.length === 0) { }}
+            <div class="empty_chart">
+                Not enough issues to draw a graph! =(
+            </div>
+        {{ } }}
+        </div>
+
+        <div id="open-issues">
+            <h3>Created Issues <small>[{{=created.length}}]</small></h3>
+            <div class="open"></div>
+        </div>
+
+        <div id="closed-issues">
+            <h3>Closed Issues <small>[{{=resolved.length}}]</small></h3>
+            <div class="closed"></div>
+        </div>
+    {{ } else { }}
+        <img src="assets/burndown_dance.gif" alt="Fetching Issues from GitHub" class="loading" />
+        <h4>Fetching issues from Github. It should only take a few seconds.</h4>
+    {{ } }}
+   </div>
 </script>

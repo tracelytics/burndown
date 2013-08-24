@@ -80,7 +80,17 @@ $(function() {
             var url = this.get('html_url');
 
             var created_at = new Date(this.get('created_at'));
-            var issue_created = created_at.getMonth() + '/' + created_at.getDate() + '/' + created_at.getFullYear();
+            var month = created_at.getMonth() + 1;
+            var issue_created = month + '/' + created_at.getDate() + '/' + created_at.getFullYear();
+
+            var closed_string = '';
+            var closed_at = this.get('closed_at');
+            if (closed_at) {
+                var closed_date = new Date(closed_at);
+                var month = closed_date.getMonth() + 1;
+                var issue_closed = month + '/' + closed_date.getDate() + '/' + closed_date.getFullYear();
+                var closed_string = ' and closed on ' + issue_closed;
+            }
 
             if (creator && title && url) {
                 var creator_user = new GithubUser(creator);
@@ -94,6 +104,7 @@ $(function() {
                         title,
                         '<small>' +
                         'created by ' + creator_user.get('name') + ' on ' + issue_created,
+                        closed_string,
                         '</small>',
                         '</a>'].join('');
             }
@@ -111,25 +122,152 @@ $(function() {
             var owner = session.get('owner');
             var repo = session.get('repo');
 
+            // Build initial url string.
             var url = ['https://api.github.com',
                        '/repos/'+owner+'/'+repo+'/issues',
                        '?access_token='+token,
-                       '&state='+this.state,
-                       '&milestone='+this.milestoneId,
                        ''].join('');
+
+            // If any parameter properties exist, append then to the URL string.
+            if (this.state) {
+                url += '&state='+this.state;
+            }
+            if (this.milestoneId) {
+                url += '&milestone='+this.milestoneId;
+            }
+            if (this.since) {
+                var _since = this.since();
+                url += '&since='+_since;
+            }
+            if (this.direction) {
+                url += '&direction='+this.direction;
+            }
+
             return url;
         },
         parse: function(response) {
             return response;
         },
-        state: 'open',
-        milestoneId: 0
+        getDateSince: function(days) {
+            var d = new Date();
+            d.setDate(d.getDate()-days);
+            return d.toISOString();
+        },
+        /*
+         * parse_link_header()
+         *
+         * Parse the Github Link HTTP header used for pageination
+         * http://developer.github.com/v3/#pagination
+         */
+        parseLinkHeader: function (header) {
+          if (header.length == 0) {
+              throw new Error("input must not be of zero length");
+          }
+
+          // Split parts by comma
+          var parts = header.split(',');
+          var links = {};
+          // Parse each part into a named link
+          _.each(parts, function(p) {
+              var section = p.split(';');
+              if (section.length != 2) {
+                  throw new Error("section could not be split on ';'");
+              }
+              var url = section[0].replace(/<(.*)>/, '$1').trim();
+              var name = section[1].replace(/rel="(.*)"/, '$1').trim();
+              links[name] = url;
+          });
+
+          return links;
+        },
+        parseLastPage: function(last) {
+          if (last.length == 0) {
+              throw new Error("input must not be of zero length");
+          }
+
+          var patt = /&page=(\d+)/g;
+          var result = patt.exec(last);
+
+          if (result.length != 2) {
+              throw new Error("regex pattern match failed");
+          }
+
+          return result[1];
+        },
+        getLastPage: function(header) {
+            var self = this;
+
+            // If header doesn't exist, there aren't multiple pages of results,
+            // so just return 1.
+            if (header == null) {
+                return 1;
+            }
+
+            var parsed = self.parseLinkHeader(header);
+            var last = parsed.last || '';
+            return self.parseLastPage(last);
+        },
+        fetchAll: function() {
+            var self = this;
+
+            var deferred = $.Deferred();
+
+            var currentPage = 1;
+            var lastPage = 1;
+            var success = function(issues, response, options) {
+                // Only parse the last page on the first pass.
+                if (currentPage === 1) {
+                    var header = options.xhr.getResponseHeader('Link');
+                    lastPage = self.getLastPage(header);
+                }
+                // Only continue fetching if there are pages remaining.
+                if (currentPage < lastPage) {
+                    currentPage++;
+                    self.fetch({
+                        data: {page: currentPage},
+                        remove: false,
+                        success: success
+                    });
+                } else {
+                    console.log('end! total pages:', currentPage);
+                    deferred.resolve();
+                }
+            }
+
+            self.fetch({
+                data: {page: currentPage},
+                remove: false,
+                success: success
+            });
+
+            return deferred.promise();
+        },
+        // URL parameter proprties.
+        // http://developer.github.com/v3/issues/#list-issues-for-a-repository
+        state: null,
+        milestoneId: null,
+        since: null,
+        direction: null
     });
-    var OpenIssues = IssuesBase.extend({
+    var MilestoneOpenIssues = IssuesBase.extend({
         state: 'open'
     });
-    var ClosedIssues = IssuesBase.extend({
+    var MilestoneClosedIssues = IssuesBase.extend({
         state: 'closed'
+    });
+    var SummaryOpenIssues = IssuesBase.extend({
+        state: 'open',
+        direction: 'asc',
+        since: function() {
+            return this.getDateSince(30);
+        }
+    });
+    var SummaryClosedIssues = IssuesBase.extend({
+        state: 'closed',
+        direction: 'asc',
+        since: function() {
+            return this.getDateSince(30);
+        }
     });
 
     var Milestone = Backbone.Model.extend({
@@ -218,9 +356,6 @@ $(function() {
             self.message = new Message();
 
             milestones.on('sync', function() {
-                if (milestones.length === 0) {
-                    self.message.setProblem('This repository has no milestones!');
-                }
                 self.render();
             });
             milestones.on('error', self.errorHandler, this);
@@ -240,15 +375,18 @@ $(function() {
             // If 'enter' key pressed, process the input field.
             if (e.keyCode == 13) self.getInputText();
         },
+        loadRepo: function(owner, repo) {
+            // Update session model.
+            session.set('owner', owner);
+            session.set('repo', repo);
+        },
         loadRepoMilestones: function(owner, repo) {
             var self = this;
 
             self.message.clear();
             milestones.reset();
 
-            // Update session model.
-            session.set('owner', owner);
-            session.set('repo', repo);
+            self.loadRepo(owner, repo);
 
             // Fetch the milestones.
             milestones.fetch();
@@ -290,8 +428,8 @@ $(function() {
 
             self.message = new Message();
             self.milestone = new Milestone();
-            self.openIssues = new OpenIssues();
-            self.closedIssues = new ClosedIssues();
+            self.openIssues = new MilestoneOpenIssues();
+            self.closedIssues = new MilestoneClosedIssues();
 
             // dependencies
             self.openIssues.on('sync', self.renderChart);
@@ -451,11 +589,164 @@ $(function() {
         }
     });
 
+    var SummaryView = Backbone.View.extend({
+        el: '.content',
+        initialize: function() {
+            _.bindAll(this, 'render', 'resetView', 'loadRepoIssues', 'renderChart');
+            var self = this;
+
+            self.loaded = false;
+            // All issue collections
+            self.openIssues = new SummaryOpenIssues();
+            self.closedIssues = new SummaryClosedIssues();
+            // Filtered issue collections
+            self.createdIssues = new SummaryOpenIssues();
+            self.resolvedIssues = new SummaryClosedIssues();
+        },
+        render: function() {
+            var self = this;
+
+            // Render main template.
+            var template = _.template($('#tmpl_summary').html(),
+                                      {session: session,
+                                       loaded: self.loaded,
+                                       created: self.createdIssues.models,
+                                       resolved: self.resolvedIssues.models});
+            this.$el.html( template );
+
+            // Render the chart.
+            self.renderChart();
+
+            // Populate issue lists.
+            var template = _.template($('#tmpl_issues').html(),
+                                      {issues: self.createdIssues.models});
+            $('.open', self.el).html(template);
+            var template = _.template($('#tmpl_issues').html(),
+                                      {issues: self.resolvedIssues.models});
+            $('.closed', self.el).html(template);
+        },
+        resetView: function() {
+            var self = this;
+
+            self.loaded = false;
+            self.openIssues.reset();
+            self.closedIssues.reset();
+            self.createdIssues.reset();
+            self.resolvedIssues.reset();
+        },
+        loadRepoIssues: function() {
+            var self = this;
+
+            self.resetView();
+
+            self.render();
+
+            // When all issues (both closed and open) are fetched, filter them
+            // and reset the filtered collections.
+            $.when(self.openIssues.fetchAll(), self.closedIssues.fetchAll())
+             .done(function(openResp, closedResp) {
+                console.log('done!');
+
+                var createdIssues = _.filter(self.openIssues.models, function(issue) {
+                    var past = new Date(self.openIssues.since());
+                    var d = new Date(issue.get('created_at'));
+                    return (d.getTime() > past.getTime());
+                });
+                var resolvedIssues = _.filter(self.closedIssues.models, function(issue) {
+                    var past = new Date(self.closedIssues.since());
+                    var d = new Date(issue.get('closed_at'));
+                    return (d.getTime() > past.getTime());
+                });
+
+                self.loaded = true;
+                self.createdIssues.reset(createdIssues);
+                self.resolvedIssues.reset(resolvedIssues);
+
+                self.render();
+            });
+        },
+        renderChart: function() {
+            var self = this;
+
+            console.log('render chart!');
+
+            if (self.createdIssues.length > 0 && self.resolvedIssues.length > 0) {
+
+                // Clear the chart of any previous elements.
+                $('#chart').empty();
+                $('#y_axis').empty();
+                $('#legend').empty();
+
+                var count = 1;
+                var created = _.map(self.createdIssues.models, function(issue) {
+                    return {
+                        x: issue.getCreatedTime(),
+                        y: count++
+                    };
+                });
+
+                count = 1;
+                var resolved = _.map(self.resolvedIssues.models, function(issue) {
+                    return {
+                        x: issue.getClosedTime(),
+                        y: count++
+                    };
+                });
+
+                // Build graph!
+                var graph = new Rickshaw.Graph({
+                    element: document.querySelector("#chart"),
+                    width: 900,
+                    height: 500,
+                    renderer: 'line',
+                    stroke: true,
+                    interpolation: 'basis',
+                    series: [{
+                        data:  created,
+                        color: '#cc0000',
+                        name:  'Created'
+                    }, {
+                        data:  resolved,
+                        color: 'green',
+                        name:  'Resolved'
+                    }]
+                });
+                graph.render();
+
+                var legend = new Rickshaw.Graph.Legend( {
+                    graph: graph,
+                    element: document.getElementById('legend')
+
+                });
+
+                var highlighter = new Rickshaw.Graph.Behavior.Series.Highlight( {
+                    graph: graph,
+                    legend: legend
+                });
+
+                var xAxis = new Rickshaw.Graph.Axis.Time({
+                    graph: graph
+                });
+                xAxis.render();
+
+                var yAxis = new Rickshaw.Graph.Axis.Y({
+                    graph:          graph,
+                    tickFormat:     Rickshaw.Fixtures.Number.formatKMBT,
+                    ticksTreatment: 'glow',
+                    orientation:    'left',
+                    element:        document.getElementById('y_axis')
+                });
+                yAxis.render();
+            }
+        }
+    });
+
     // Router
     var Router = Backbone.Router.extend({
         routes: {
             '': 'home',
             ':owner/:repo': 'repository',
+            ':owner/:repo/summary': 'summary',
             ':owner/:repo/:id': 'milestone'
         }
     });
@@ -463,10 +754,15 @@ $(function() {
     // Instantiations.
     var repoView = new RepoView();
     var milestoneView = new MilestoneView();
+    var summaryView = new SummaryView();
     var router = new Router();
 
     router.on('route:home', function() {
         console.log('Load the home page!');
+        // unset any previously existing session 'owner' or 'repo' attributes.
+        // render repoView!
+        session.unset('owner');
+        session.unset('repo');
         repoView.render();
     });
 
@@ -486,6 +782,15 @@ $(function() {
     router.on('route:repository', function(owner, repo) {
         console.log('Load the repository page!');
         repoView.loadRepoMilestones(owner, repo);
+    });
+
+    router.on('route:summary', function(owner, repo) {
+        console.log('Load the repository summary page!');
+        // load token
+        // load owner/repo
+        // not waiting on any xhr, so safe to load summaryView!
+        repoView.loadRepo(owner, repo);
+        summaryView.loadRepoIssues();
     });
 
     // Once the session token finishes loading, start the application!
