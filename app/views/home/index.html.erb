@@ -116,7 +116,10 @@
         <a href="#{{=session.getURL()}}" class="back" title="back to list of milestones">Back</a>
 
         <div class="meta_issues">
-            <h3>{{=milestone.get('title')}}</h3>
+            <h3>
+                <span>{{=session.getURL()}}</span>
+                {{=milestone.get('title')}}
+            </h3>
             <div class="due_date{{ if (!milestone.has('due_on')) { }} nodate{{ } }}">
                 {{ if (milestone.has('due_on')) { }}
                 <span data-beforeicon="&#xe009;">due: {{=milestone.getDueDateFormatted()}}</span>
@@ -184,7 +187,10 @@
     <div class="summary">
         <a href="#{{=session.getURL()}}" class="back" title="back to repository">Back</a>
         <div class="meta_issues">
-            <h3>{{=session.getURL()}}<br>30 Day Summary</h3>
+            <h3>
+                <span>{{=session.getURL()}}</span>
+                30 Day Summary
+            </h3>
             {{ if (loaded && (created.length > 0 || resolved.length > 0)) { }}
             <ul>
                 <li class="jump">
