@@ -108,7 +108,10 @@
                 {{ if (milestone.has('due_on')) { }}
                 <span data-beforeicon="&#xe009;">due: {{=milestone.getDueDateFormatted()}}</span>
                 {{ } else { }}
-                <span data-beforeicon="&#xe015;">no due date! <a target="_blank" href="{{=milestone.getEditLink()}}">add one?</a></span>
+                <span data-beforeicon="&#xe015;">
+                    no due date!
+                    <a target="_blank" href="{{=milestone.getEditLink()}}" title="Add a due date for this milestone to properly burn-it-down">admins, add one!</a>
+                </span>
                 {{ } }}
             </div>
             <ul>
