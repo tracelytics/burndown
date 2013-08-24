@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html>
     <head>
-      <title>AppNeta: Burndown before you burn out</title>
       <link href='http://fonts.googleapis.com/css?family=Press+Start+2P|Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
-      <%= favicon_link_tag %>
       <%= stylesheet_link_tag    "application", :media => "all" %>
-      <%= javascript_include_tag "application" %>
+      <%= favicon_link_tag %>
+      <title>AppNeta: Burndown before you burn out</title>
       <%= analytics_init if Rails.env.production? %>
       <%= csrf_meta_tags %>
     </head>
@@ -46,5 +45,6 @@
                 design &amp; development
             </a>
         </footer>
+    <%= javascript_include_tag "application" %>
     </body>
 </html>
