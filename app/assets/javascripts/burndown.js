@@ -286,6 +286,11 @@ $(function() {
         getPercentComplete: function() {
             return ((this.get('closed_issues') / (this.get('open_issues') + this.get('closed_issues'))) * 100).toFixed(1);
         },
+        getMilestoneLength: function() {
+            var created_at = new Date(this.get('created_at'));
+            var due_at = new Date(this.get('due_on'));
+            return moment(due_at).from(created_at, true);
+        },
         getMilestoneCountdown: function() {
             var start_at = new Date(Date.now());
             var due_at = new Date(this.get('due_on'));
