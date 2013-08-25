@@ -138,7 +138,7 @@
             </div>
         </div>
         <div class="created">
-            created by {{=milestone.getCreator()}} on {{=milestone.getCreatedDateFormatted()}}
+            {{=milestone.getCreator()}} created milestone on {{=milestone.getCreatedDateFormatted()}}
         </div>
         <ul class="issue_math">
             <li class="jump">
@@ -157,10 +157,21 @@
             <li>{{=milestone.getPercentComplete()}}%</li>
         </ul>
         <div class="chart_wrapper">
+            {{ if (milestone.get('closed_issues') > 0) { }}
             <div id="chart_container">
                 <div id="y_axis"></div>
                 <div id="chart"></div>
             </div>
+            {{ } else { }}
+                <h2>~ A Burndown Haiku ~</h2>
+                <p>
+                without closing issues
+                <br>
+                there can be no GitHub peace
+                <br>
+                open...closed is the way
+                </p>
+            {{ } }}
             <div id="legend"></div>
         </div>
 
