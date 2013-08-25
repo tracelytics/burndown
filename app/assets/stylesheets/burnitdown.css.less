@@ -173,10 +173,50 @@
         }
 
         .loading {
-            background: #F6F6F6;
+            background: #F6F6F6 url('/assets/burndown_dance.gif') 0 0 no-repeat;
+            height: 126px;
             display: block;
             margin: 0 auto;
+            overflow: hidden;
             padding: 30px 90px 40px 0;
+            text-indent: -150px;
+            width: 150px;
+        }
+
+        .progress {
+            background: #F6F6F6;
+            font-family: @bit-font;
+            height: 12em;
+            list-style: none;
+            margin: 0 auto;
+            width: 75%;
+
+            dt {
+                font-size: 0.75em;
+                padding: 0 0 0.5em;
+            }
+
+            dd {
+                border: 5px solid @med-red;
+                height: 2.95em;
+                margin: 0 0 1em;
+                padding: 0.4em;
+                position: relative;
+                width: 100%;
+
+                span {
+                    background: @aqua;
+                    color: #fff;
+                    display: block;
+                    font-size: 0.8em;
+                    left: 0;
+                    line-height: 2.1em;
+                    padding-right: 0.4em;
+                    position: absolute;
+                    text-align: right;
+                    top: 0.4em;
+                }
+            }
         }
     }
 
@@ -396,6 +436,10 @@
                 padding: 0 0 0 40px;
 
                 &:nth-child(odd) { background: fade(@aqua, 5%); }
+
+                &:hover {
+                    background: fade(@yellow, 10%);
+                }
 
                 a {
                     display: block;
