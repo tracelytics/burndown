@@ -117,12 +117,27 @@
 
         <div class="meta_issues">
             <h3>
-                <span>{{=session.getURL()}}</span>
                 {{=milestone.get('title')}}
+                <span>{{=session.getURL()}}</span>
+                {{ if (milestone.has('due_on')) { }}
+                    <small class="duration">[{{=milestone.getMilestoneLength()}} long burndown]</small>
+                {{ } }}
             </h3>
             <div class="due_date{{ if (!milestone.has('due_on')) { }} nodate{{ } }}">
                 {{ if (milestone.has('due_on')) { }}
-                <span data-beforeicon="&#xe009;">due: {{=milestone.getDueDateFormatted()}}</span>
+                    {{ if (new Date(milestone.get('due_on')) < new Date(Date.now())) { }}
+                        <span data-beforeicon="&#xe009;" class="overdue">
+                            danger! milestone was
+                            <br>
+                            due {{=milestone.getDueDateFormatted()}}
+                        </span>
+                    {{ } else { }}
+                        <span data-beforeicon="&#xe009;">
+                            due {{=milestone.getDueDateFormatted()}}
+                            <br>
+                            in about {{=milestone.getMilestoneCountdown()}}
+                        </span>
+                    {{ } }}
                 {{ } else { }}
                 <span data-beforeicon="&#xe015;">
                     no due date!
@@ -130,36 +145,53 @@
                 </span>
                 {{ } }}
             </div>
-            <ul>
-                <li class="jump">
-                    <a href="#open-issues" title="view open issues">Open [{{=milestone.get('open_issues')}}]</a>
-                </li>
-                <li class="join">+</li>
-                <li class="jump">
-                    <a href="#closed-issues" title="view closed issues">Closed [{{=milestone.get('closed_issues')}}]</a>
-                </li>
-                <li class="join">=</li>
-                <li>Total [{{=milestone.getNumIssues()}}]</li>
-            </ul>
         </div>
         <div class="created">
-            created by {{=milestone.getCreator()}} on {{=milestone.get('created_at')}}
+            {{=milestone.getCreator()}} created milestone on {{=milestone.getCreatedDateFormatted()}}
         </div>
-
+        <ul class="issue_math">
+            <li class="jump">
+                <a href="#open-issues" title="view open issues">Open [{{=milestone.get('open_issues')}}]</a>
+            </li>
+            <li class="join">+</li>
+            <li class="jump">
+                <a href="#closed-issues" title="view closed issues">Closed [{{=milestone.get('closed_issues')}}]</a>
+            </li>
+            <li class="join">=</li>
+            <li>Total [{{=milestone.getNumIssues()}}]</li>
+        </ul>
+        <ul class="completeness">
+            <li>total</li>
+            <li style="width:{{=milestone.getPercentComplete()}}%;"></li>
+            <li>{{=milestone.getPercentComplete()}}%</li>
+        </ul>
         <div class="chart_wrapper">
+            {{ if (milestone.get('closed_issues') > 0) { }}
             <div id="chart_container">
                 <div id="y_axis"></div>
                 <div id="chart"></div>
             </div>
+            {{ } else { }}
+                <h2>~ A Burndown Haiku ~</h2>
+                <p>
+                without closing issues
+                <br>
+                there can be no GitHub peace
+                <br>
+                open&nbsp;&raquo;&nbsp;closed is the way
+                </p>
+            {{ } }}
             <div id="legend"></div>
         </div>
 
         <div id="open-issues">
             <h3>Open Issues <small>[{{=milestone.get('open_issues')}}]</small></h3>
+            <span class="legend" data-beforeicon="&#xe009;">open</span>
             <div class="open"></div>
         </div>
         <div id="closed-issues">
             <h3>Closed Issues <small>[{{=milestone.get('closed_issues')}}]</small></h3>
+            <span class="legend" data-beforeicon="&#xe009;">open</span>
             <div class="closed"></div>
         </div>
     </div>
@@ -167,9 +199,32 @@
 
 <script type="text/template" id="tmpl_issues">
     <ul>
-    {{ _.each(issues, function (issue, i) { }}
-        <li>{{=issue.createLink()}}</li>
-    {{ }); }}
+    {{ if (issues.length > 0) { }}
+        {{ _.each(issues, function (issue, i) { }}
+            <li>{{=issue.createLink()}}</li>
+        {{ }); }}
+    {{ } else { }}
+        <li class="empty_open">
+            <h2>~ A Burndown Haiku ~</h2>
+            <p>
+                when none are open
+                <br>
+                the Burndown has been vanquished
+                <br>
+                the GitHub abides
+            </p>
+        </li>
+        <li class="empty_closed">
+            <h2>~ A Burndown Haiku ~</h2>
+            <p>
+                empty retains shape
+                <br>
+                when closed is its structure type
+                <br>
+                commits truly void
+            </p>
+        </li>
+    {{ } }}
     </ul>
 </script>
 
@@ -195,7 +250,7 @@
                 30 Day Summary
             </h3>
             {{ if (loaded && (created.length > 0 || resolved.length > 0)) { }}
-            <ul>
+            <ul class="issue_math">
                 <li class="jump">
                     <a href="#closed-issues" title="view open issues">Closed [{{=resolved.length}}]</a>
                 </li>
@@ -240,11 +295,13 @@
 
         <div id="open-issues">
             <h3>Created Issues <small>[{{=created.length}}]</small></h3>
+            <span class="legend" data-beforeicon="&#xe009;">open</span>
             <div class="open"></div>
         </div>
 
         <div id="closed-issues">
             <h3>Closed Issues <small>[{{=resolved.length}}]</small></h3>
+            <span class="legend" data-beforeicon="&#xe009;">open</span>
             <div class="closed"></div>
         </div>
     {{ } else { }}

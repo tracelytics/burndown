@@ -13,6 +13,7 @@
 //= require jquery_ujs
 //= require underscore
 //= require backbone
+//= require moment.min
 //= require d3.v2
 //= require rickshaw
 //= require_tree .

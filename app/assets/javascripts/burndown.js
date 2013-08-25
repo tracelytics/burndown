@@ -83,14 +83,20 @@ $(function() {
             var month = created_at.getMonth() + 1;
             var issue_created = month + '/' + created_at.getDate() + '/' + created_at.getFullYear();
 
-            var closed_string = '';
             var closed_at = this.get('closed_at');
+            var work_duration_details = '';
             if (closed_at) {
                 var closed_date = new Date(closed_at);
                 var month = closed_date.getMonth() + 1;
                 var issue_closed = month + '/' + closed_date.getDate() + '/' + closed_date.getFullYear();
-                var closed_string = ' and closed on ' + issue_closed;
+                work_duration_details = issue_created + ' - ' + issue_closed;
             }
+            else {
+                var closed_date = new Date(Date.now());
+                work_duration_details = issue_created + ' - ???';
+            }
+
+            var work_duration = moment(closed_date).from(created_at, true);
 
             if (creator && title && url) {
                 var creator_user = new GithubUser(creator);
@@ -103,9 +109,12 @@ $(function() {
                         '</span>',
                         title,
                         '<small>' +
-                        'created by ' + creator_user.get('name') + ' on ' + issue_created,
-                        closed_string,
+                        'created by ' + creator_user.get('name'),
                         '</small>',
+                        '<div class="countdown">',
+                        '<ins>' + work_duration + '</ins>',
+                        '<ins>' + work_duration_details + '</ins>',
+                        '</div>',
                         '</a>'].join('');
             }
 
@@ -279,6 +288,19 @@ $(function() {
         getNumIssues: function() {
             return this.get('open_issues') + this.get('closed_issues');
         },
+        getPercentComplete: function() {
+            return ((this.get('closed_issues') / (this.get('open_issues') + this.get('closed_issues'))) * 100).toFixed(1);
+        },
+        getMilestoneLength: function() {
+            var created_at = new Date(this.get('created_at'));
+            var due_at = new Date(this.get('due_on'));
+            return moment(due_at).from(created_at, true);
+        },
+        getMilestoneCountdown: function() {
+            var start_at = new Date(Date.now());
+            var due_at = new Date(this.get('due_on'));
+            return moment(due_at).from(start_at, true);
+        },
         getCreator: function() {
             var rval = '';
             var creator = this.get('creator');
@@ -289,6 +311,11 @@ $(function() {
             }
 
             return rval;
+        },
+        getCreatedDateFormatted: function() {
+            var date = new Date(this.get('created_at'));
+            var dateArray = date.toString().split(' ');
+            return dateArray.slice(0, 4).join(' ');
         },
         getDueDateFormatted: function() {
             var date = new Date(this.get('due_on'));
