@@ -130,22 +130,21 @@
                 </span>
                 {{ } }}
             </div>
-            <ul>
-                <li class="jump">
-                    <a href="#open-issues" title="view open issues">Open [{{=milestone.get('open_issues')}}]</a>
-                </li>
-                <li class="join">+</li>
-                <li class="jump">
-                    <a href="#closed-issues" title="view closed issues">Closed [{{=milestone.get('closed_issues')}}]</a>
-                </li>
-                <li class="join">=</li>
-                <li>Total [{{=milestone.getNumIssues()}}]</li>
-            </ul>
         </div>
         <div class="created">
             created by {{=milestone.getCreator()}} on {{=milestone.getCreatedDateFormatted()}}
         </div>
-
+        <ul class="issue_math">
+            <li class="jump">
+                <a href="#open-issues" title="view open issues">Open [{{=milestone.get('open_issues')}}]</a>
+            </li>
+            <li class="join">+</li>
+            <li class="jump">
+                <a href="#closed-issues" title="view closed issues">Closed [{{=milestone.get('closed_issues')}}]</a>
+            </li>
+            <li class="join">=</li>
+            <li>Total [{{=milestone.getNumIssues()}}]</li>
+        </ul>
         <ul class="completeness">
             <li>total</li>
             <li style="width:{{=milestone.getPercentComplete()}}%;"></li>
@@ -202,7 +201,7 @@
                 30 Day Summary
             </h3>
             {{ if (loaded && (created.length > 0 || resolved.length > 0)) { }}
-            <ul>
+            <ul class="issue_math">
                 <li class="jump">
                     <a href="#closed-issues" title="view open issues">Closed [{{=resolved.length}}]</a>
                 </li>
