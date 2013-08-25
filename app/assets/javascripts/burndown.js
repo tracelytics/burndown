@@ -287,9 +287,9 @@ $(function() {
             return ((this.get('closed_issues') / (this.get('open_issues') + this.get('closed_issues'))) * 100).toFixed(1);
         },
         getMilestoneCountdown: function() {
-            var created_at = new Date(this.get('created_at'));
+            var start_at = new Date(Date.now());
             var due_at = new Date(this.get('due_on'));
-            return moment(due_at).from(created_at, true);
+            return moment(due_at).from(start_at, true);
         },
         getCreator: function() {
             var rval = '';
