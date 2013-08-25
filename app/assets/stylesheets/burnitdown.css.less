@@ -173,18 +173,21 @@
         }
 
         .loading {
-            background: #F6F6F6;
+            background: #F6F6F6 url('/assets/burndown_dance.gif') 0 0 no-repeat;
+            height: 126px;
             display: block;
             margin: 0 auto;
             padding: 30px 90px 40px 0;
+            text-indent: 100%;
+            width: 150px;
         }
 
         .progress {
             background: #F6F6F6;
             font-family: @bit-font;
+            height: 12em;
             list-style: none;
             margin: 0 auto;
-            padding: 0 0 1em 0;
             width: 75%;
 
             dt {
@@ -198,6 +201,7 @@
                 margin: 0 0 1em;
                 padding: 0.4em;
                 position: relative;
+                width: 100%;
 
                 span {
                     background: @aqua;
@@ -210,7 +214,6 @@
                     position: absolute;
                     text-align: right;
                     top: 0.4em;
-                    width: 100%;
                 }
             }
         }
