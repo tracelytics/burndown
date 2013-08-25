@@ -120,7 +120,7 @@
                 {{=milestone.get('title')}}
                 <span>{{=session.getURL()}}</span>
                 {{ if (milestone.has('due_on')) { }}
-                    <small>[{{=milestone.getMilestoneLength()}} long burndown]</small>
+                    <small class="duration">[{{=milestone.getMilestoneLength()}} long burndown]</small>
                 {{ } }}
             </h3>
             <div class="due_date{{ if (!milestone.has('due_on')) { }} nodate{{ } }}">
