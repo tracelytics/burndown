@@ -669,6 +669,15 @@
                                 color: @aqua;
                                 font-weight: normal;
                             }
+
+                            .countdown ins {
+                                &:first-of-type {
+                                    display: none;
+                                }
+                                &:last-of-type {
+                                    display: block;
+                                }
+                            }
                         }
 
                         span {
@@ -722,8 +731,15 @@
                             padding: 0 0.2em;
                             position: absolute;
                             right: 0.4em;
-                            text-decoration: none;
                             top: 0;
+
+                            ins {
+                                text-decoration: none;
+
+                                &:last-of-type {
+                                    display: none;
+                                }
+                            }
                         }
                     }
                 }
