@@ -27,7 +27,7 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
-gem 'jquery-rails'
+gem 'jquery-rails-cdn'
 gem 'underscore-rails'
 gem 'twitter-bootstrap-rails', :git => 'git://github.com/seyhunak/twitter-bootstrap-rails.git'
 gem 'rickshaw_rails', :git => 'git://github.com/logical42/rickshaw_rails.git'
