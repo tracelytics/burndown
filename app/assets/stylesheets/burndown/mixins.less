@@ -129,6 +129,15 @@
            color: #999;
            font-style: italic;
         }
+
+        .eight-bit (@color: #444444;) {
+            color: @color;
+            font-family: @bit-font;
+            text-shadow: 1px 1px 0 #fff;
+            text-rendering: geometricPrecision;
+            font-weight: normal;
+            -webkit-font-smoothing: none;
+        }
     }
 
 /* General bundles
@@ -150,5 +159,4 @@
             -ms-transition: @prop @time @ease;
             transition: @prop @time @ease;
         }
-
     }
