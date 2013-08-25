@@ -207,10 +207,14 @@ $(function() {
             var last = parsed.last || '';
             return self.parseLastPage(last);
         },
-        fetchAll: function() {
+        fetchAll: function(progressCallback) {
             var self = this;
 
             var deferred = $.Deferred();
+
+            if (progressCallback) {
+                deferred.progress(progressCallback);
+            }
 
             var currentPage = 1;
             var lastPage = 1;
@@ -223,6 +227,7 @@ $(function() {
                 // Only continue fetching if there are pages remaining.
                 if (currentPage < lastPage) {
                     currentPage++;
+                    deferred.notify(currentPage / lastPage);
                     self.fetch({
                         data: {page: currentPage},
                         remove: false,
@@ -592,10 +597,13 @@ $(function() {
     var SummaryView = Backbone.View.extend({
         el: '.content',
         initialize: function() {
-            _.bindAll(this, 'render', 'resetView', 'loadRepoIssues', 'renderChart');
+            _.bindAll(this, 'render', 'resetView', 'loadRepoIssues',
+                            'renderOpenProgress', 'renderClosedProgress',
+                            'renderChart');
             var self = this;
 
             self.loaded = false;
+            self.progress = {open: 0, closed: 0};
             // All issue collections
             self.openIssues = new SummaryOpenIssues();
             self.closedIssues = new SummaryClosedIssues();
@@ -610,6 +618,7 @@ $(function() {
             var template = _.template($('#tmpl_summary').html(),
                                       {session: session,
                                        loaded: self.loaded,
+                                       progress: self.progress,
                                        created: self.createdIssues.models,
                                        resolved: self.resolvedIssues.models});
             this.$el.html( template );
@@ -629,6 +638,7 @@ $(function() {
             var self = this;
 
             self.loaded = false;
+            self.progress = {open: 0, closed: 0};
             self.openIssues.reset();
             self.closedIssues.reset();
             self.createdIssues.reset();
@@ -643,7 +653,7 @@ $(function() {
 
             // When all issues (both closed and open) are fetched, filter them
             // and reset the filtered collections.
-            $.when(self.openIssues.fetchAll(), self.closedIssues.fetchAll())
+            $.when(self.openIssues.fetchAll(self.renderOpenProgress), self.closedIssues.fetchAll(self.renderClosedProgress))
              .done(function(openResp, closedResp) {
                 console.log('done!');
 
@@ -664,6 +674,16 @@ $(function() {
 
                 self.render();
             });
+        },
+        renderOpenProgress: function(progress) {
+            var self = this;
+            self.progress.open = (progress * 100).toFixed();
+            self.render();
+        },
+        renderClosedProgress: function(progress) {
+            var self = this;
+            self.progress.closed = (progress * 100).toFixed();
+            self.render();
         },
         renderChart: function() {
             var self = this;
