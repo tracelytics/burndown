@@ -122,13 +122,19 @@
             </h3>
             <div class="due_date{{ if (!milestone.has('due_on')) { }} nodate{{ } }}">
                 {{ if (milestone.has('due_on')) { }}
-                <span data-beforeicon="&#xe009;">
-                    due: {{=milestone.getDueDateFormatted()}}
                     {{ if (new Date(milestone.get('due_on')) < new Date(Date.now())) { }}
-                        <br>
-                        <ins data-beforeicon="&#xe016;">danger! milestone overdue</ins>
+                        <span data-beforeicon="&#xe009;" class="overdue">
+                            danger! milestone was
+                            <br>
+                            due {{=milestone.getDueDateFormatted()}}
+                        </span>
+                    {{ } else { }}
+                        <span data-beforeicon="&#xe009;">
+                            due {{=milestone.getDueDateFormatted()}}
+                            <br>
+                            in about {{=milestone.getMilestoneCountdown()}}
+                        </span>
                     {{ } }}
-                </span>
                 {{ } else { }}
                 <span data-beforeicon="&#xe015;">
                     no due date!

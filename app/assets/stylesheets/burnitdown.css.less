@@ -473,19 +473,22 @@
             text-align: center;
 
             span {
-                #image-insert > .before-data-icon (@light-red, @light-red, 30px, 30px, -8px, auto, auto, -10px);
+                #image-insert > .before-data-icon (@light-red, @light-red, 30px, 30px, -2px, auto, auto, -10px);
+                display: inline-block;
+                text-align: left;
 
                 a {
                     display: block;
                     font-size: 0.75em;
                 }
 
-                ins {
-                    #image-insert > .before-data-icon (@yellow, @yellow, 30px, 30px, -2px, auto, auto, -10px);
+                &.overdue {
                     color: @yellow;
-                    display: inline-block;
-                    margin: 20px 0 0;
                     text-decoration: none;
+
+                    &:before {
+                        color: @yellow;
+                    }
                 }
             }
         }
