@@ -249,11 +249,20 @@
         </div>
     {{ } else { }}
         <img src="assets/burndown_dance.gif" alt="Fetching Issues from GitHub" class="loading" />
-        <ul>
-            <li>Open Issues: {{=progress.open}}%</li>
-            <li>Closed Issues: {{=progress.closed}}%</li>
-        </ul>
-        <h4>Fetching issues from Github. It should only take a few seconds.</h4>
+        <dl class="progress">
+            <dt>Fetching Open Issues&hellip;</dt>
+            <dd>
+                <span style="width: {{=progress.open}}%;">
+                    {{=progress.open}}%
+                </span>
+            </dd>
+            <dt>Fetching Closed Issues&hellip;</dt>
+            <dd>
+                <span style="width: {{=progress.closed}}%;">
+                    {{=progress.closed}}%
+                </span>
+            </dd>
+        </dl>
     {{ } }}
    </div>
 </script>
