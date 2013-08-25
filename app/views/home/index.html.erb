@@ -199,9 +199,32 @@
 
 <script type="text/template" id="tmpl_issues">
     <ul>
-    {{ _.each(issues, function (issue, i) { }}
-        <li>{{=issue.createLink()}}</li>
-    {{ }); }}
+    {{ if (issues.length > 0) { }}
+        {{ _.each(issues, function (issue, i) { }}
+            <li>{{=issue.createLink()}}</li>
+        {{ }); }}
+    {{ } else { }}
+        <li class="empty_open">
+            <h2>~ A Burndown Haiku ~</h2>
+            <p>
+                when none are open
+                <br>
+                the Burndown has been vanquished
+                <br>
+                the GitHub abides
+            </p>
+        </li>
+        <li class="empty_closed">
+            <h2>~ A Burndown Haiku ~</h2>
+            <p>
+                empty retains shape
+                <br>
+                when closed is its structure type
+                <br>
+                commits truly void
+            </p>
+        </li>
+    {{ } }}
     </ul>
 </script>
 
