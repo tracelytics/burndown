@@ -184,8 +184,8 @@
         }
 
         .progress {
+            #text > .eight-bit (#444;);
             background: #F6F6F6;
-            font-family: @bit-font;
             height: 12em;
             list-style: none;
             margin: 0 auto;
@@ -214,6 +214,7 @@
                     padding-right: 0.4em;
                     position: absolute;
                     text-align: right;
+                    text-shadow: none;
                     top: 0.4em;
                 }
             }
@@ -371,9 +372,15 @@
         text-align: center;
         width: 100%;
 
+        input,
+        button {
+            display: inline-block;
+            font-size: 1.5em;
+            height: 2em;
+        }
+
         input {
             border: solid 1px #ccc;
-            font-size: 1.5em;
             padding: 0.4em;
             width: 20em;
         }
@@ -382,12 +389,10 @@
             background: @aqua;
             border: none;
             color: #fff;
-            font-size: 1.5em;
             font-weight: 300;
-            height: 1.89em;
             margin: 0;
             padding: 0 1em;
-            width: 10em;
+            white-space: nowrap;
         }
 
         p span {
