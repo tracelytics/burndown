@@ -177,8 +177,9 @@
             height: 126px;
             display: block;
             margin: 0 auto;
+            overflow: hidden;
             padding: 30px 90px 40px 0;
-            text-indent: 100%;
+            text-indent: -150px;
             width: 150px;
         }
 
@@ -435,6 +436,10 @@
                 padding: 0 0 0 40px;
 
                 &:nth-child(odd) { background: fade(@aqua, 5%); }
+
+                &:hover {
+                    background: fade(@yellow, 10%);
+                }
 
                 a {
                     display: block;
