@@ -554,6 +554,49 @@
             }
         }
 
+        .completeness {
+            background: #fff;
+            border: solid 5px @med-red;
+            border-bottom: none;
+            clear: both;
+            height: 2.5em;
+            list-style: none outside none;
+            margin: 0;
+            padding: 0;
+            position: relative;
+
+            li {
+                font-size: 0.78em;
+                height: 2.8em;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+
+                &:first-of-type {
+                    background: fadeout(@aqua, 80%);
+                    overflow: hidden;
+                    text-indent: 100%;
+                }
+
+                &:nth-child(2) {
+                    background: @aqua;
+                    height: 1.75em;
+                    margin: 0.5em 0 0;
+                }
+
+                &:last-of-type {
+                    font-family: @bit-font;
+                    font-weight: normal;
+                    line-height: 1.75em;
+                    padding: 0.45em 0.3em 0 0;
+                    text-align: right;
+                    text-rendering: geometricprecision;
+                    text-shadow: 1px 1px 0 #fff;
+                }
+            }
+        }
+
         .chart_overview {
             font-size: 30px;
 

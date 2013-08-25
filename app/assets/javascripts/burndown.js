@@ -274,6 +274,9 @@ $(function() {
         getNumIssues: function() {
             return this.get('open_issues') + this.get('closed_issues');
         },
+        getPercentComplete: function() {
+            return ((this.get('closed_issues') / (this.get('open_issues') + this.get('closed_issues'))) * 100).toFixed(1);
+        },
         getCreator: function() {
             var rval = '';
             var creator = this.get('creator');
@@ -284,6 +287,11 @@ $(function() {
             }
 
             return rval;
+        },
+        getCreatedDateFormatted: function() {
+            var date = new Date(this.get('created_at'));
+            var dateArray = date.toString().split(' ');
+            return dateArray.slice(0, 4).join(' ');
         },
         getDueDateFormatted: function() {
             var date = new Date(this.get('due_on'));

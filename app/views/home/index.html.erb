@@ -143,9 +143,14 @@
             </ul>
         </div>
         <div class="created">
-            created by {{=milestone.getCreator()}} on {{=milestone.get('created_at')}}
+            created by {{=milestone.getCreator()}} on {{=milestone.getCreatedDateFormatted()}}
         </div>
 
+        <ul class="completeness">
+            <li>total</li>
+            <li style="width:{{=milestone.getPercentComplete()}}%;"></li>
+            <li>{{=milestone.getPercentComplete()}}%</li>
+        </ul>
         <div class="chart_wrapper">
             <div id="chart_container">
                 <div id="y_axis"></div>
