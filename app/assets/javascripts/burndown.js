@@ -71,6 +71,14 @@ $(function() {
             var date = new Date(created);
             return date.getTime() / 1000;
         },
+        getWorkDuration: function() {
+            var created = this.get('created_at') || 0;
+            var created_date = new Date(created);
+
+            var closed = this.get('closed_at') || 0;
+            var closed_date = new Date(closed);
+            return Math.round(Math.abs((created_date.getTime() - closed_date.getTime())/(oneDay)));
+        },
         createLink: function() {
             var rval = '';
 
@@ -83,6 +91,7 @@ $(function() {
             var month = created_at.getMonth() + 1;
             var issue_created = month + '/' + created_at.getDate() + '/' + created_at.getFullYear();
 
+            var oneDay = 24*60*60*1000;
             var closed_string = '';
             var closed_at = this.get('closed_at');
             if (closed_at) {
@@ -90,7 +99,13 @@ $(function() {
                 var month = closed_date.getMonth() + 1;
                 var issue_closed = month + '/' + closed_date.getDate() + '/' + closed_date.getFullYear();
                 var closed_string = ' and closed on ' + issue_closed;
+                var work_duration = Math.round(Math.abs((created_at.getTime() - closed_date.getTime())/(oneDay)));
             }
+            else {
+                var closed_date = new Date(Date.now());
+            }
+
+            var work_duration = Math.round(Math.abs((created_at.getTime() - closed_date.getTime())/(oneDay)));
 
             if (creator && title && url) {
                 var creator_user = new GithubUser(creator);
@@ -106,6 +121,9 @@ $(function() {
                         'created by ' + creator_user.get('name') + ' on ' + issue_created,
                         closed_string,
                         '</small>',
+                        '<ins class="countdown">' + work_duration + '&nbsp;',
+                        (work_duration === 1 ? 'day' : 'days'),
+                        '</ins>',
                         '</a>'].join('');
             }
 

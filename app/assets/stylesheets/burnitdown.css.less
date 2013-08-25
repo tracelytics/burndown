@@ -51,11 +51,7 @@
     h1,
     h2,
     h3 {
-        font-family: @bit-font;
-        text-shadow: 1px 1px 0 #fff;
-        text-rendering: geometricPrecision;
-        font-weight: normal;
-        -webkit-font-smoothing: none;
+        #text > .eight-bit (#262626;);
     }
 
     h1 {
@@ -153,8 +149,7 @@
             }
 
             ol {
-                color: @aqua;
-                font-family: @bit-font;
+                #text > .eight-bit (@aqua;);
                 line-height: 1.75em;
                 list-style-position: outside;
                 margin: 1em 0 0 2.4em;
@@ -316,19 +311,14 @@
         }
 
         .burndown_name {
+            #text > .eight-bit (@dark-red;);
             border-bottom: 2px solid @med-red;
             box-shadow: 0 1px 0 0 @light-red;
-            color: @dark-red;
-            font-family: @bit-font;
             font-size: 1.24em;
             height: 15px;
             line-height: 11px;
             padding: 0 0 0 0;
-            text-shadow: 1px 1px 0 #fff;
-            text-rendering: geometricPrecision;
-            font-weight: normal;
             vertical-align: middle;
-            -webkit-font-smoothing: none;
         }
     }
 
@@ -486,28 +476,19 @@
                     margin: 0.5em 0.5em 0 0;
 
                     &.join {
-                        color: @aqua;
-                        font-family: @bit-font;
+                        #text > .eight-bit (@aqua;);
                         font-size: 1.2em;
                         margin: 0;
-                        text-shadow: 1px 1px 0 #fff;
-                        text-rendering: geometricPrecision;
-                        font-weight: normal;
                         text-align: center;
                         vertical-align: middle;
-                        -webkit-font-smoothing: none;
                     }
 
                     .eval {
-                        font-family: @bit-font;
+                        #text > .eight-bit (@dark-aqua;);
                         font-size: 1.0em;
                         margin: 0;
-                        text-shadow: 1px 1px 0 #fff;
-                        text-rendering: geometricPrecision;
-                        font-weight: normal;
                         text-align: center;
                         vertical-align: middle;
-                        -webkit-font-smoothing: none;
 
                         &.burning {
                             color: @light-red;
@@ -522,14 +503,10 @@
         }
 
         .due_date {
+            #text > .eight-bit (@light-red;);
             color: @light-red;
-            font-family: @bit-font;
-            text-shadow: 1px 1px 0 #fff;
-            text-rendering: geometricPrecision;
-            font-weight: normal;
             padding: 1em 0;
             text-align: center;
-            -webkit-font-smoothing: none;
 
             span {
                 #image-insert > .before-data-icon (@light-red, @light-red, 30px, 30px, -8px, auto, auto, -10px);
@@ -586,13 +563,10 @@
                 }
 
                 &:last-of-type {
-                    font-family: @bit-font;
-                    font-weight: normal;
+                    #text > .eight-bit (#262626;);
                     line-height: 1.75em;
                     padding: 0.45em 0.3em 0 0;
                     text-align: right;
-                    text-rendering: geometricprecision;
-                    text-shadow: 1px 1px 0 #fff;
                 }
             }
         }
@@ -650,12 +624,9 @@
             }
 
             .empty_chart {
+                #text > .eight-bit (#999;);
                 color: #999;
-                font-family: @bit-font;
                 padding: 0 0 2em;
-                text-shadow: 1px 1px 0 #fff;
-                text-rendering: geometricPrecision;
-                font-weight: normal;
                 text-align: center;
             }
         }
@@ -665,6 +636,13 @@
             background: #F6F6F6;
             margin: 6em 0 6em 0;
             padding: 1em 0;
+
+            .legend {
+                #image-insert > .before-data-icon (@dark-red, @dark-red, 24px, 24px, 0, auto, auto, 0);
+                color: @dark-red;
+                float: right;
+                margin: -1.5em 0 0;
+            }
 
             ul {
                 list-style: none;
@@ -694,14 +672,11 @@
                         }
 
                         span {
+                            #text > .eight-bit (#262626;);
                             float: left;
-                            font-family: @bit-font;
                             height: 40px;
                             margin: 0 1.0em 0 0;
                             position: relative;
-                            text-shadow: 1px 1px 0 #fff;
-                            text-rendering: geometricPrecision;
-                            font-weight: normal;
                             width: 120px;
 
                             img,
@@ -739,6 +714,16 @@
                             display: block;
                             font-size: 60%;
                             font-weight: 300;
+                        }
+
+                        .countdown {
+                            height: 100%;
+                            line-height: 3em;
+                            padding: 0 0.2em;
+                            position: absolute;
+                            right: 0.4em;
+                            text-decoration: none;
+                            top: 0;
                         }
                     }
                 }
