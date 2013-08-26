@@ -71,17 +71,9 @@ $(function() {
             var date = new Date(created);
             return date.getTime() / 1000;
         },
-        getLabels: function() {
-            var list = this.get('labels')|| null;
-            var labels = '';
-            _.each(list, function(label) {
-                labels += label.name + ',';
-            });
-
-            return labels.slice(0,-1);
-        },
         createLink: function() {
             var rval = '';
+
             var assignee = this.get('assignee') || null;
             var creator = this.get('user');
             var title = this.get('title');
@@ -129,7 +121,6 @@ $(function() {
             return rval;
         }
     });
-
     var IssuesBase = Backbone.Collection.extend({
         model: Issue,
         comparator: function(issue) {
@@ -272,150 +263,12 @@ $(function() {
         since: null,
         direction: null
     });
-
-    var Label = Backbone.Model.extend({
-        createLink: function() {
-            var rval = '';
-
-            var name = this.get('name');
-            var color = this.get('color');
-
-            if (name) {
-                rval = ['<a href="' + name + '" title="' + name + '" style="background-color:#' + color + ';" data-beforeicon="&#xe027;">',
-                        name,
-                        '</a>'].join('');
-            }
-
-            return rval;
-        }
-    });
-
-    var LabelBase = Backbone.Collection.extend({
-        model: Label,
-        url: function() {
-            var token = session.get('token');
-            var owner = session.get('owner');
-            var repo = session.get('repo');
-
-            // Build initial url string.
-            var url = ['https://api.github.com',
-                       '/repos/'+owner+'/'+repo+'/milestones/',
-                       this.milestoneId,
-                       '/labels',
-                       '?access_token='+token,
-                       ''].join('');
-
-            return url;
-        },
-        parse: function(response) {
-            return response;
-        },
-        /*
-         * parse_link_header()
-         *
-         * Parse the Github Link HTTP header used for pageination
-         * http://developer.github.com/v3/#pagination
-         */
-        parseLinkHeader: function (header) {
-          if (header.length == 0) {
-              throw new Error("input must not be of zero length");
-          }
-
-          // Split parts by comma
-          var parts = header.split(',');
-          var links = {};
-          // Parse each part into a named link
-          _.each(parts, function(p) {
-              var section = p.split(';');
-              if (section.length != 2) {
-                  throw new Error("section could not be split on ';'");
-              }
-              var url = section[0].replace(/<(.*)>/, '$1').trim();
-              var name = section[1].replace(/rel="(.*)"/, '$1').trim();
-              links[name] = url;
-          });
-
-          return links;
-        },
-        parseLastPage: function(last) {
-          if (last.length == 0) {
-              throw new Error("input must not be of zero length");
-          }
-
-          var patt = /&page=(\d+)/g;
-          var result = patt.exec(last);
-
-          if (result.length != 2) {
-              throw new Error("regex pattern match failed");
-          }
-
-          return result[1];
-        },
-        getLastPage: function(header) {
-            var self = this;
-
-            // If header doesn't exist, there aren't multiple pages of results,
-            // so just return 1.
-            if (header == null) {
-                return 1;
-            }
-
-            var parsed = self.parseLinkHeader(header);
-            var last = parsed.last || '';
-            return self.parseLastPage(last);
-        },
-        fetchAll: function(progressCallback) {
-            var self = this;
-
-            var deferred = $.Deferred();
-
-            if (progressCallback) {
-                deferred.progress(progressCallback);
-            }
-
-            var currentPage = 1;
-            var lastPage = 1;
-            var success = function(labels, response, options) {
-                // Only parse the last page on the first pass.
-                if (currentPage === 1) {
-                    var header = options.xhr.getResponseHeader('Link');
-                    lastPage = self.getLastPage(header);
-                }
-                // Only continue fetching if there are pages remaining.
-                if (currentPage < lastPage) {
-                    currentPage++;
-                    deferred.notify(currentPage / lastPage);
-                    self.fetch({
-                        data: {page: currentPage},
-                        remove: false,
-                        success: success
-                    });
-                } else {
-                    console.log('end! total pages:', currentPage);
-                    deferred.resolve();
-                }
-            }
-
-            self.fetch({
-                data: {page: currentPage},
-                remove: false,
-                success: success
-            });
-
-            return deferred.promise();
-        },
-        // URL parameter proprties.
-        // http://developer.github.com/v3/issues/labels/#get-labels-for-every-issue-in-a-milestone
-    });
-
     var MilestoneOpenIssues = IssuesBase.extend({
         state: 'open'
     });
-
     var MilestoneClosedIssues = IssuesBase.extend({
         state: 'closed'
     });
-
     var SummaryOpenIssues = IssuesBase.extend({
         state: 'open',
         direction: 'asc',
@@ -423,7 +276,6 @@ $(function() {
             return this.getDateSince(30);
         }
     });
-
     var SummaryClosedIssues = IssuesBase.extend({
         state: 'closed',
         direction: 'asc',
@@ -481,7 +333,6 @@ $(function() {
             return url;
         }
     });
-
     var Milestones = Backbone.Collection.extend({
         model: Milestone,
         url: function() {
@@ -504,7 +355,6 @@ $(function() {
             return this.findWhere({number: number});
         }
     });
-
     var milestones = new Milestones();
 
     var Message = Backbone.Model.extend({
@@ -610,13 +460,10 @@ $(function() {
 
             self.message = new Message();
             self.milestone = new Milestone();
-
-            self.labels = new LabelBase();
             self.openIssues = new MilestoneOpenIssues();
             self.closedIssues = new MilestoneClosedIssues();
 
             // dependencies
-            self.labels.on('sync', self.renderChart);
             self.openIssues.on('sync', self.renderChart);
             self.closedIssues.on('sync', self.renderChart);
         },
@@ -737,7 +584,6 @@ $(function() {
             self.milestone = milestones.getByNumber(id);
             console.log('milestone: ', self.milestone);
 
-            self.labels.milestoneId = self.milestone.get('number');
             self.openIssues.milestoneId = self.milestone.get('number');
             self.closedIssues.milestoneId = self.milestone.get('number');
 
@@ -754,15 +600,6 @@ $(function() {
                                             session: session,
                                             message: self.message});
 
-            self.labels.fetch({
-                success: function(labels) {
-                    data = {
-                        labels: labels.models
-                    };
-                    var template = _.template($('#tmpl_labels').html(), data);
-                    $('.labels', self.el).html(template);
-                }
-            });
             self.openIssues.fetch({
                 success: function(issues) {
                     data = {
@@ -1010,51 +847,4 @@ $(function() {
         // Let's get this party started!
         Backbone.history.start();
     });
-
-    $(document).on("click", ".labels li a",function(){
-        if ($(this).hasClass('active')) {
-
-            $(this).removeClass('active');
-            $('.labels').removeClass('filtering');
-            $('#open-issues ul, #closed-issues ul').removeClass('filter_empty');
-
-            $('#open-issues ul li[data-labels],' +
-              '#closed-issues ul li[data-labels],' +
-              '#open-issues h3 small,' +
-              '#closed-issues h3 small').show();
-
-            $('#open-issues h3 label, #closed-issues h3 label').html('&nbsp;');
-        }
-        else {
-            $('.labels li a').removeClass('active');
-
-            $(this).addClass('active');
-
-            $('.labels').addClass('filtering');
-
-            $('#open-issues ul li[data-labels],' +
-               '#closed-issues ul li[data-labels],' +
-               '#open-issues h3 small,' +
-               '#closed-issues h3 small').hide();
-
-            var label = $(this).attr('href');
-
-            $open_issues = $("#open-issues ul li[data-labels*='" + label + "']");
-            $closed_issues = $("#closed-issues ul li[data-labels*='" + label + "']");
-
-            showIssuesEmpty($closed_issues.length, $('#closed-issues ul'));
-            showIssuesEmpty($open_issues.length, $('#open-issues ul'));
-
-            $open_issues.show();
-            $closed_issues.show();
-
-            $('#open-issues h3 label, #closed-issues h3 label').text(' - ' + label);
-        }
-
-        return false;
-    })
-
-    function showIssuesEmpty(count, target) {
-        (count === 0 ? target.addClass('filter_empty') : target.removeClass('filter_empty'));
-    }
 });
