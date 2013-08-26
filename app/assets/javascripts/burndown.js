@@ -462,14 +462,28 @@ $(function() {
             self.milestone = new Milestone();
             self.openIssues = new MilestoneOpenIssues();
             self.closedIssues = new MilestoneClosedIssues();
-
-            // dependencies
-            self.openIssues.on('sync', self.renderChart);
-            self.closedIssues.on('sync', self.renderChart);
         },
-        render: function(tmpl, data) {
-            var template = _.template($(tmpl).html(), data);
-            this.$el.html( template );
+        render: function() {
+            var self = this;
+
+            // Render main template.
+            var template = _.template($('#tmpl_milestone').html(),
+                                      {milestone: self.milestone,
+                                       session: session,
+                                       message: self.message});
+            self.$el.html( template );
+
+            // Render the chart.
+            self.renderChart();
+
+            // Populate issue lists.
+            var template = _.template($('#tmpl_issues').html(),
+                                      {issues: self.openIssues.models});
+            $('.open', self.el).html(template);
+            var template = _.template($('#tmpl_issues').html(),
+                                      {issues: self.closedIssues.models});
+            $('.closed', self.el).html(template);
+
             return this;
         },
         renderChart: function() {
@@ -517,8 +531,6 @@ $(function() {
                         y: ++openCount
                     };
                 });
-
-                console.log('issue: ', allIssues[0]);
 
                 // Build graph!
                 var graph = new Rickshaw.Graph({
@@ -578,14 +590,11 @@ $(function() {
         loadMilestone: function(id) {
             var self = this;
 
-            // Render the loading template.
-            self.render("#tmpl_loading", {});
-
+            // Initialize view.
             self.milestone = milestones.getByNumber(id);
-            console.log('milestone: ', self.milestone);
-
             self.openIssues.milestoneId = self.milestone.get('number');
             self.closedIssues.milestoneId = self.milestone.get('number');
+            console.log('milestone: ', self.milestone);
 
             // Clear any previous messages.
             self.message.clear();
@@ -595,28 +604,13 @@ $(function() {
                 self.message.setProblem('Milestone has no due date!');
             }
 
-            // Render the milestone template.
-            self.render('#tmpl_milestone', {milestone: self.milestone,
-                                            session: session,
-                                            message: self.message});
+            self.render();
 
-            self.openIssues.fetch({
-                success: function(issues) {
-                    data = {
-                        issues: issues.models
-                    };
-                    var template = _.template($('#tmpl_issues').html(), data);
-                    $('.open', self.el).html(template);
-                }
-            });
-            self.closedIssues.fetch({
-                success: function(issues) {
-                    data = {
-                        issues: issues.models
-                    };
-                    var template = _.template($('#tmpl_issues').html(), data);
-                    $('.closed', self.el).html(template);
-                }
+            // When all issues (both closed and open) are fetched, re-render
+            // the view.
+            $.when(self.openIssues.fetch(), self.closedIssues.fetch())
+             .done(function(openResp, closedResp) {
+                self.render();
             });
         }
     });
