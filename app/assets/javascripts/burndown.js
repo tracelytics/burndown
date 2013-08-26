@@ -44,7 +44,7 @@ $(function() {
             this.set('url', url);
         },
         getLink: function() {
-            var rval = ['<a href="' + this.get('url') + '">',
+            var rval = ['<a href="' + this.get('url') + '" title="' + this.get('name') + '">',
                         this.getIcon(),
                         this.get('name'),
                         '</a>'].join('');
@@ -54,7 +54,7 @@ $(function() {
         getIcon: function() {
             var rval = ['<img src="http://www.gravatar.com/avatar/',
                         this.get('gravatar'),
-                        '?s=40">'].join('');
+                        '?s=40" title="' + this.get('name') + '">'].join('');
 
             return rval;
         }
@@ -101,21 +101,23 @@ $(function() {
             if (creator && title && url) {
                 var creator_user = new GithubUser(creator);
                 var assigned_user = assignee ? new GithubUser(assignee) : null;
-                rval = ['<a target="_blank" href="' + url + '" title="' + title + '">',
-                        '<span>',
-                        creator_user.getIcon(),
-                        '<ins>&rArr;</ins>',
-                        assigned_user ? assigned_user.getIcon() : '<ins class="annon">?</ins>',
-                        '</span>',
+                rval = ['<ul>',
+                        '<li class="title"><a target="_blank" href="' + url + '" title="' + title + '">',
                         title,
                         '<small>' +
                         'created by ' + creator_user.get('name'),
                         '</small>',
-                        '<div class="countdown">',
+                        '</a></li>',
+                        '<li class="whoswho">',
+                        creator_user.getIcon(),
+                        '<ins>&rArr;</ins>',
+                        assigned_user ? assigned_user.getIcon() : '<ins class="annon">?</ins>',
+                        '</li>',
+                        '<li class="countdown">',
                         '<ins>' + work_duration + '</ins>',
                         '<ins>' + work_duration_details + '</ins>',
-                        '</div>',
-                        '</a>'].join('');
+                        '</li>',
+                        '</ul>'].join('');
             }
 
             return rval;
