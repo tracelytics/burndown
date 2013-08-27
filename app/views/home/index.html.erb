@@ -151,11 +151,11 @@
         </div>
         <ul class="issue_math">
             <li class="jump">
-                <a href="#open-issues" title="view open issues">Open [{{=milestone.get('open_issues')}}]</a>
+                <a href="#open-issues" title="view open issues" data-inpage="true">Open [{{=milestone.get('open_issues')}}]</a>
             </li>
             <li class="join">+</li>
             <li class="jump">
-                <a href="#closed-issues" title="view closed issues">Closed [{{=milestone.get('closed_issues')}}]</a>
+                <a href="#closed-issues" title="view closed issues" data-inpage="true">Closed [{{=milestone.get('closed_issues')}}]</a>
             </li>
             <li class="join">=</li>
             <li>Total [{{=milestone.getNumIssues()}}]</li>
@@ -252,7 +252,7 @@
             {{ if (loaded && (created.length > 0 || resolved.length > 0)) { }}
             <ul class="issue_math">
                 <li class="jump">
-                    <a href="#closed-issues" title="view open issues">Closed [{{=resolved.length}}]</a>
+                    <a href="#closed-issues" title="view open issues" data-inpage="true">Closed [{{=resolved.length}}]</a>
                 </li>
                 <li class="join">
                     {{ if (resolved.length > created.length) { }}
@@ -264,7 +264,7 @@
                     {{ } }}
                 </li>
                 <li class="jump">
-                    <a href="#open-issues" title="view closed issues">Created [{{=created.length}}]</a>
+                    <a href="#open-issues" title="view closed issues" data-inpage="true">Created [{{=created.length}}]</a>
                 </li>
                 <li class="join">=</li>
                 <li>

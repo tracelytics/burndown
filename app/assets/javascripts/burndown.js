@@ -456,6 +456,9 @@ $(function() {
 
     var MilestoneView = Backbone.View.extend({
         el: '.content',
+        events: {
+            'click a[data-inpage]': 'jumpTo',
+        },
         initialize: function() {
             _.bindAll(this, 'render', 'loadMilestone', 'renderChart');
             var self = this;
@@ -620,6 +623,11 @@ $(function() {
                     $('.closed', self.el).html(template);
                 }
             });
+        },
+        jumpTo: function(target) {
+            var href = target.currentTarget.hash.substring(1);
+            document.getElementById(href).scrollIntoView(true);
+            return false;
         }
     });
 
