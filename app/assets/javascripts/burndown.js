@@ -579,9 +579,11 @@ $(function() {
             var template = _.template($('#tmpl_issues').html(),
                                       {issues: open});
             $('.open', self.el).html(template);
+            $('#open-issues-count', self.el).text('[' + open.length + ']');
             var template = _.template($('#tmpl_issues').html(),
                                       {issues: closed});
             $('.closed', self.el).html(template);
+            $('#closed-issues-count', self.el).text('[' + closed.length + ']');
         },
         renderChart: function() {
             var self = this;
