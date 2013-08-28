@@ -183,27 +183,43 @@
             {{ } }}
             <div id="legend"></div>
         </div>
-
+    </div>
+    <div class="issues_wrapper">
         <div id="open-issues">
-            <h3>Open Issues <small>[{{=milestone.get('open_issues')}}]</small></h3>
+            <h3>
+                Open Issues
+                <small id="open-issues-count"></small>
+                <label>&nbsp;</label>
+            </h3>
             <span class="legend" data-beforeicon="&#xe009;">open</span>
             <div class="open"></div>
         </div>
         <div id="closed-issues">
-            <h3>Closed Issues <small>[{{=milestone.get('closed_issues')}}]</small></h3>
+            <h3>
+                Closed Issues
+                <small id="closed-issues-count"></small>
+                <label>&nbsp;</label>
+            </h3>
             <span class="legend" data-beforeicon="&#xe009;">open</span>
             <div class="closed"></div>
         </div>
+        <ul class="labels"></ul>
     </div>
 </script>
 
+<script type="text/template" id="tmpl_labels">
+    {{ _.each(labels, function (label, i) { }}
+        <li>{{=label.createLink()}}</li>
+    {{ }); }}
+</script>
+
 <script type="text/template" id="tmpl_issues">
-    <ul>
-    {{ if (issues.length > 0) { }}
+    <ul{{ if (issues.length === 0) { }} class="empty"{{ } }}>
         {{ _.each(issues, function (issue, i) { }}
-            <li>{{=issue.createLink()}}</li>
+            <li data-labels="{{=issue.getLabelString()}}">
+                {{=issue.createLink()}}
+            </li>
         {{ }); }}
-    {{ } else { }}
         <li class="empty_open">
             <h2>~ A Burndown Haiku ~</h2>
             <p>
@@ -224,7 +240,6 @@
                 commits truly void
             </p>
         </li>
-    {{ } }}
     </ul>
 </script>
 
@@ -292,18 +307,6 @@
             </div>
         {{ } }}
         </div>
-
-        <div id="open-issues">
-            <h3>Created Issues <small>[{{=created.length}}]</small></h3>
-            <span class="legend" data-beforeicon="&#xe009;">open</span>
-            <div class="open"></div>
-        </div>
-
-        <div id="closed-issues">
-            <h3>Closed Issues <small>[{{=resolved.length}}]</small></h3>
-            <span class="legend" data-beforeicon="&#xe009;">open</span>
-            <div class="closed"></div>
-        </div>
     {{ } else { }}
         <div class="loading">
             loading...
@@ -324,4 +327,19 @@
         </dl>
     {{ } }}
    </div>
+   {{ if (loaded) { }}
+    <div class="issues_wrapper">
+        <div id="open-issues">
+            <h3>Created Issues <small>[{{=created.length}}]</small></h3>
+            <span class="legend" data-beforeicon="&#xe009;">open</span>
+            <div class="open"></div>
+        </div>
+
+        <div id="closed-issues">
+            <h3>Closed Issues <small>[{{=resolved.length}}]</small></h3>
+            <span class="legend" data-beforeicon="&#xe009;">open</span>
+            <div class="closed"></div>
+        </div>
+    </div>
+    {{ } }}
 </script>

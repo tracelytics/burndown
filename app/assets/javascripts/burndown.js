@@ -71,6 +71,17 @@ $(function() {
             var date = new Date(created);
             return date.getTime() / 1000;
         },
+        getLabels: function() {
+            var labels = this.get('labels') || [];
+            return _.map(labels, function(label) {
+                return label.name;
+            });
+        },
+        getLabelString: function() {
+            return _.reduce(this.getLabels(), function(memo, label) {
+                return memo + label + ',';
+            }, '');
+        },
         createLink: function() {
             var rval = '';
 
@@ -375,6 +386,53 @@ $(function() {
         }
     });
 
+    var Label = Backbone.Model.extend({
+        defaults: {
+            'name': '',
+            'color': ''
+        },
+        createLink: function() {
+            var rval = '';
+
+            var name = this.get('name');
+            var color = this.get('color');
+
+            if (name && color) {
+                rval = ['<a href="javascript:void(0);" data-label="' + name + '" title="' + name + '" style="background-color:#' + color + ';" data-beforeicon="&#xe027;">',
+                        name,
+                        '</a>'].join('');
+            }
+
+            return rval;
+        }
+    });
+    var Labels = Backbone.Collection.extend({
+        model: Label,
+        initialize: function() {
+            _.bindAll(this, 'isDupe', 'addLabelsFromIssues');
+        },
+        isDupe: function(name) {
+            var self = this;
+            return self.any(function(issue) {
+                return issue.get('name') === name;
+            });
+        },
+        addLabelsFromIssues: function(issues) {
+            var self = this;
+
+            // Iterate through each issue's label array.
+            _.each(issues, function(issue) {
+                _.each((issue.get('labels') || []), function(label) {
+                    // If the label has a name and is not in the collection
+                    // yet, add it!
+                    if (label.name && !self.isDupe(label.name)) {
+                        self.add(new Label(label));
+                    }
+                });
+            });
+        }
+    });
+
     // Views
     var RepoView = Backbone.View.extend({
         el: '.content',
@@ -457,25 +515,75 @@ $(function() {
     var MilestoneView = Backbone.View.extend({
         el: '.content',
         events: {
-            'click a[data-inpage]': 'jumpTo',
+            'click .labels li a': 'toggleLabelFilter',
+            'click a[data-inpage]': 'jumpTo'
         },
         initialize: function() {
-            _.bindAll(this, 'render', 'loadMilestone', 'renderChart');
+            _.bindAll(this, 'render', 'loadMilestone', 'toggleLabelFilter',
+                            'renderIssues', 'renderChart');
             var self = this;
 
+            self.filter = null;
             self.message = new Message();
             self.milestone = new Milestone();
+            self.labels = new Labels();
             self.openIssues = new MilestoneOpenIssues();
             self.closedIssues = new MilestoneClosedIssues();
-
-            // dependencies
-            self.openIssues.on('sync', self.renderChart);
-            self.closedIssues.on('sync', self.renderChart);
         },
-        render: function(tmpl, data) {
-            var template = _.template($(tmpl).html(), data);
-            this.$el.html( template );
+        render: function() {
+            var self = this;
+
+            // Render main template.
+            var template = _.template($('#tmpl_milestone').html(),
+                                      {milestone: self.milestone,
+                                       session: session,
+                                       message: self.message});
+            self.$el.html( template );
+
+            // Render the chart.
+            self.renderChart();
+
+            // Populate label lists.
+            var template = _.template($('#tmpl_labels').html(),
+                                      {labels: self.labels.models});
+            $('.labels', self.el).html(template);
+
+            // Render issues.
+            self.renderIssues();
+
             return this;
+        },
+        renderIssues: function() {
+            var self = this;
+            // Initialize issue lists.
+            var filter = self.filter;
+            var open = [];
+            var closed = [];
+
+            // Filter?
+            if (filter) {
+                open = _.filter(self.openIssues.models, function(issue) {
+                    var labels = issue.getLabels();
+                    return _.contains(labels, filter);
+                });
+                closed = _.filter(self.closedIssues.models, function(issue) {
+                    var labels = issue.getLabels();
+                    return _.contains(labels, filter);
+                });
+            } else {
+                open = self.openIssues.models;
+                closed = self.closedIssues.models;
+            }
+
+            // Populate issue lists.
+            var template = _.template($('#tmpl_issues').html(),
+                                      {issues: open});
+            $('.open', self.el).html(template);
+            $('#open-issues-count', self.el).text('[' + open.length + ']');
+            var template = _.template($('#tmpl_issues').html(),
+                                      {issues: closed});
+            $('.closed', self.el).html(template);
+            $('#closed-issues-count', self.el).text('[' + closed.length + ']');
         },
         renderChart: function() {
             var self = this;
@@ -522,8 +630,6 @@ $(function() {
                         y: ++openCount
                     };
                 });
-
-                console.log('issue: ', allIssues[0]);
 
                 // Build graph!
                 var graph = new Rickshaw.Graph({
@@ -580,17 +686,43 @@ $(function() {
                 yAxis.render();
             }
         },
+        toggleLabelFilter: function(e) {
+            var self = this;
+            var $target = $(e.target);
+            var $labels = $('.labels', self.el);
+            var label = $target.data('label') || null;
+
+            // If the label clicked is already applied, then indicates the
+            // user wants to remove the filtered label.
+            if (self.filter === label) {
+                $target.removeClass('active');
+                $labels.removeClass('filtering');
+
+                self.filter = null;
+            // Else, apply the label filter!
+            } else {
+                // Remove the currently active label.
+                $('ul li a.active', self.el).removeClass('active');
+
+                $target.addClass('active');
+                $labels.addClass('filtering');
+
+                self.filter = label;
+            }
+
+            // Render with filter!
+            self.renderIssues();
+
+            return false;
+        },
         loadMilestone: function(id) {
             var self = this;
 
-            // Render the loading template.
-            self.render("#tmpl_loading", {});
-
+            // Initialize view.
             self.milestone = milestones.getByNumber(id);
-            console.log('milestone: ', self.milestone);
-
             self.openIssues.milestoneId = self.milestone.get('number');
             self.closedIssues.milestoneId = self.milestone.get('number');
+            console.log('milestone: ', self.milestone);
 
             // Clear any previous messages.
             self.message.clear();
@@ -600,28 +732,19 @@ $(function() {
                 self.message.setProblem('Milestone has no due date!');
             }
 
-            // Render the milestone template.
-            self.render('#tmpl_milestone', {milestone: self.milestone,
-                                            session: session,
-                                            message: self.message});
+            self.render();
 
-            self.openIssues.fetch({
-                success: function(issues) {
-                    data = {
-                        issues: issues.models
-                    };
-                    var template = _.template($('#tmpl_issues').html(), data);
-                    $('.open', self.el).html(template);
-                }
-            });
-            self.closedIssues.fetch({
-                success: function(issues) {
-                    data = {
-                        issues: issues.models
-                    };
-                    var template = _.template($('#tmpl_issues').html(), data);
-                    $('.closed', self.el).html(template);
-                }
+            // When all issues (both closed and open) are fetched, re-render
+            // the view.
+            $.when(self.openIssues.fetch(), self.closedIssues.fetch())
+             .done(function(openResp, closedResp) {
+                // Fetch labels from issues.
+                self.labels.reset();
+                self.labels.addLabelsFromIssues(self.openIssues.models);
+                self.labels.addLabelsFromIssues(self.closedIssues.models);
+
+                // Render!
+                self.render();
             });
         },
         jumpTo: function(target) {
