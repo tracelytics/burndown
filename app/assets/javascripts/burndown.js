@@ -71,6 +71,17 @@ $(function() {
             var date = new Date(created);
             return date.getTime() / 1000;
         },
+        getLabels: function() {
+            var labels = this.get('labels') || [];
+            return _.map(labels, function(label) {
+                return label.name;
+            });
+        },
+        getLabelString: function() {
+            return _.reduce(this.getLabels(), function(memo, label) {
+                return memo + label + ',';
+            }, '');
+        },
         createLink: function() {
             var rval = '';
 
@@ -377,6 +388,20 @@ $(function() {
         defaults: {
             'name': '',
             'color': ''
+        },
+        createLink: function() {
+            var rval = '';
+
+            var name = this.get('name');
+            var color = this.get('color');
+
+            if (name && color) {
+                rval = ['<a data-label="' + name + '" title="' + name + '" style="background-color:#' + color + ';" data-beforeicon="&#xe027;">',
+                        name,
+                        '</a>'].join('');
+            }
+
+            return rval;
         }
     });
     var Labels = Backbone.Collection.extend({
@@ -487,12 +512,17 @@ $(function() {
 
     var MilestoneView = Backbone.View.extend({
         el: '.content',
+        events: {
+            'click .labels li a': 'toggleLabelFilter'
+        },
         initialize: function() {
-            _.bindAll(this, 'render', 'loadMilestone', 'renderChart');
+            _.bindAll(this, 'render', 'loadMilestone', 'toggleLabelFilter',
+                            'renderIssues', 'renderChart');
             var self = this;
 
             self.message = new Message();
             self.milestone = new Milestone();
+            self.labels = new Labels();
             self.openIssues = new MilestoneOpenIssues();
             self.closedIssues = new MilestoneClosedIssues();
         },
@@ -509,15 +539,44 @@ $(function() {
             // Render the chart.
             self.renderChart();
 
-            // Populate issue lists.
-            var template = _.template($('#tmpl_issues').html(),
-                                      {issues: self.openIssues.models});
-            $('.open', self.el).html(template);
-            var template = _.template($('#tmpl_issues').html(),
-                                      {issues: self.closedIssues.models});
-            $('.closed', self.el).html(template);
+            // Populate label lists.
+            var template = _.template($('#tmpl_labels').html(),
+                                      {labels: self.labels.models});
+            $('.labels', self.el).html(template);
+
+            // Render issues.
+            self.renderIssues();
 
             return this;
+        },
+        renderIssues: function(filter) {
+            var self = this;
+            // Initialize issue lists.
+            var open = [];
+            var closed = [];
+
+            // Filter?
+            if (filter) {
+                open = _.filter(self.openIssues.models, function(issue) {
+                    var labels = issue.getLabels();
+                    return _.contains(labels, filter);
+                });
+                closed = _.filter(self.closedIssues.models, function(issue) {
+                    var labels = issue.getLabels();
+                    return _.contains(labels, filter);
+                });
+            } else {
+                open = self.openIssues.models;
+                closed = self.closedIssues.models;
+            }
+
+            // Populate issue lists.
+            var template = _.template($('#tmpl_issues').html(),
+                                      {issues: open});
+            $('.open', self.el).html(template);
+            var template = _.template($('#tmpl_issues').html(),
+                                      {issues: closed});
+            $('.closed', self.el).html(template);
         },
         renderChart: function() {
             var self = this;
@@ -620,6 +679,21 @@ $(function() {
                 yAxis.render();
             }
         },
+        toggleLabelFilter: function(e) {
+            var self = this;
+            var $el = $(e.target);
+
+            $el.toggleClass('active');
+
+            // If the button is toggled active, set the filter to the label
+            // value.
+            var filter = $el.hasClass('active') ? $el.data('label') : null;
+
+            // Render with filter!
+            self.renderIssues(filter);
+
+            return false;
+        },
         loadMilestone: function(id) {
             var self = this;
 
@@ -643,6 +717,12 @@ $(function() {
             // the view.
             $.when(self.openIssues.fetch(), self.closedIssues.fetch())
              .done(function(openResp, closedResp) {
+                // Fetch labels from issues.
+                self.labels.reset();
+                self.labels.addLabelsFromIssues(self.openIssues.models);
+                self.labels.addLabelsFromIssues(self.closedIssues.models);
+
+                // Render!
                 self.render();
             });
         }

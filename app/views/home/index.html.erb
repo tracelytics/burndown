@@ -206,15 +206,17 @@
         <ul class="labels"></ul>
     </div>
 </script>
+
 <script type="text/template" id="tmpl_labels">
     {{ _.each(labels, function (label, i) { }}
         <li>{{=label.createLink()}}</li>
     {{ }); }}
 </script>
+
 <script type="text/template" id="tmpl_issues">
     <ul{{ if (issues.length === 0) { }} class="empty"{{ } }}>
         {{ _.each(issues, function (issue, i) { }}
-            <li data-labels="">
+            <li data-labels="{{=issue.getLabelString()}}">
                 {{=issue.createLink()}}
             </li>
         {{ }); }}
