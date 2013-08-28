@@ -398,7 +398,7 @@ $(function() {
             var color = this.get('color');
 
             if (name && color) {
-                rval = ['<a data-label="' + name + '" title="' + name + '" style="background-color:#' + color + ';" data-beforeicon="&#xe027;">',
+                rval = ['<a href="javascript:void(0);" data-label="' + name + '" title="' + name + '" style="background-color:#' + color + ';" data-beforeicon="&#xe027;">',
                         name,
                         '</a>'].join('');
             }
