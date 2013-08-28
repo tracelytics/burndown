@@ -523,6 +523,7 @@ $(function() {
                             'renderIssues', 'renderChart');
             var self = this;
 
+            self.filter = null;
             self.message = new Message();
             self.milestone = new Milestone();
             self.labels = new Labels();
@@ -552,9 +553,10 @@ $(function() {
 
             return this;
         },
-        renderIssues: function(filter) {
+        renderIssues: function() {
             var self = this;
             // Initialize issue lists.
+            var filter = self.filter;
             var open = [];
             var closed = [];
 
@@ -684,16 +686,30 @@ $(function() {
         },
         toggleLabelFilter: function(e) {
             var self = this;
-            var $el = $(e.target);
+            var $target = $(e.target);
+            var $labels = $('.labels', self.el);
+            var label = $target.data('label') || null;
 
-            $el.toggleClass('active');
+            // If the label clicked is already applied, then indicates the
+            // user wants to remove the filtered label.
+            if (self.filter === label) {
+                $target.removeClass('active');
+                $labels.removeClass('filtering');
 
-            // If the button is toggled active, set the filter to the label
-            // value.
-            var filter = $el.hasClass('active') ? $el.data('label') : null;
+                self.filter = null;
+            // Else, apply the label filter!
+            } else {
+                // Remove the currently active label.
+                $('ul li a.active', self.el).removeClass('active');
+
+                $target.addClass('active');
+                $labels.addClass('filtering');
+
+                self.filter = label;
+            }
 
             // Render with filter!
-            self.renderIssues(filter);
+            self.renderIssues();
 
             return false;
         },
