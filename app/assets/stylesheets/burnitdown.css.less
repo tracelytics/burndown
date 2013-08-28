@@ -744,31 +744,30 @@
 
             ul {
                 list-style: none;
+                margin: 0;
                 padding: 0;
 
                 li {
                     margin: 0 0 0.6em 0;
-                    min-height: 40px;
+                    padding: 0.2em 0;
+                    min-height: 2.6em;
+                    overflow: hidden;
                     position: relative;
 
-                    &:nth-child(odd) a { background: fade(@aqua, 5%); }
+                    &:nth-child(odd) { background: fade(@aqua, 5%); }
 
-                    a {
-                        display: block;
-                        min-height: 40px;
-                        padding: 3px 0 3px 0;
-                        text-decoration: none;
+                    &:hover {
+                        background: fade(@yellow, 10%);
 
-                        &:hover {
-                            background: fade(@yellow, 10%);
-
+                        ul li {
                             span ins,
                             small {
                                 color: @aqua;
                                 font-weight: normal;
                             }
 
-                            .countdown ins {
+                            &.countdown ins {
+
                                 &:first-of-type {
                                     display: none;
                                 }
@@ -777,18 +776,23 @@
                                 }
                             }
                         }
+                    }
 
-                        span {
+                    ul li {
+                        background: transparent !important;
+                        float: left;
+                        margin: 0;
+                        overflow: hidden;
+                        position: relative;
+
+                        &.whoswho {
                             #text > .eight-bit (#262626;);
-                            float: left;
-                            height: 40px;
-                            margin: 0 1.0em 0 0;
-                            position: relative;
-                            width: 120px;
+                            margin: 0.3em 8.4em 0 -100%;
+                            width: 8.4em;
 
                             img,
                             ins {
-                                #layouts > .abspos (0, auto, auto, 0);
+                                #layouts > .abspos (0, auto, auto, 0.2em);
                                 color: #ccc;
                                 font-size: 2.2em;
                                 font-weight: 300;
@@ -799,7 +803,7 @@
                                 width: 40px;
 
                                 &:nth-child(2) {
-                                    left: 40px;
+                                    left: 44px;
                                 }
 
                                 &:nth-child(3) {
@@ -816,22 +820,33 @@
                             }
                         }
 
-                        small {
-                            color: #999;
-                            display: block;
-                            font-size: 60%;
-                            font-weight: 300;
+                        &.title {
+                            padding-left: 8.4em;
+                            padding-right: 10em;
+                            width: 100%;
+
+                            a {
+                                display: block;
+                                text-decoration: none;
+
+                                small {
+                                    color: #999;
+                                    display: block;
+                                    font-size: 60%;
+                                    font-weight: 300;
+                                }
+                            }
                         }
 
-                        .countdown {
-                            height: 100%;
-                            line-height: 3em;
-                            padding: 0 0.2em;
-                            position: absolute;
-                            right: 0.4em;
-                            top: 0;
+                        &.countdown {
+                            margin-left: -10em;
+                            margin-right: -100%;
+                            padding: 0.3em 0.3em 0 0;
+                            text-align: right;
+                            width: 10em;
 
                             ins {
+                                font-size: 0.75em;
                                 text-decoration: none;
 
                                 &:last-of-type {
@@ -875,11 +890,13 @@
         #closed-issues ul.filter_empty li.empty_open
         { display: block !important; }
 
-        #closed-issues ul li a:not(:hover) {
+        #closed-issues ul li:not(:hover) ul li {
             color: #999;
             text-decoration: line-through;
 
-            span ins.annon {
+            a,
+            ins.annon {
+                background: none;
                 color: #999;
             }
 
@@ -888,10 +905,6 @@
                 filter: gray; /* IE6-9 */
                 -webkit-filter: grayscale(100%); /* Chrome 19+, Safari 6+, Safari 6+ iOS */
             }
-        }
-
-        #closed-issues ul li a:hover {
-            text-decoration: none;
         }
     }
 
