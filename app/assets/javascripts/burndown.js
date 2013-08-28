@@ -87,7 +87,7 @@ $(function() {
 
             var assignee = this.get('assignee') || null;
             var creator = this.get('user');
-            var title = this.get('title');
+            var title = this.escape('title');
             var url = this.get('html_url');
 
             var created_at = new Date(this.get('created_at'));
