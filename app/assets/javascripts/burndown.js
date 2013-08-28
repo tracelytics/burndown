@@ -515,8 +515,8 @@ $(function() {
     var MilestoneView = Backbone.View.extend({
         el: '.content',
         events: {
-            'click .labels li a': 'toggleLabelFilter'
-            'click a[data-inpage]': 'jumpTo',
+            'click .labels li a': 'toggleLabelFilter',
+            'click a[data-inpage]': 'jumpTo'
         },
         initialize: function() {
             _.bindAll(this, 'render', 'loadMilestone', 'toggleLabelFilter',
