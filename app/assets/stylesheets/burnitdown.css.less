@@ -68,11 +68,16 @@
         color: @aqua;
         display: inline-block;
         font-size: 1.2em;
-        margin: 0;
+        margin: 0 0 1.0em 0;
+
+        label {
+            color: #000;
+            font-size: 80%;
+        }
     }
 
     h4 {
-        color: #000000;
+        color: #000;
         display: inline-block;
         font-size: 0.9em;
         margin: 0;
@@ -715,21 +720,32 @@
                 text-align: center;
             }
         }
+    }
+
+/* Issues List
+================================================== */
+
+    .issues_wrapper {
+        position: relative;
 
         #open-issues,
         #closed-issues {
             background: #F6F6F6;
-            margin: 6em 0 6em 0;
+            border: solid 0px transparent;
+            border-width: 0 12em;
+            margin: 6em auto;
             padding: 1em 0;
+            width: 86.5em;
 
             .legend {
                 #image-insert > .before-data-icon (@dark-red, @dark-red, 24px, 24px, 0, auto, auto, 0);
                 color: @dark-red;
                 float: right;
-                margin: -2.5em 0.6em 0 0;
+                margin: 0 0.6em 1.0em 0;
             }
 
             ul {
+                clear: both;
                 list-style: none;
                 margin: 0;
                 padding: 0;
@@ -847,6 +863,7 @@
                     &.empty_closed {
                         background: #fff;
                         border: 5px solid @med-red;
+                        display: none;
                         margin: 3em auto 0;
                         padding: 1em;
                         width: 32em;
@@ -868,8 +885,13 @@
             }
         }
 
-        #open-issues ul li.empty_closed { display: none; }
-        #closed-issues ul li.empty_open { display: none; }
+        #open-issues ul.empty li.empty_open,
+        #open-issues ul.filter_empty li.empty_open
+        { display: block !important; }
+
+        #closed-issues ul.empty li.empty_open,
+        #closed-issues ul.filter_empty li.empty_open
+        { display: block !important; }
 
         #closed-issues ul li:not(:hover) ul li {
             color: #999;
@@ -886,5 +908,54 @@
                 filter: gray; /* IE6-9 */
                 -webkit-filter: grayscale(100%); /* Chrome 19+, Safari 6+, Safari 6+ iOS */
             }
+        }
+    }
+
+/* Label List
+================================================== */
+
+    .labels {
+        font-size: 0.75em;
+        list-style: none;
+        left: 0;
+        padding: 0;
+        position: absolute;
+        top: 60px;
+
+        li a {
+            #image-insert > .before-data-icon (#262626, #262626, 15px, 15px, 0.5em, 0.3em, auto, auto);
+            border: solid 1px #fff;
+            border-width: 1px 1px 1px 0;
+            color: #000;
+            display: inline-block;
+            max-width: 14em;
+            padding: 0.5em;
+            text-decoration: none;
+            word-wrap: break-word;
+
+            &:hover {
+                padding: 0.5em 2em 0.5em 0.5em;
+            }
+
+            &:focus {
+                outline: 0;
+            }
+
+            &:before {
+                display: none;
+            }
+
+            &.active {
+                padding: 0.5em 2em 0.5em 0.5em;
+
+                &:before {
+                    display: block;
+                }
+            }
+        }
+
+        &.filtering li a:not(.active) {
+            background-color: #eee !important;
+            color: #999;
         }
     }
