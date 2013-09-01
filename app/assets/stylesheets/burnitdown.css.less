@@ -927,7 +927,7 @@
         top: 60px;
 
         li a {
-            #image-insert > .before-data-icon (#262626, #262626, 15px, 15px, 0.5em, 0.3em, auto, auto);
+            #image-insert > .before-data-icon (@dark-aqua; @aqua; 15px; 15px; 0.5em; -1.5em; auto; auto;);
             border: solid 1px #fff;
             border-width: 1px 1px 1px 0;
             color: #000;
@@ -938,7 +938,7 @@
             word-wrap: break-word;
 
             &:hover {
-                padding: 0.5em 2em 0.5em 0.5em;
+                padding: 0.5em 0.5em 0.5em 1.5em;
             }
 
             &:focus {
@@ -946,11 +946,12 @@
             }
 
             &:before {
+                text-shadow: none;
                 display: none;
             }
 
             &.active {
-                padding: 0.5em 2em 0.5em 0.5em;
+                padding: 0.5em 0.5em 0.5em 1.5em;
 
                 &:before {
                     display: block;
@@ -960,6 +961,6 @@
 
         &.filtering li a:not(.active) {
             background-color: #eee !important;
-            color: #999;
+            color: #999 !important;
         }
     }
