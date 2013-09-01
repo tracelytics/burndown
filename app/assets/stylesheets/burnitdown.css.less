@@ -15,7 +15,6 @@
         font: 100%/1.5 @sans-serif-font; /* 16px */
         letter-spacing: 0.3px;
         margin: 0;
-        min-width: 65em;
         padding: 0;
     }
 
@@ -253,7 +252,6 @@
         .main {
             height: 60px;
             left: 0;
-            min-width: 43.25em;
             padding: 0 0 0 208px;
             position: absolute;
             top: 69px;
@@ -271,10 +269,11 @@
             }
 
             h2 {
-                position: absolute;
                 bottom: -30px;
+                height: 20px;
+                position: absolute;
                 left: 210px;
-                white-space: nowrap;
+                margin: 0 2em 0 0;
             }
         }
 
@@ -477,10 +476,10 @@
 
     .milestone, .summary {
         margin: 0 auto;
-        padding: 3em 0 2em 0;
+        max-width: 1000px;
+        padding: 3em 1em 2em 1em;
         position: relative;
         top: 0;
-        width: 1000px;
 
         .back {
             #layouts > .abspos (-52px; auto; auto; 50%;);
@@ -565,7 +564,8 @@
             font-size: 0.7em;
             line-height: 5.0em;
             padding: 0.3em 0;
-            width: 50%;
+            white-space: nowrap;
+            width: 49%;
 
             img {
                 vertical-align: middle;
@@ -580,6 +580,8 @@
             list-style: none;
             margin: 0;
             text-align: center;
+            white-space: nowrap;
+            width: 49%;
 
             li {
                 color: @dark-aqua;
@@ -670,23 +672,26 @@
             background: #fff;
             border: solid 5px @med-red;
             clear: both;
+            overflow: hidden;
             padding: 1em 0 1em 0;
             position: relative;
 
             #chart_container {
                 position: relative;
-                display: inline-block;
+                display: block;
 
                 #chart {
-                        display: inline-block;
-                        margin-left: 40px;
+                    display: block;
+                    height: 500px;
+                    margin-left: 40px;
+                    max-width: 1000px;
                 }
 
                 #y_axis {
-                        position: absolute;
-                        top: 0;
-                        bottom: 0;
-                        width: 40px;
+                    position: absolute;
+                    top: 0;
+                    bottom: 0;
+                    width: 40px;
                 }
             }
 
@@ -735,11 +740,11 @@
         #open-issues,
         #closed-issues {
             background: #F6F6F6;
-            border: solid 0px transparent;
-            border-width: 0 12em;
+            border-left: solid 12em transparent;
+            border-right: solid 12em transparent;
             margin: 6em auto;
             padding: 1em 0;
-            width: 86.5em;
+            max-width: 86.5em;
 
             .legend {
                 #image-insert > .before-data-icon (@dark-red; @dark-red; 24px; 24px; 0; auto; auto; 0;);
@@ -912,6 +917,12 @@
                 filter: gray; /* IE6-9 */
                 -webkit-filter: grayscale(100%); /* Chrome 19+, Safari 6+, Safari 6+ iOS */
             }
+        }
+    }
+
+    @media only screen and (max-width : 1000px) {
+        .issues_wrapper #open-issues, .issues_wrapper #closed-issues {
+            border-right-width: 1em;
         }
     }
 
