@@ -149,17 +149,17 @@
         <div class="created">
             {{=milestone.getCreator()}} created milestone on {{=milestone.getCreatedDateFormatted()}}
         </div>
-        <ul class="issue_math">
-            <li class="jump">
-                <a href="#open-issues" title="view open issues" data-inpage="true">Open [{{=milestone.get('open_issues')}}]</a>
-            </li>
-            <li class="join">+</li>
-            <li class="jump">
-                <a href="#closed-issues" title="view closed issues" data-inpage="true">Closed [{{=milestone.get('closed_issues')}}]</a>
-            </li>
-            <li class="join">=</li>
-            <li>Total [{{=milestone.getNumIssues()}}]</li>
-        </ul>
+        <div class="issue_math">
+            <span class="jump">
+                <a href="#open-issues" title="view open issues" data-inpage="true">{{=milestone.get('open_issues')}}</a> <small>[open]</small>
+            </span>
+            <span class="join">+</span>
+            <span class="jump">
+                <a href="#closed-issues" title="view closed issues" data-inpage="true">{{=milestone.get('closed_issues')}}</a> <small>[closed]</small>
+            </span>
+            <span class="join">=</span>
+            <span>{{=milestone.getNumIssues()}}</span>
+        </div>
         <ul class="completeness">
             <li>total</li>
             <li style="width:{{=milestone.getPercentComplete()}}%;"></li>
@@ -262,36 +262,27 @@
                 30 Day Summary
                 <span>{{=session.getURL()}}</span>
             </h3>
-            {{ if (loaded && (created.length > 0 || resolved.length > 0)) { }}
-            <ul class="issue_math">
-                <li class="jump">
-                    <a href="#closed-issues" title="view open issues" data-inpage="true">Closed [{{=resolved.length}}]</a>
-                </li>
-                <li class="join">
-                    {{ if (resolved.length > created.length) { }}
-                    >
-                    {{ } else if (resolved.length === created.length) { }}
-                    =
-                    {{ } else { }}
-                    <
-                    {{ } }}
-                </li>
-                <li class="jump">
-                    <a href="#open-issues" title="view closed issues" data-inpage="true">Created [{{=created.length}}]</a>
-                </li>
-                <li class="join">=</li>
-                <li>
-                    {{ if (resolved.length > created.length) { }}
-                    <span class="eval burning">&nbsp;on fire!</span>
-                    {{ } else if (resolved.length === created.length) { }}
-                    <span class="eval">&nbsp;breakin’ even</span>
-                    {{ } else { }}
-                    <span class="eval coldasice">&nbsp;get closin’</span>
-                    {{ } }}
-                </li>
-            </ul>
-            {{ } }}
         </div>
+        {{ if (loaded && (created.length > 0 || resolved.length > 0)) { }}
+        <div class="issue_math">
+            <span class="jump">
+                <a href="#closed-issues" title="view open issues" data-inpage="true">{{=resolved.length}}</a> <small>[closed]</small>
+            </span>
+            <span class="join">{{ if (resolved.length > created.length) { }}>{{ } else if (resolved.length === created.length) { }}={{ } else { }}<{{ } }}</span>
+            <span class="jump">
+                <a href="#open-issues" title="view closed issues" data-inpage="true">{{=created.length}}</a> <small>[created]</small>
+            </span>
+            <span class="join">=</span>
+            <span class="eval">
+                {{ if (resolved.length > created.length) { }}
+                <span class="burning">on fire!</span>
+                {{ } else if (resolved.length === created.length) { }}
+                breakin’ even
+                {{ } else { }}
+                <span class="coldasice">get closin’</span>{{ } }}
+            </span>
+        </div>
+        {{ } }}
     {{ if (loaded) { }}
         <div class="chart_wrapper">
             <div id="chart_container">
