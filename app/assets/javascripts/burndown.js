@@ -510,13 +510,22 @@ $(function() {
             console.log('KA-BOOM!');
             if (!session.get('token') || error.status == 403) {
                 self.message.setError('Sign into Github before you wreck yourself!');
-                self.render();
             } else if (error.status == 404) {
                 self.message.setProblem('Repository not found! Do you have access to it?');
-                self.render();
             } else {
                 console.log('error: ', error);
+                var errMsg = "Something went wrong. Please try again!";
+
+                // If there is a responseText from Github, parse it, escape it
+                // and set it to the error message.
+                if (error.responseText) {
+                    var resp = $.parseJSON(error.responseText) || {};
+                    errMsg = _.escape(resp.message);
+                }
+
+                self.message.setError(errMsg);
             }
+            self.render();
         }
     });
 
