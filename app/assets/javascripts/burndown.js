@@ -538,6 +538,8 @@ $(function() {
             self.openIssues = new MilestoneOpenIssues();
             self.closedIssues = new MilestoneClosedIssues();
 
+            // Enable a responsive design by re-rendering the chart if the
+            // window resizes.
             $(window).on('resize', this.renderChart);
         },
         render: function() {
@@ -644,8 +646,8 @@ $(function() {
                 // Build graph!
                 var graph = new Rickshaw.Graph({
                     element: document.querySelector("#chart"),
-                    width: this.width,
-                    height: this.height,
+                    width: self.width,
+                    height: self.height,
                     renderer: 'line',
                     interpolation: 'basis',
                     series: [{
@@ -781,6 +783,8 @@ $(function() {
             self.createdIssues = new SummaryOpenIssues();
             self.resolvedIssues = new SummaryClosedIssues();
 
+            // Enable a responsive design by re-rendering the chart if the
+            // window resizes.
             $(window).on('resize', this.renderChart);
         },
         render: function() {
@@ -888,8 +892,8 @@ $(function() {
                 // Build graph!
                 var graph = new Rickshaw.Graph({
                     element: document.querySelector("#chart"),
-                    width: this.width,
-                    height: this.height,
+                    width: self.width,
+                    height: self.height,
                     renderer: 'line',
                     stroke: true,
                     interpolation: 'basis',
