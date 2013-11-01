@@ -29,7 +29,8 @@
                 <% else %>
                 <div class="sign_in">
                     <span class="octocat">GitHub</span>
-                    <%= link_to "Sign in with your Github credentials", "/auth/github" %>
+                    <%= link_to "Sign in with Github (private/public)", "/auth/github?scope=repo" %>
+                    <%= link_to "Sign in with Github (public read only)", "/auth/github" %>
                 </div>
                 <% end %>
             </div>

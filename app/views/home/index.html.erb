@@ -16,7 +16,7 @@
             Ok, how does it work?
         </h3>
         <ol>
-            <li><span><%= link_to "Sign in with your Github credentials", "/auth/github" %></span></li>
+            <li><span>Sign in with Github: <%= link_to "private/public", "/auth/github?scope=repo" %> or <%= link_to "public read only", "/auth/github" %></span></li>
             <li><span>Search for your repos and milestone</span></li>
             <li><span>View burn down charts and lists of open and closed issues</span></li>
             <li><span>??</span></li>
