@@ -110,7 +110,8 @@
 
     .content {
         display: table;
-        padding: 2em 0 15em 0;
+        padding: 2em 5% 15em 5%;
+        min-width: 58em;
         position: relative;
         width: 100%;
 
@@ -151,13 +152,14 @@
             }
 
             &.left {
-                margin: 0 0 3em -1em;
+                margin: 0 0 3em -0.8em;
                 padding: 0 2em 0 6em;
                 text-align: right;
             }
 
             ol {
-                #text > .eight-bit (@aqua;);
+                color: @aqua;
+                font-weight: bold;
                 line-height: 1.75em;
                 list-style-position: outside;
                 margin: 1em 0 0 2.4em;
@@ -166,7 +168,11 @@
                 li {
                     span {
                         color: #262626;
-                        font-family: @sans-serif-font;
+                        font-weight: normal;
+                    }
+
+                    ul li {
+                        font-weight: normal;
                     }
                 }
             }
@@ -241,7 +247,7 @@
 
     header {
         height: 7.0em;
-        min-width: 43.1em;
+        min-width: 58em;
         margin: 50px auto;
         position: relative;
         width: 100%;
@@ -281,17 +287,10 @@
         #user_nav {
             position: absolute;
             top: -1em;
-            right: 4em;
-
-            .octocat {
-                #image-insert > .icon ("assets/burndown_logos.png"; 82px; 94px; 0 -78px;);
-                float: left;
-                margin: 0 10px 0 0;
-            }
+            right: 5em;
 
             .sign_in,
             .sign_out {
-                background: rgba(0, 153, 153, 0.05);
                 margin: 0 auto;
                 overflow: hidden;
                 padding: 0.3em 0.5em;
@@ -311,7 +310,53 @@
                 }
             }
 
+            .sign_in {
+                label {
+                    display: block;
+                    margin: 0 0 1em 0;
+                    text-align: center;
+                }
+
+                ul {
+                    list-style: none;
+                    margin: 0;
+                    padding: 0;
+
+                    .octocat_private span,
+                    .octocat_public span {
+                        #image-insert > .icon ("assets/burndown_logos.png"; 82px; 94px; 0 -78px;);
+                        display: block;
+                        margin: 10px auto;
+                    }
+
+                    .octocat_private span {
+                        background-position: -118px -78px;
+                    }
+
+                    li {
+                        background: rgba(0, 153, 153, 0.05);
+                        float: left;
+                        height: 150px;
+                        margin: 0;
+                        width: 132px;
+
+                        &:first-of-type {
+                            margin: 0 8px 0 0;
+                        }
+
+                        a {
+                            display: block;
+                            font-size: 0.85em;
+                            margin: 0;
+                            text-align: center;
+                            width: auto;
+                        }
+                    }
+                }
+            }
+
             .sign_out {
+                background: rgba(0, 153, 153, 0.05);
                 height: 80px;
 
                 p {
