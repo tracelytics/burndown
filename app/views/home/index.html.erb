@@ -7,7 +7,7 @@
         <input type="text" class="input-large" placeholder="github 'user/repo'" autofocus>
         <button id="fetch" type="submit" class="btn">View Repository</button>
         <p>
-            <span data-beforeicon="&#xe054;">Type a Github username/repository that you have access to.</span>
+            <span data-beforeicon="&#xe054;">Type a GitHub username/repository that you have access to.</span>
         </p>
     </div>
 <% else %>
@@ -16,7 +16,12 @@
             Ok, how does it work?
         </h3>
         <ol>
-            <li><span><%= link_to "Sign in with your Github credentials", "/auth/github" %></span></li>
+            <li><span>Sign in with GitHub to Burndown:</span>
+                <ul>
+                    <li><%= link_to "your private & public repos", "/auth/github?scope=repo" %></li>
+                    <li><%= link_to raw("just public repos <small>(read only)</small>"), "/auth/github" %></li>
+                </ul>
+            </li>
             <li><span>Search for your repos and milestone</span></li>
             <li><span>View burn down charts and lists of open and closed issues</span></li>
             <li><span>??</span></li>
@@ -30,18 +35,20 @@
         </h3>
         <p>
             At <a href="http://dev.appneta.com" title="Appneta Design and Development" target="_blank">AppNeta</a>, we wanted a way to see
-            how we are doing on closing issues in our milestones. So we put together a service to see if we were going to finish on time.
-            We figured this might be useful for others, so we put it on the interwebs, through a series of tubes.
+            how we are doing on closing issues in our milestones.
+            <br>
+            We put together a service to see if we were going to finish on time.
+            We figured this might be useful for others, so we put it on the interwebs, through a <a href="http://en.wikipedia.org/wiki/Series_of_tubes" title="fail">series of tubes</a>.
         </p>
     </section>
 
     <section class="right">
         <h3>
-            Is it safe to sign in to Github?
+            Is it safe to sign in to GitHub?
         </h3>
         <p>
-            Sure, we don’t store any of your credentials. We just use the info to query the Github API to look up your repos and milestones.
-            We never store anything, revoke access any time you want.
+            Sure, we don’t store any of your credentials. We just use the info to query the GitHub API to look up your repos and milestones.
+            We never store anything, <a href="https://github.com/settings/applications">revoke access</a> any time you want.
         </p>
     </section>
 
@@ -51,9 +58,10 @@
         </h3>
         <p>
             A burn down chart is a representation of work left to do versus time.
+            <br>
             The outstanding work is on the y-axis, with time along the x-axis.
             <br>
-            <a href="http://en.wikipedia.org/wiki/Burn_down_chart" title="Thanks Wikipedia" target="_blank">Thanks Wikipedia!</a>
+            <a href="http://en.wikipedia.org/wiki/Burn_down_chart" title="Thanks Wikipedia" target="_blank"><small>Thanks Wikipedia!</small></a>
         </p>
     </section>
 
@@ -62,10 +70,10 @@
             Can I contribute?
         </h3>
         <p>
-            Sure! Take a look at the project on <a href="https://github.com/appneta/burndown" title="view on Github">Github</a>, submit a pull request,
+            Sure! Take a look at the project on <a href="https://github.com/appneta/burndown" title="view on GitHub">GitHub</a>, submit a pull request,
             file an issue, contribute anyway you want.
         </p>
-        <a href="https://github.com/appneta/burndown" title="view on Github" class="to_github">Check out the project on GitHub</a>
+        <a href="https://github.com/appneta/burndown" title="view on GitHub" class="to_github">Check out the project on GitHub</a>
     </section>
 <% end %>
 
