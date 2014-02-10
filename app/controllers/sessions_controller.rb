@@ -10,8 +10,14 @@ class SessionsController < ApplicationController
 
   def get
     token = session[:user_token]
-    return render :json => {'status' => (token ? 'ok' : 'error'),
-                            'data' => (token ? token : nil)}
+    return render :json => {
+      :status => (token ? 'ok' : 'error'),
+      :data => {
+        :token => (token ? token[:token] : nil),
+        :expires => (token ? token[:expires] : nil),
+        :hostname => Github.hostname,
+      }
+    }
   end
 
   def destroy
