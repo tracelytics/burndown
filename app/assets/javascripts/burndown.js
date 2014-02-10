@@ -19,11 +19,14 @@ $(function() {
             $.getJSON('/sessions/get', function(response) {
                 var data = response.data;
                 var token = null;
+                var hostname = null;
                 if (response.status == "ok" && data.token) {
                     console.log('session created!');
                     token = data.token;
+                    hostname = data.hostname;
                 }
                 self.set('token', token);
+                self.set('hostname', hostname);
             });
         },
         getURL: function() {
@@ -143,9 +146,10 @@ $(function() {
             var token = session.get('token');
             var owner = session.get('owner');
             var repo = session.get('repo');
+            var hostname = session.get('hostname');
 
             // Build initial url string.
-            var url = ['https://api.github.com',
+            var url = [hostname,
                        '/repos/'+owner+'/'+repo+'/issues',
                        '?access_token='+token,
                        ''].join('');
@@ -352,8 +356,9 @@ $(function() {
             var token = session.get('token');
             var owner = session.get('owner');
             var repo = session.get('repo');
+            var hostname = session.get('hostname');
 
-            var url = ['https://api.github.com',
+            var url = [hostname,
                        '/repos/'+owner+'/'+repo+'/milestones',
                        '?access_token=',
                        token].join('');
