@@ -9,7 +9,7 @@ class Github
     if self.hostname?
       ENV['GITHUB_HOSTNAME']
     else
-      self.API_HOSTNAME
+      API_HOSTNAME
     end
   end
 end
