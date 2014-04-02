@@ -538,7 +538,7 @@ $(function() {
         initialize: function() {
             _.bindAll(this, 'render', 'loadMilestone', 'toggleLabelFilter',
                             'renderIssues', 'renderChart', 'getIdealLine',
-                            'getActualLine');
+                            'getActualLine', 'getCreatedLine');
             var self = this;
 
             self.filter = null;
@@ -635,6 +635,24 @@ $(function() {
                 };
             });
         },
+        getCreatedLine: function(openIssues, closedIssues) {
+            var self = this;
+
+            var start = self.milestone.get('created_at');
+            var startDate = new Date(start).getTime() / 1000;
+            var allIssues = openIssues.models.concat(closedIssues.models);
+            allIssues = _.sortBy(allIssues, function(issue) { return issue.getCreatedTime(); });
+
+            var openCount = 0;
+
+            return _.map(allIssues, function(issue) {
+                var createdTime = issue.getCreatedTime();
+                return {
+                    x: createdTime >= startDate ? createdTime : startDate,
+                    y: ++openCount
+                };
+            });
+        },
         renderChart: function() {
             var self = this;
 
@@ -651,20 +669,7 @@ $(function() {
                 var actual = self.getActualLine(self.openIssues, self.closedIssues);
 
                 // Add creation line.
-                var start = self.milestone.get('created_at');
-                var startDate = new Date(start).getTime() / 1000;
-                var allIssues = self.openIssues.models.concat(self.closedIssues.models);
-                allIssues = _.sortBy(allIssues, function(issue) { return issue.getCreatedTime(); });
-
-                var openCount = 0;
-
-                var created = _.map(allIssues, function(issue) {
-                    var createdTime = issue.getCreatedTime();
-                    return {
-                        x: createdTime >= startDate ? createdTime : startDate,
-                        y: ++openCount
-                    };
-                });
+                var created = self.getCreatedLine(self.openIssues, self.closedIssues);
 
                 // Build graph!
                 var graph = new Rickshaw.Graph({
