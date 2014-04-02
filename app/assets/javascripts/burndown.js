@@ -82,6 +82,19 @@ $(function() {
                 return memo + label + ',';
             }, '');
         },
+        getWeight: function() {
+            var self = this;
+            var weight = 1;
+            var re = /Weight: (\d+)/;
+            var label = _.find(self.getLabels(), function(label) {
+                return re.test(label);
+            });
+            var myArray = re.exec(label);
+            if (myArray != null) {
+                weight = parseInt(myArray[1], 10);
+            }
+            return weight;
+        },
         createLink: function() {
             var rval = '';
 
