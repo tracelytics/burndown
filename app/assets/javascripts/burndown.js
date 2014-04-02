@@ -537,7 +537,8 @@ $(function() {
         },
         initialize: function() {
             _.bindAll(this, 'render', 'loadMilestone', 'toggleLabelFilter',
-                            'renderIssues', 'renderChart', 'getIdealLine');
+                            'renderIssues', 'renderChart', 'getIdealLine',
+                            'getActualLine');
             var self = this;
 
             self.filter = null;
@@ -622,6 +623,18 @@ $(function() {
                 {x: endDate,   y: 0}
             ];
         },
+        getActualLine: function(openIssues, closedIssues) {
+            var self = this;
+
+            var closedCount = openIssues.length + closedIssues.length;
+
+            return _.map(closedIssues.models, function(issue) {
+                return {
+                    x: issue.getClosedTime(),
+                    y: --closedCount
+                };
+            });
+        },
         renderChart: function() {
             var self = this;
 
@@ -635,15 +648,7 @@ $(function() {
                 var ideal = self.getIdealLine(self.openIssues, self.closedIssues);
 
                 // Add actual velocity line.
-                var totalIssueCount = self.openIssues.length + self.closedIssues.length;
-                var closedCount = totalIssueCount;
-
-                var actual = _.map(self.closedIssues.models, function(issue) {
-                    return {
-                        x: issue.getClosedTime(),
-                        y: --closedCount
-                    };
-                });
+                var actual = self.getActualLine(self.openIssues, self.closedIssues);
 
                 // Add creation line.
                 var start = self.milestone.get('created_at');
