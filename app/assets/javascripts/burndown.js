@@ -537,7 +537,7 @@ $(function() {
         },
         initialize: function() {
             _.bindAll(this, 'render', 'loadMilestone', 'toggleLabelFilter',
-                            'renderIssues', 'renderChart');
+                            'renderIssues', 'renderChart', 'getIdealLine');
             var self = this;
 
             self.filter = null;
@@ -606,6 +606,22 @@ $(function() {
             $('.closed', self.el).html(template);
             $('#closed-issues-count', self.el).text('[' + closed.length + ']');
         },
+        getIdealLine: function(openIssues, closedIssues) {
+            var self = this;
+
+            var totalIssueCount = openIssues.length + closedIssues.length;
+
+            // Add ideal velocity line.
+            var start = self.milestone.get('created_at');
+            var end = self.milestone.get('due_on') || new Date().toISOString();
+            var startDate = new Date(start).getTime() / 1000;
+            var endDate = new Date(end).getTime() / 1000;
+
+            return [
+                {x: startDate, y: totalIssueCount},
+                {x: endDate,   y: 0}
+            ];
+        },
         renderChart: function() {
             var self = this;
 
@@ -615,20 +631,11 @@ $(function() {
                 $('#y_axis').empty();
                 $('#legend').empty();
 
-                var totalIssueCount = self.openIssues.length + self.closedIssues.length;
-
                 // Add ideal velocity line.
-                var start = self.milestone.get('created_at');
-                var end = self.milestone.get('due_on') || new Date().toISOString();
-                var startDate = new Date(start).getTime() / 1000;
-                var endDate = new Date(end).getTime() / 1000;
-
-                var ideal = [
-                    {x: startDate, y: totalIssueCount},
-                    {x: endDate,   y: 0}
-                ];
+                var ideal = self.getIdealLine(self.openIssues, self.closedIssues);
 
                 // Add actual velocity line.
+                var totalIssueCount = self.openIssues.length + self.closedIssues.length;
                 var closedCount = totalIssueCount;
 
                 var actual = _.map(self.closedIssues.models, function(issue) {
@@ -639,6 +646,8 @@ $(function() {
                 });
 
                 // Add creation line.
+                var start = self.milestone.get('created_at');
+                var startDate = new Date(start).getTime() / 1000;
                 var allIssues = self.openIssues.models.concat(self.closedIssues.models);
                 allIssues = _.sortBy(allIssues, function(issue) { return issue.getCreatedTime(); });
 
