@@ -188,6 +188,11 @@ $(function() {
             d.setDate(d.getDate()-days);
             return d.toISOString();
         },
+        getTotalWeight: function() {
+            return _.reduce(this.models, function(memo, issue) {
+                return memo + issue.getWeight();
+            }, 0);
+        },
         /*
          * parse_link_header()
          *
