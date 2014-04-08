@@ -628,7 +628,7 @@ $(function() {
         getIdealLine: function(openIssues, closedIssues) {
             var self = this;
 
-            var totalIssueCount = openIssues.length + closedIssues.length;
+            var totalIssueCount = openIssues.getTotalWeight() + closedIssues.getTotalWeight();
 
             // Add ideal velocity line.
             var start = self.milestone.get('created_at');
@@ -644,14 +644,24 @@ $(function() {
         getActualLine: function(openIssues, closedIssues) {
             var self = this;
 
-            var closedCount = openIssues.length + closedIssues.length;
+            var start = self.milestone.get('created_at');
+            var startDate = new Date(start).getTime() / 1000;
+            var closedCount = openIssues.getTotalWeight() + closedIssues.getTotalWeight();
 
-            return _.map(closedIssues.models, function(issue) {
+            // Creates a starting point for the actual burndown.
+            var start = [
+                {x: startDate, y: closedCount}
+            ];
+
+            var actual = _.map(closedIssues.models, function(issue) {
+                closedCount = closedCount - issue.getWeight();
                 return {
                     x: issue.getClosedTime(),
-                    y: --closedCount
+                    y: closedCount
                 };
             });
+
+            return start.concat(actual);
         },
         getCreatedLine: function(openIssues, closedIssues) {
             var self = this;
@@ -665,9 +675,10 @@ $(function() {
 
             return _.map(allIssues, function(issue) {
                 var createdTime = issue.getCreatedTime();
+                openCount = openCount + issue.getWeight();
                 return {
                     x: createdTime >= startDate ? createdTime : startDate,
-                    y: ++openCount
+                    y: openCount
                 };
             });
         },
