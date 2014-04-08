@@ -82,6 +82,19 @@ $(function() {
                 return memo + label + ',';
             }, '');
         },
+        getWeight: function() {
+            var self = this;
+            var weight = 1;
+            var re = /Weight: (\d+)/;
+            var label = _.find(self.getLabels(), function(label) {
+                return re.test(label);
+            });
+            var myArray = re.exec(label);
+            if (myArray != null) {
+                weight = parseInt(myArray[1], 10);
+            }
+            return weight;
+        },
         createLink: function() {
             var rval = '';
 
@@ -174,6 +187,11 @@ $(function() {
             var d = new Date();
             d.setDate(d.getDate()-days);
             return d.toISOString();
+        },
+        getTotalWeight: function() {
+            return _.reduce(this.models, function(memo, issue) {
+                return memo + issue.getWeight();
+            }, 0);
         },
         /*
          * parse_link_header()
@@ -537,7 +555,8 @@ $(function() {
         },
         initialize: function() {
             _.bindAll(this, 'render', 'loadMilestone', 'toggleLabelFilter',
-                            'renderIssues', 'renderChart');
+                            'renderIssues', 'renderChart', 'getIdealLine',
+                            'getActualLine', 'getCreatedLine');
             var self = this;
 
             self.filter = null;
@@ -606,6 +625,63 @@ $(function() {
             $('.closed', self.el).html(template);
             $('#closed-issues-count', self.el).text('[' + closed.length + ']');
         },
+        getIdealLine: function(openIssues, closedIssues) {
+            var self = this;
+
+            var totalIssueCount = openIssues.getTotalWeight() + closedIssues.getTotalWeight();
+
+            // Add ideal velocity line.
+            var start = self.milestone.get('created_at');
+            var end = self.milestone.get('due_on') || new Date().toISOString();
+            var startDate = new Date(start).getTime() / 1000;
+            var endDate = new Date(end).getTime() / 1000;
+
+            return [
+                {x: startDate, y: totalIssueCount},
+                {x: endDate,   y: 0}
+            ];
+        },
+        getActualLine: function(openIssues, closedIssues) {
+            var self = this;
+
+            var start = self.milestone.get('created_at');
+            var startDate = new Date(start).getTime() / 1000;
+            var closedCount = openIssues.getTotalWeight() + closedIssues.getTotalWeight();
+
+            // Creates a starting point for the actual burndown.
+            var start = [
+                {x: startDate, y: closedCount}
+            ];
+
+            var actual = _.map(closedIssues.models, function(issue) {
+                closedCount = closedCount - issue.getWeight();
+                return {
+                    x: issue.getClosedTime(),
+                    y: closedCount
+                };
+            });
+
+            return start.concat(actual);
+        },
+        getCreatedLine: function(openIssues, closedIssues) {
+            var self = this;
+
+            var start = self.milestone.get('created_at');
+            var startDate = new Date(start).getTime() / 1000;
+            var allIssues = openIssues.models.concat(closedIssues.models);
+            allIssues = _.sortBy(allIssues, function(issue) { return issue.getCreatedTime(); });
+
+            var openCount = 0;
+
+            return _.map(allIssues, function(issue) {
+                var createdTime = issue.getCreatedTime();
+                openCount = openCount + issue.getWeight();
+                return {
+                    x: createdTime >= startDate ? createdTime : startDate,
+                    y: openCount
+                };
+            });
+        },
         renderChart: function() {
             var self = this;
 
@@ -615,42 +691,14 @@ $(function() {
                 $('#y_axis').empty();
                 $('#legend').empty();
 
-                var totalIssueCount = self.openIssues.length + self.closedIssues.length;
-
                 // Add ideal velocity line.
-                var start = self.milestone.get('created_at');
-                var end = self.milestone.get('due_on') || new Date().toISOString();
-                var startDate = new Date(start).getTime() / 1000;
-                var endDate = new Date(end).getTime() / 1000;
-
-                var ideal = [
-                    {x: startDate, y: totalIssueCount},
-                    {x: endDate,   y: 0}
-                ];
+                var ideal = self.getIdealLine(self.openIssues, self.closedIssues);
 
                 // Add actual velocity line.
-                var closedCount = totalIssueCount;
-
-                var actual = _.map(self.closedIssues.models, function(issue) {
-                    return {
-                        x: issue.getClosedTime(),
-                        y: --closedCount
-                    };
-                });
+                var actual = self.getActualLine(self.openIssues, self.closedIssues);
 
                 // Add creation line.
-                var allIssues = self.openIssues.models.concat(self.closedIssues.models);
-                allIssues = _.sortBy(allIssues, function(issue) { return issue.getCreatedTime(); });
-
-                var openCount = 0;
-
-                var created = _.map(allIssues, function(issue) {
-                    var createdTime = issue.getCreatedTime();
-                    return {
-                        x: createdTime >= startDate ? createdTime : startDate,
-                        y: ++openCount
-                    };
-                });
+                var created = self.getCreatedLine(self.openIssues, self.closedIssues);
 
                 // Build graph!
                 var graph = new Rickshaw.Graph({
