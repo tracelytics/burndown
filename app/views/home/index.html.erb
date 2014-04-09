@@ -84,7 +84,7 @@
 {{ } else { }}
     {{ if (session.has('owner') && session.has('repo')) { }}
     <div class="milestones">
-        <h3>Milestones in {{=session.getURL()}}</h3>
+        <h3>{{=state}} Milestones in {{=session.getURL()}}</h3>
         {{ if (milestones.length > 0) { }}
         <ul>
         {{ _.each(milestones, function (milestone, i) { }}
