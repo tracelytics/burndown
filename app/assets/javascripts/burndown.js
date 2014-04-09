@@ -1016,7 +1016,9 @@ $(function() {
             '': 'home',
             ':owner/:repo': 'repository',
             ':owner/:repo/summary': 'summary',
-            ':owner/:repo/:id': 'milestone'
+            ':owner/:repo/:id': 'milestone',
+            ':owner/:repo/milestones': 'repository',
+            ':owner/:repo/milestones/:state': 'repository'
         }
     });
 
