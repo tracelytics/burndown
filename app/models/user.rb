@@ -9,8 +9,18 @@ class User < ActiveRecord::Base
     create! do |user|
       user.provider = auth["provider"]
       user.uid = auth["uid"]
-      user.name = auth["info"]["name"]
+      user.name = self.get_name(auth["info"])
       user.image_url = auth["info"]["image"]
     end
+  end
+
+private
+
+  def self.get_name(info)
+    name = info["name"]
+    if name == ""
+      name = info["nickname"]
+    end
+    return name
   end
 end
