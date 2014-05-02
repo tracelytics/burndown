@@ -1,12 +1,14 @@
 source 'https://rubygems.org'
 
+ruby '2.0.0'
 gem 'rails', '3.2.11'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 group :production, :staging do
-  gem "pg"
+  gem 'pg'
+  gem 'google-analytics-rails'
 end
 
 group :development, :test do
@@ -25,7 +27,7 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
-gem 'jquery-rails'
+gem 'jquery-rails-cdn'
 gem 'underscore-rails'
 gem 'twitter-bootstrap-rails', :git => 'git://github.com/seyhunak/twitter-bootstrap-rails.git'
 gem 'rickshaw_rails', :git => 'git://github.com/logical42/rickshaw_rails.git'

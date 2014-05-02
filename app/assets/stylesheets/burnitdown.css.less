@@ -15,15 +15,18 @@
         font: 100%/1.5 @sans-serif-font; /* 16px */
         letter-spacing: 0.3px;
         margin: 0;
-        min-width: 480px;
         padding: 0;
+    }
+
+    .forkme {
+        position: absolute; top: 0; right: 0; border: 0;
     }
 
 /* Data Icons
 ================================================== */
 
     [data-icon] {
-        #image-insert > .glyph (attr(data-icon));
+        #image-insert > .glyph (attr(data-icon););
         display: block;
         overflow: hidden;
         text-indent: 100%;
@@ -31,14 +34,14 @@
     }
 
     [data-beforeicon] {
-        #image-insert > .glyph (attr(data-beforeicon));
+        #image-insert > .glyph (attr(data-beforeicon););
     }
 
 /* Text
 ================================================== */
 
     a {
-        #bundles > .transition-animation (all, 0.2s, ease-in);
+        #bundles > .transition-animation (all; 0.2s; ease-in;);
         color: @dark-aqua;
         text-decoration: underline;
 
@@ -51,11 +54,7 @@
     h1,
     h2,
     h3 {
-        font-family: @bit-font;
-        text-shadow: 1px 1px 0 #fff;
-        text-rendering: geometricPrecision;
-        font-weight: normal;
-        -webkit-font-smoothing: none;
+        #text > .eight-bit (#262626;);
     }
 
     h1 {
@@ -72,6 +71,18 @@
         color: @aqua;
         display: inline-block;
         font-size: 1.2em;
+        margin: 0 0 1.0em 0;
+
+        label {
+            color: #000;
+            font-size: 80%;
+        }
+    }
+
+    h4 {
+        color: #000;
+        display: inline-block;
+        font-size: 0.9em;
         margin: 0;
     }
 
@@ -99,7 +110,8 @@
 
     .content {
         display: table;
-        padding: 2em 0 15em 0;
+        padding: 2em 5% 15em 5%;
+        min-width: 58em;
         position: relative;
         width: 100%;
 
@@ -140,15 +152,14 @@
             }
 
             &.left {
-                float: left;
-                margin: 0 0 3em -12px;
+                margin: 0 0 3em -0.8em;
                 padding: 0 2em 0 6em;
                 text-align: right;
             }
 
             ol {
                 color: @aqua;
-                font-family: @bit-font;
+                font-weight: bold;
                 line-height: 1.75em;
                 list-style-position: outside;
                 margin: 1em 0 0 2.4em;
@@ -157,7 +168,11 @@
                 li {
                     span {
                         color: #262626;
-                        font-family: @sans-serif-font;
+                        font-weight: normal;
+                    }
+
+                    ul li {
+                        font-weight: normal;
                     }
                 }
             }
@@ -167,7 +182,55 @@
             }
 
             a.to_github {
-                #image-insert > .before-icon (36px, 36px, "assets/burndown_logos.png", -47px -168px, -6px, -6px);
+                #image-insert > .before-icon (36px; 36px; "assets/burndown_logos.png"; -47px -168px; -6px; -6px;);
+            }
+        }
+
+        .loading {
+            background: #F6F6F6 url('/assets/burndown_dance.gif') 0 0 no-repeat;
+            height: 126px;
+            display: block;
+            margin: 0 auto;
+            overflow: hidden;
+            padding: 30px 90px 40px 0;
+            text-indent: -150px;
+            width: 150px;
+        }
+
+        .progress {
+            #text > .eight-bit (#444;);
+            background: #F6F6F6;
+            height: 12em;
+            list-style: none;
+            margin: 0 auto;
+            width: 75%;
+
+            dt {
+                font-size: 0.75em;
+                padding: 0 0 0.5em;
+            }
+
+            dd {
+                border: 5px solid @med-red;
+                height: 2.95em;
+                margin: 0 0 1em;
+                padding: 0.4em;
+                position: relative;
+                width: 100%;
+
+                span {
+                    background: @aqua;
+                    color: #fff;
+                    display: block;
+                    font-size: 0.8em;
+                    left: 0;
+                    line-height: 2.1em;
+                    padding-right: 0.4em;
+                    position: absolute;
+                    text-align: right;
+                    text-shadow: none;
+                    top: 0.4em;
+                }
             }
         }
     }
@@ -176,25 +239,21 @@
 ================================================== */
 
     #flash_notice {
-        background: none repeat scroll 0 0 red;
         display: none;
-        position: absolute;
-        text-align: center;
-        top: 0;
-        width: 100%;
     }
 
 /* Header
 ================================================== */
 
     header {
-        height: 112px;
+        height: 7.0em;
+        min-width: 58em;
         margin: 50px auto;
         position: relative;
         width: 100%;
 
         img {
-            #layouts > .abspos (-50px, auto, auto, 0);
+            #layouts > .abspos (-50px; auto; auto; 0;);
         }
 
         .main {
@@ -217,27 +276,21 @@
             }
 
             h2 {
-                position: absolute;
                 bottom: -30px;
+                height: 20px;
+                position: absolute;
                 left: 210px;
+                margin: 0 2em 0 0;
             }
         }
 
         #user_nav {
             position: absolute;
-            top: 0;
-            right: 0;
-            width: 50%;
-
-            .octocat {
-                #image-insert > .icon ("assets/burndown_logos.png", 82px, 94px, 0 -78px);
-                float: left;
-                margin: 0 10px 0 0;
-            }
+            top: -1em;
+            right: 5em;
 
             .sign_in,
             .sign_out {
-                background: rgba(0, 153, 153, 0.05);
                 margin: 0 auto;
                 overflow: hidden;
                 padding: 0.3em 0.5em;
@@ -247,6 +300,8 @@
                 img {
                     top: 0;
                     left: 0;
+                    width: 80px;
+                    height: 80px;
                 }
 
                 a {
@@ -257,11 +312,57 @@
                 }
             }
 
+            .sign_in {
+                label {
+                    display: block;
+                    margin: 0 0 1em 0;
+                    text-align: center;
+                }
+
+                ul {
+                    list-style: none;
+                    margin: 0;
+                    padding: 0;
+
+                    .octocat_private span,
+                    .octocat_public span {
+                        #image-insert > .icon ("assets/burndown_logos.png"; 82px; 94px; 0 -78px;);
+                        display: block;
+                        margin: 10px auto;
+                    }
+
+                    .octocat_private span {
+                        background-position: -118px -78px;
+                    }
+
+                    li {
+                        background: rgba(0, 153, 153, 0.05);
+                        float: left;
+                        height: 150px;
+                        margin: 0;
+                        width: 132px;
+
+                        &:first-of-type {
+                            margin: 0 8px 0 0;
+                        }
+
+                        a {
+                            display: block;
+                            font-size: 0.85em;
+                            margin: 0;
+                            text-align: center;
+                            width: auto;
+                        }
+                    }
+                }
+            }
+
             .sign_out {
+                background: rgba(0, 153, 153, 0.05);
                 height: 80px;
 
                 p {
-                    #layouts > .abspos (1em, auto, auto, 90px);
+                    #layouts > .abspos (1em; auto; auto; 90px;);
                     font-size: 0.8em;
                     margin: 0;
 
@@ -290,7 +391,7 @@
         }
 
         .logo {
-            #image-insert > .before-icon (28px, 104px, "assets/burndown_logos.png", 0 0, -9px, 0);
+            #image-insert > .before-icon (28px; 104px; "assets/burndown_logos.png"; 0 0; -9px; 0;);
             display: inline-block;
             vertical-align: middle;
 
@@ -307,19 +408,14 @@
         }
 
         .burndown_name {
+            #text > .eight-bit (@dark-red;);
             border-bottom: 2px solid @med-red;
             box-shadow: 0 1px 0 0 @light-red;
-            color: @dark-red;
-            font-family: @bit-font;
             font-size: 1.24em;
             height: 15px;
             line-height: 11px;
             padding: 0 0 0 0;
-            text-shadow: 1px 1px 0 #fff;
-            text-rendering: geometricPrecision;
-            font-weight: normal;
             vertical-align: middle;
-            -webkit-font-smoothing: none;
         }
     }
 
@@ -332,9 +428,15 @@
         text-align: center;
         width: 100%;
 
+        input,
+        button {
+            display: inline-block;
+            font-size: 1.5em;
+            height: 2em;
+        }
+
         input {
             border: solid 1px #ccc;
-            font-size: 1.5em;
             padding: 0.4em;
             width: 20em;
         }
@@ -343,17 +445,15 @@
             background: @aqua;
             border: none;
             color: #fff;
-            font-size: 1.5em;
             font-weight: 300;
-            height: 1.89em;
             margin: 0;
             padding: 0 1em;
-            width: 10em;
+            white-space: nowrap;
         }
 
         p span {
             color: @aqua;
-            #image-insert > .before-data-icon (@aqua, @aqua, 26px, 26px, -10px, auto, auto, -4px);
+            #image-insert > .before-data-icon (@aqua; @aqua; 26px; 26px; -10px; auto; auto; -4px;);
         }
     }
 
@@ -363,14 +463,14 @@
     .error {
         background: none repeat scroll 0 0 #F6F6F6;
         margin: 0 auto;
-        padding: 0 0 3em;
+        padding: 3em 0 4em;
         position: relative;
         text-align: center;
         top: 0;
         width: 50%;
 
         span {
-            #image-insert > .before-data-icon (@dark-red, @dark-red, 26px, 26px, 2px, auto, auto, -5px);
+            #image-insert > .before-data-icon (@dark-red; @dark-red; 26px; 26px; 2px; auto; auto; -5px;);
             color: @dark-red;
             font-size: 1.2em;
         }
@@ -392,17 +492,21 @@
             padding: 0;
 
             li {
-                #image-insert > .before-icon (30px, 30px, "assets/burndown_logos.png", -56px 0, 4px, 4px);
+                #image-insert > .before-icon (30px; 30px; "assets/burndown_logos.png"; -56px 0; 4px; 4px;);
                 line-height: 32px;
                 padding: 0 0 0 40px;
 
                 &:nth-child(odd) { background: fade(@aqua, 5%); }
 
+                &:hover {
+                    background: fade(@yellow, 10%);
+                }
+
                 a {
                     display: block;
 
                     span {
-                        #layouts > .abspos (0, 6px, auto, auto);
+                        #layouts > .abspos (0; 6px; auto; auto;);
                         color: #999;
                         font-size: 0.6em;
 
@@ -418,20 +522,20 @@
 /* Milestone
 ================================================== */
 
-    .milestone {
+    .milestone, .summary {
         margin: 0 auto;
-        padding: 3em 0 2em 0;
+        max-width: 1000px;
+        padding: 3em 1em 2em 1em;
         position: relative;
         top: 0;
-        width: 1000px;
 
         .back {
-            #layouts > .abspos (-52px, auto, auto, 50%);
+            #layouts > .abspos (-52px; auto; auto; 50%;);
             background: #e9f1f1;
             border: solid 5px #f6f6f6;
             color: @aqua;
             font-size: 1.2em;
-            margin: 0 0 0 -5em;
+            margin: 1em 0 0 -5em;
             padding: 0.3em 0;
             text-align: center;
             text-decoration: none;
@@ -446,69 +550,69 @@
             background: #F6F6F6;
             color: @dark-red;
             display: block;
+            margin: 0 0 1em 0;
             text-align: center;
+
+            span {
+                display: block;
+                font-size: 0.75em;
+                margin: 0 0 0.5em;
+            }
+
+            .duration {
+                color: fade(@dark-red, 40%);
+                display: block;
+                font-size: 50%;
+                vertical-align: text-bottom;
+            }
+        }
+
+        h4 {
+            background: #F6F6F6;
+            display: block;
+            text-align: center;
+            padding-bottom: 1.0em;
         }
 
         .meta_issues {
             background: #F6F6F6;
             padding: 2em 0 1em 0;
+        }
 
-            ul {
-                list-style: none;
-                margin: 0;
-                text-align: center;
+        .due_date {
+            #text > .eight-bit (@light-red;);
+            color: @light-red;
+            padding: 1em 0;
+            text-align: center;
 
-                li {
-                    color: @dark-aqua;
-                    display: inline-block;
-                    margin: 0.5em 0.5em 0 0;
+            span {
+                #image-insert > .before-data-icon (@light-red; @light-red; 30px; 30px; -2px; auto; auto; -10px;);
+                display: inline-block;
+                text-align: left;
 
-                    a {
-                        text-decoration: none;
-                    }
+                a {
+                    display: block;
+                    font-size: 0.75em;
+                }
 
-                    &.join {
-                        color: @aqua;
-                        font-family: @bit-font;
-                        font-size: 1.2em;
-                        margin: 0;
-                        text-shadow: 1px 1px 0 #fff;
-                        text-rendering: geometricPrecision;
-                        font-weight: normal;
-                        text-align: center;
-                        vertical-align: middle;
-                        -webkit-font-smoothing: none;
-                    }
+                &.overdue {
+                    color: @yellow;
+                    text-decoration: none;
 
-                    &.jump a {
-                        #image-insert > .before-data-icon (@dark-aqua, @aqua, 12px, 12px, auto, auto, -14px, 50%);
-                        padding: 0;
+                    &:before {
+                        color: @yellow;
                     }
                 }
             }
         }
 
-        .due_date {
-            color: @light-red;
-            font-family: @bit-font;
-            text-shadow: 1px 1px 0 #fff;
-            text-rendering: geometricPrecision;
-            font-weight: normal;
-            padding: 1em 0;
-            text-align: center;
-            -webkit-font-smoothing: none;
-
-            span {
-                #image-insert > .before-data-icon (@light-red, @light-red, 30px, 30px, -8px, auto, auto, -10px);
-            }
-        }
-
         .created {
             color: #999;
-            float: left;
+            display: inline-block;
             font-size: 0.7em;
-            padding: 0.3em 0;
-            width: 50%;
+            height: 5em;
+            padding: 0 2em 0 0;
+            width: 49%;
 
             img {
                 vertical-align: middle;
@@ -516,28 +620,137 @@
             }
         }
 
+        .issue_math {
+            float: right;
+            height: 3.5em;
+            line-height: 2.5em;
+            margin: 0;
+            padding: 0 0 0 1em;
+            text-align: left;
+            width: 49%;
+
+            span {
+                color: @dark-aqua;
+
+                small {
+                    color: #999;
+                    font-size: 0.7em;
+                }
+
+                &.join {
+                    #text > .eight-bit (@aqua;);
+                    font-size: 1.2em;
+                    vertical-align: middle;
+                }
+
+                &.eval {
+                    #text > .eight-bit (@dark-aqua;);
+                    font-size: 0.8em;
+                    letter-spacing: 0.05em;
+
+                    .burning {
+                        color: @light-red;
+                    }
+
+                    .coldasice {
+                        color: @yellow;
+                    }
+                }
+            }
+        }
+
+        .completeness {
+            background: #fff;
+            border: solid 5px @med-red;
+            border-bottom: none;
+            clear: both;
+            height: 2.5em;
+            list-style: none outside none;
+            margin: 0;
+            padding: 0;
+            position: relative;
+
+            li {
+                font-size: 0.78em;
+                height: 2.8em;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+
+                &:first-of-type {
+                    background: fadeout(@aqua, 80%);
+                    overflow: hidden;
+                    text-indent: 100%;
+                }
+
+                &:nth-child(2) {
+                    background: @aqua;
+                    height: 1.75em;
+                    margin: 0.5em 0 0;
+                }
+
+                &:last-of-type {
+                    #text > .eight-bit (#262626;);
+                    line-height: 1.75em;
+                    padding: 0.45em 0.3em 0 0;
+                    text-align: right;
+                }
+            }
+        }
+
+        .chart_overview {
+            font-size: 30px;
+
+            .created-count {
+                color: #cc0000;
+                font-weight: bold;
+            }
+
+            .resolved-count {
+                color: green;
+                font-weight: bold;
+            }
+        }
+
         .chart_wrapper {
             background: #fff;
             border: solid 5px @med-red;
             clear: both;
+            overflow: hidden;
             padding: 1em 0 1em 0;
             position: relative;
 
             #chart_container {
                 position: relative;
-                display: inline-block;
+                display: block;
 
                 #chart {
-                        display: inline-block;
-                        margin-left: 40px;
+                    display: block;
+                    height: 500px;
+                    margin-left: 40px;
+                    max-width: 1000px;
                 }
 
                 #y_axis {
-                        position: absolute;
-                        top: 0;
-                        bottom: 0;
-                        width: 40px;
+                    position: absolute;
+                    top: 0;
+                    bottom: 0;
+                    width: 40px;
                 }
+            }
+
+            h2,
+            p {
+                #text > .eight-bit (@dark-red;);
+                font-size: 1.3em;
+                text-align: center;
+                width: 100%;
+            }
+
+            p {
+                color: @aqua;
+                line-height: 2em;
             }
 
             #legend {
@@ -554,48 +767,89 @@
                 }
             }
 
+            .empty_chart {
+                #text > .eight-bit (#999;);
+                color: #999;
+                padding: 0 0 2em;
+                text-align: center;
+            }
         }
+    }
+
+/* Issues List
+================================================== */
+
+    .issues_wrapper {
+        position: relative;
 
         #open-issues,
         #closed-issues {
             background: #F6F6F6;
-            margin: 6em 0 6em 0;
+            border-left: solid 12em transparent;
+            border-right: solid 12em transparent;
+            margin: 6em auto;
             padding: 1em 0;
+            max-width: 86.5em;
+
+            .legend {
+                #image-insert > .before-data-icon (@dark-red; @dark-red; 24px; 24px; 0; auto; auto; 0;);
+                color: @dark-red;
+                float: right;
+                margin: 0 0.6em 1.0em 0;
+            }
 
             ul {
+                clear: both;
                 list-style: none;
+                margin: 0;
+                padding: 0;
 
                 li {
                     margin: 0 0 0.6em 0;
-                    min-height: 40px;
+                    padding: 0.2em 0;
+                    min-height: 2.6em;
+                    overflow: hidden;
                     position: relative;
 
-                    &:nth-child(odd) a { background: fade(@aqua, 5%); }
+                    &:nth-child(odd) { background: fade(@aqua, 5%); }
 
-                    a {
-                        display: block;
-                        min-height: 40px;
-                        padding: 3px 0 3px 0;
-                        text-decoration: none;
+                    &:hover {
+                        background: fade(@yellow, 10%);
 
-                        &:hover {
-                            text-decoration: underline;
+                        ul li {
+                            span ins,
+                            small {
+                                color: @aqua;
+                                font-weight: normal;
+                            }
+
+                            &.countdown ins {
+
+                                &:first-of-type {
+                                    display: none;
+                                }
+                                &:last-of-type {
+                                    display: block;
+                                }
+                            }
                         }
+                    }
 
-                        span {
-                            float: left;
-                            font-family: @bit-font;
-                            height: 40px;
-                            margin: 0 1.0em 0 0;
-                            position: relative;
-                            text-shadow: 1px 1px 0 #fff;
-                            text-rendering: geometricPrecision;
-                            font-weight: normal;
-                            width: 120px;
+                    ul li {
+                        background: transparent !important;
+                        float: left;
+                        margin: 0;
+                        overflow: hidden;
+                        position: relative;
+
+                        &.whoswho {
+                            #text > .eight-bit (#262626;);
+                            margin: 0.3em 8.4em 0 -100%;
+                            width: 8.4em;
 
                             img,
                             ins {
-                                #layouts > .abspos (0, auto, auto, 0);
+                                #layouts > .abspos (0; auto; auto; 0.2em;);
                                 color: #ccc;
                                 font-size: 2.2em;
                                 font-weight: 300;
@@ -606,7 +860,7 @@
                                 width: 40px;
 
                                 &:nth-child(2) {
-                                    left: 40px;
+                                    left: 44px;
                                 }
 
                                 &:nth-child(3) {
@@ -623,22 +877,83 @@
                             }
                         }
 
-                        small {
-                            color: #999;
-                            display: block;
-                            font-size: 60%;
-                            font-weight: 300;
+                        &.title {
+                            padding-left: 8.4em;
+                            padding-right: 10em;
+                            width: 100%;
+
+                            a {
+                                display: block;
+                                text-decoration: none;
+
+                                small {
+                                    color: #999;
+                                    display: block;
+                                    font-size: 60%;
+                                    font-weight: 300;
+                                }
+                            }
+                        }
+
+                        &.countdown {
+                            margin-left: -10em;
+                            margin-right: -100%;
+                            padding: 0.3em 0.3em 0 0;
+                            text-align: right;
+                            width: 10em;
+
+                            ins {
+                                font-size: 0.75em;
+                                text-decoration: none;
+
+                                &:last-of-type {
+                                    display: none;
+                                }
+                            }
+                        }
+                    }
+
+                    &.empty_open,
+                    &.empty_closed {
+                        background: #fff;
+                        border: 5px solid @med-red;
+                        display: none;
+                        margin: 3em auto 0;
+                        padding: 1em;
+                        width: 32em;
+
+                        h2,
+                        p {
+                            #text > .eight-bit (@dark-red;);
+                            font-size: 0.76em;
+                            text-align: center;
+                            width: 100%;
+                        }
+
+                        p {
+                            color: @aqua;
+                            line-height: 2em;
                         }
                     }
                 }
             }
         }
 
-        #closed-issues ul li a {
+        #open-issues ul.empty li.empty_open,
+        #open-issues ul.filter_empty li.empty_open
+        { display: block !important; }
+
+        #closed-issues ul.empty li.empty_closed,
+        #closed-issues ul.filter_empty li.empty_closed
+        { display: block !important; }
+
+        #closed-issues ul li:not(:hover) ul li {
             color: #999;
             text-decoration: line-through;
 
-            span ins.annon {
+            a,
+            ins.annon {
+                background: none;
                 color: #999;
             }
 
@@ -647,9 +962,61 @@
                 filter: gray; /* IE6-9 */
                 -webkit-filter: grayscale(100%); /* Chrome 19+, Safari 6+, Safari 6+ iOS */
             }
+        }
+    }
+
+    @media only screen and (max-width : 1000px) {
+        .issues_wrapper #open-issues, .issues_wrapper #closed-issues {
+            border-right-width: 1em;
+        }
+    }
+
+/* Label List
+================================================== */
+
+    .labels {
+        font-size: 0.75em;
+        list-style: none;
+        left: 0;
+        padding: 0;
+        position: absolute;
+        top: 60px;
+
+        li a {
+            #image-insert > .before-data-icon (@dark-aqua; @aqua; 15px; 15px; 0.5em; -1.5em; auto; auto;);
+            border: solid 1px #fff;
+            border-width: 1px 1px 1px 0;
+            color: #000;
+            display: inline-block;
+            max-width: 14em;
+            padding: 0.5em;
+            text-decoration: none;
+            word-wrap: break-word;
 
             &:hover {
-                text-decoration: none;
+                padding: 0.5em 0.5em 0.5em 1.5em;
             }
+
+            &:focus {
+                outline: 0;
+            }
+
+            &:before {
+                text-shadow: none;
+                display: none;
+            }
+
+            &.active {
+                padding: 0.5em 0.5em 0.5em 1.5em;
+
+                &:before {
+                    display: block;
+                }
+            }
+        }
+
+        &.filtering li a:not(.active) {
+            background-color: #eee !important;
+            color: #999 !important;
         }
     }

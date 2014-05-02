@@ -25,7 +25,7 @@
 
     #layouts {
 
-        .abspos (@top: 0, @right: auto, @bottom: auto, @left: 0) {
+        .abspos (@top: 0; @right: auto; @bottom: auto; @left: 0;) {
             bottom: @bottom;
             left: @left;
             position: absolute;
@@ -43,7 +43,7 @@
             position: relative;
 
             &:before {
-                #bundles > .transition-animation (all, 0.2s, ease-in);
+                #bundles > .transition-animation (all; 0.2s; ease-in;);
                 content: @content;
                 display: block;
                 font-family: 'traceglyph';
@@ -58,7 +58,7 @@
             }
         }
 
-        .icon (@imgtouse, @height: 20px, @width: 20px, @img-position: 0 0) {
+        .icon (@imgtouse; @height: 20px; @width: 20px; @img-position: 0 0;) {
             background: url("/@{imgtouse}") @img-position no-repeat;
             display: block;
             height: @height;
@@ -68,13 +68,13 @@
             width: @width;
         }
 
-        .before-icon (@height: 18px, @width: 18px, @imgtouse, @img-position: 0 0, @top: 0, @left: 0) {
+        .before-icon (@height: 18px; @width: 18px; @imgtouse; @img-position: 0 0; @top: 0; @left: 0;) {
             padding: 0 0 0 (@width + 2);
             position: relative;
 
             &:before {
-                #layouts > .abspos (@top, auto, auto, @left);
-                #bundles > .transition-animation (all, 0.2s, ease-in);
+                #layouts > .abspos (@top; auto; auto; @left;);
+                #bundles > .transition-animation (all; 0.2s; ease-in;);
                 background: url("/@{imgtouse}") @img-position no-repeat;
                 content: " ";
                 display: block;
@@ -83,7 +83,7 @@
             }
         }
 
-        .data-icon (@color: #262626, @hover: @aqua, @height: 20px, @width: 20px, @top: 0, @right: auto, @bottom: auto, @left: 0) {
+        .data-icon (@color: #262626; @hover: @aqua; @height: 20px; @width: 20px; @top: 0; @right: auto; @bottom: auto; @left: 0;) {
             height: @height;
             width: @width;
 
@@ -102,7 +102,7 @@
             }
         }
 
-        .before-data-icon (@color: #262626, @hover: @trace-green, @height: 18px, @font-size: 18px, @top: 0, @right: auto, @bottom: auto, @left: 0) {
+        .before-data-icon (@color: #262626; @hover: @trace-green; @height: 18px; @font-size: 18px; @top: 0; @right: auto; @bottom: auto; @left: 0;) {
             padding: 0 0 0 (@font-size + 2);
 
             &:before {
@@ -129,13 +129,22 @@
            color: #999;
            font-style: italic;
         }
+
+        .eight-bit (@color: #444444;) {
+            color: @color;
+            font-family: @bit-font;
+            text-shadow: 1px 1px 0 #fff;
+            text-rendering: geometricPrecision;
+            font-weight: normal;
+            -webkit-font-smoothing: none;
+        }
     }
 
 /* General bundles
 ================================================== */
 
     #bundles {
-        .transform (@rotate: 0deg, @scale: 1, @skewX: 0deg, @skewY: 0deg, @translate: 0px) {
+        .transform (@rotate: 0deg; @scale: 1; @skewX: 0deg; @skewY: 0deg; @translate: 0px;) {
             -webkit-transform: rotate(@rotate) scale(@scale) skewX(@skewX) skewY(@skewY) translate(@translate);
             -moz-transform: rotate(@rotate) scale(@scale) skewX(@skewX) skewY(@skewY) translate(@translate);
             -o-transform: rotate(@rotate) scale(@scale) skewX(@skewX) skewY(@skewY) translate(@translate);
@@ -143,12 +152,11 @@
             transform: rotate(@rotate) scale(@scale) skewX(@skewX) skewY(@skewY) translate(@translate);
         }
 
-        .transition-animation (@prop: all, @time: 1s, @ease: linear) {
+        .transition-animation (@prop: all; @time: 1s; @ease: linear;) {
             -webkit-transition: @prop @time @ease;
             -moz-transition: @prop @time @ease;
             -o-transition: @prop @time @ease;
             -ms-transition: @prop @time @ease;
             transition: @prop @time @ease;
         }
-
     }

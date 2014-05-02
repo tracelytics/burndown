@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html>
     <head>
-      <title>AppNeta: Burndown before you burnout</title>
       <link href='http://fonts.googleapis.com/css?family=Press+Start+2P|Open+Sans:400,300,600' rel='stylesheet' type='text/css'>
-      <%= favicon_link_tag %>
       <%= stylesheet_link_tag    "application", :media => "all" %>
-      <%= javascript_include_tag "application" %>
+      <%= favicon_link_tag %>
+      <title>AppNeta: Burndown before you burn out</title>
+      <%= analytics_init if Rails.env.production? %>
       <%= csrf_meta_tags %>
     </head>
     <body>
         <header>
             <a href="/" title="start burning down">
-                <img src="/assets/burndown_logo.png" alt="burndown before you burnout" width="225" height="180" />
+                <img src="/assets/burndown_logo.png" alt="burndown before you burn out" width="225" height="180" />
             </a>
             <div class="main">
                 <h1>Burndown</h1>
-                <h2>Burndown before you burnout.</h2>
+                <h2>Burndown before you burn out.</h2>
             </div>
             <div id="user_nav">
                 <% if current_user %>
@@ -28,8 +28,11 @@
                 </div>
                 <% else %>
                 <div class="sign_in">
-                    <span class="octocat">GitHub</span>
-                    <%= link_to "Sign in with your Github credentials", "/auth/github" %>
+                    <label>Sign in with GitHub to Burndown:</label>
+                    <ul>
+                        <li class="octocat_private"><%= link_to raw("<span>GitHub Private</span>private &<br>public repos"), "/auth/github?scope=repo" %></li>
+                        <li class="octocat_public"><%= link_to raw("<span>GitHub Public</span>public repos <br>(read only)"), "/auth/github" %></li>
+                    </ul>
                 </div>
                 <% end %>
             </div>
@@ -45,5 +48,8 @@
                 design &amp; development
             </a>
         </footer>
+        <a href="https://github.com/appneta/burndown" class="forkme"><img src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png" alt="Fork me on GitHub"></a>
+    <%= jquery_include_tag :google %>
+    <%= javascript_include_tag 'application' %>
     </body>
 </html>

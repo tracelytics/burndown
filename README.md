@@ -1,7 +1,7 @@
 Burndown
 ========
 
-Burndown before you burnout.
+Burndown before you burn out.
 
 ## Installation
 
