@@ -1,5 +1,5 @@
-$(function() {
 
+$(function() {
     // Magic underscore settings to allow underscore templates to play
     // nicely with Rails ERB templates!
     _.templateSettings = {
