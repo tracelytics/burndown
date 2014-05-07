@@ -315,6 +315,21 @@ $(function() {
     });
 
     var Milestone = Backbone.Model.extend({
+        id: null,
+        url: function() {
+            var self = this;
+
+            var token = session.get('token');
+            var owner = session.get('owner');
+            var repo = session.get('repo');
+
+            var url = ['https://api.github.com',
+                       '/repos/'+owner+'/'+repo+'/milestones/'+self.id,
+                       '?access_token=',
+                       token].join('');
+
+            return url;
+        },
         getNumIssues: function() {
             return this.get('open_issues') + this.get('closed_issues');
         },
