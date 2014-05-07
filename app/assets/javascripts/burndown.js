@@ -813,6 +813,13 @@ $(function() {
 
             // Initialize view.
             self.milestone = milestones.getByNumber(id);
+
+            // Manually fetch the milestone if it was not found.
+            if (self.milestone == null) {
+                self.milestone = new Milestone({id: id});
+                self.milestone.fetch({async: false});
+            }
+
             self.openIssues.milestoneId = self.milestone.get('number');
             self.closedIssues.milestoneId = self.milestone.get('number');
             console.log('milestone: ', self.milestone);
@@ -1055,7 +1062,7 @@ $(function() {
         // load milestones
         // renders repoView
         // safe: load milestoneView!
-        var state = 'open';
+        var state = milestones.state || 'open';
         repoView.loadRepoMilestones(owner, repo, state);
         milestones.once('sync', function() {
             milestoneView.loadMilestone(id);
