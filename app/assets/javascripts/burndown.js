@@ -31,7 +31,6 @@ $(function() {
             return self.get('owner') + '/' + self.get('repo');
         }
     });
-    var session = new Session();
 
     var GithubUser = Backbone.Model.extend({
         initialize: function(user) {
@@ -391,16 +390,9 @@ $(function() {
             var number = parseInt(id, 10);
             return this.findWhere({number: number});
         },
-        state: null
-    });
-    var OpenMilestones = Milestones.extend({
+        // Default to 'open'. Can also be set to 'closed'.
         state: 'open'
     });
-    var ClosedMilestones = Milestones.extend({
-        state: 'closed'
-    });
-    var openMilestones = new OpenMilestones();
-    var closedMilestones = new OpenMilestones();
 
     var Message = Backbone.Model.extend({
         initialize: function() {
@@ -487,18 +479,18 @@ $(function() {
 
             self.message = new Message();
 
-            openMilestones.on('sync', function() {
+            milestones.on('sync', function() {
                 self.render();
             });
-            openMilestones.on('error', self.errorHandler, this);
+            milestones.on('error', self.errorHandler, this);
         },
         render: function() {
             var self = this;
             var template = _.template($("#tmpl_repo").html(),
-                                      {milestones: openMilestones.models,
+                                      {milestones: milestones.models,
                                        session: session,
                                        message: self.message,
-                                       state: 'Open'});
+                                       state: milestones.state});
             this.$el.html( template );
             return this;
         },
@@ -517,12 +509,13 @@ $(function() {
             var self = this;
 
             self.message.clear();
-            openMilestones.reset();
+            milestones.reset();
 
             self.loadRepo(owner, repo);
 
-            // Fetch the openMilestones.
-            openMilestones.fetch();
+            // Fetch the milestones.
+            milestones.state = state;
+            milestones.fetch();
         },
         getInputText: function() {
             var self = this;
@@ -804,7 +797,7 @@ $(function() {
             var self = this;
 
             // Initialize view.
-            self.milestone = openMilestones.getByNumber(id);
+            self.milestone = milestones.getByNumber(id);
             self.openIssues.milestoneId = self.milestone.get('number');
             self.closedIssues.milestoneId = self.milestone.get('number');
             console.log('milestone: ', self.milestone);
@@ -1023,6 +1016,9 @@ $(function() {
     });
 
     // Instantiations.
+    var session = new Session();
+    var milestones = new Milestones();
+
     var repoView = new RepoView();
     var milestoneView = new MilestoneView();
     var summaryView = new SummaryView();
@@ -1041,12 +1037,12 @@ $(function() {
         console.log('Load the milestone page!');
         // load token
         // load owner/repo
-        // load openMilestones
+        // load milestones
         // renders repoView
         // safe: load milestoneView!
         var state = 'open';
         repoView.loadRepoMilestones(owner, repo, state);
-        openMilestones.once('sync', function() {
+        milestones.once('sync', function() {
             milestoneView.loadMilestone(id);
         });
     });
