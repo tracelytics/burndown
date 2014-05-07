@@ -709,7 +709,7 @@ $(function() {
         renderChart: function() {
             var self = this;
 
-            if (self.openIssues.length > 0 && self.closedIssues.length > 0) {
+            if (self.closedIssues.length > 0) {
                 // Clear the chart of any previous elements.
                 $('#chart').empty();
                 $('#y_axis').empty();
