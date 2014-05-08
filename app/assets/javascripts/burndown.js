@@ -387,6 +387,9 @@ $(function() {
                        '/issues/milestones/',
                        this.get('number')+'/edit'].join('');
             return url;
+        },
+        isOpen: function() {
+            return (this.get('state') == 'open');
         }
     });
     var Milestones = Backbone.Collection.extend({
@@ -598,7 +601,7 @@ $(function() {
         initialize: function() {
             _.bindAll(this, 'render', 'loadMilestone', 'toggleLabelFilter',
                             'renderIssues', 'renderChart', 'getIdealLine',
-                            'getActualLine', 'getCreatedLine',
+                            'getClosedLine', 'getCreatedLine',
                             'isMilestoneDueDateSet');
             var self = this;
 
@@ -688,27 +691,37 @@ $(function() {
                 {x: endDate,   y: 0}
             ];
         },
-        getActualLine: function(openIssues, closedIssues) {
+        getClosedLine: function(openIssues, closedIssues) {
             var self = this;
 
             var start = self.milestone.get('created_at');
             var startDate = new Date(start).getTime() / 1000;
             var closedCount = openIssues.getTotalWeight() + closedIssues.getTotalWeight();
 
-            // Creates a starting point for the actual burndown.
+            // Creates a starting point for the closed burndown.
             var start = [
                 {x: startDate, y: closedCount}
             ];
 
-            var actual = _.map(closedIssues.models, function(issue) {
+            var closed = _.map(closedIssues.models, function(issue) {
                 closedCount = closedCount - issue.getWeight();
                 return {
                     x: issue.getClosedTime(),
                     y: closedCount
                 };
             });
+            start = start.concat(closed);
 
-            return start.concat(actual);
+            if (self.milestone.isOpen()) {
+                // Add a point for now.
+                var now = new Date().getTime() / 1000;
+                var end = [
+                    {x: now, y: closedCount}
+                ];
+                start = start.concat(end);
+            }
+
+            return start;
         },
         getCreatedLine: function(openIssues, closedIssues) {
             var self = this;
@@ -720,7 +733,7 @@ $(function() {
 
             var openCount = 0;
 
-            return _.map(allIssues, function(issue) {
+            var created = _.map(allIssues, function(issue) {
                 var createdTime = issue.getCreatedTime();
                 openCount = openCount + issue.getWeight();
                 return {
@@ -728,6 +741,17 @@ $(function() {
                     y: openCount
                 };
             });
+
+            if (self.milestone.isOpen()) {
+                // Add a point for now.
+                var now = new Date().getTime() / 1000;
+                var end = [
+                    {x: now, y: openCount}
+                ];
+                created = created.concat(end);
+            }
+
+            return created;
         },
         renderChart: function() {
             var self = this;
@@ -751,10 +775,10 @@ $(function() {
                     });
                 }
 
-                // Add actual velocity line.
-                var actual = self.getActualLine(self.openIssues, self.closedIssues);
+                // Add closed velocity line.
+                var closed = self.getClosedLine(self.openIssues, self.closedIssues);
                 series.push({
-                    data: actual,
+                    data: closed,
                     color: '#30c020',
                     name:  'Closed'
                 });
@@ -764,7 +788,7 @@ $(function() {
                 series.push({
                     data:  created,
                     color: '#F89406',
-                    name:  'Opened'
+                    name:  'Created'
                 });
 
                 // Build graph!
