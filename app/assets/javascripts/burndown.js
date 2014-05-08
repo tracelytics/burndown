@@ -7,7 +7,18 @@ $(function() {
         evaluate: /\{\{(.+?)\}\}/g
     };
 
+
+    //--------------------------------------------------------------------------
+    // Helper Methods
+    //--------------------------------------------------------------------------
+    function capitaliseFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+
+    //--------------------------------------------------------------------------
     // Models
+    //--------------------------------------------------------------------------
     var Session = Backbone.Model.extend({
         defaults: {
             'owner': '',
@@ -31,7 +42,6 @@ $(function() {
             return self.get('owner') + '/' + self.get('repo');
         }
     });
-    var session = new Session();
 
     var GithubUser = Backbone.Model.extend({
         initialize: function(user) {
@@ -316,6 +326,21 @@ $(function() {
     });
 
     var Milestone = Backbone.Model.extend({
+        id: null,
+        url: function() {
+            var self = this;
+
+            var token = session.get('token');
+            var owner = session.get('owner');
+            var repo = session.get('repo');
+
+            var url = ['https://api.github.com',
+                       '/repos/'+owner+'/'+repo+'/milestones/'+self.id,
+                       '?access_token=',
+                       token].join('');
+
+            return url;
+        },
         getNumIssues: function() {
             return this.get('open_issues') + this.get('closed_issues');
         },
@@ -375,6 +400,12 @@ $(function() {
                        '/repos/'+owner+'/'+repo+'/milestones',
                        '?access_token=',
                        token].join('');
+
+            // If any parameter properties exist, append then to the URL string.
+            if (this.state) {
+                url += '&state='+this.state;
+            }
+
             return url;
         },
         parse: function(response) {
@@ -384,9 +415,10 @@ $(function() {
         getByNumber: function(id) {
             var number = parseInt(id, 10);
             return this.findWhere({number: number});
-        }
+        },
+        // Default to 'open'. Can also be set to 'closed'.
+        state: 'open'
     });
-    var milestones = new Milestones();
 
     var Message = Backbone.Model.extend({
         initialize: function() {
@@ -459,7 +491,10 @@ $(function() {
         }
     });
 
+
+    //--------------------------------------------------------------------------
     // Views
+    //--------------------------------------------------------------------------
     var RepoView = Backbone.View.extend({
         el: '.content',
         events: {
@@ -480,10 +515,15 @@ $(function() {
         },
         render: function() {
             var self = this;
+            var state = milestones.state;
+            var adverseState = (state === 'open') ? 'closed' : 'open';
             var template = _.template($("#tmpl_repo").html(),
                                       {milestones: milestones.models,
                                        session: session,
-                                       message: self.message});
+                                       message: self.message,
+                                       state: state,
+                                       stateFormatted: capitaliseFirstLetter(state),
+                                       adverseState: adverseState});
             this.$el.html( template );
             return this;
         },
@@ -498,7 +538,7 @@ $(function() {
             session.set('owner', owner);
             session.set('repo', repo);
         },
-        loadRepoMilestones: function(owner, repo) {
+        loadRepoMilestones: function(owner, repo, state) {
             var self = this;
 
             self.message.clear();
@@ -507,6 +547,7 @@ $(function() {
             self.loadRepo(owner, repo);
 
             // Fetch the milestones.
+            milestones.state = state;
             milestones.fetch();
         },
         getInputText: function() {
@@ -517,11 +558,12 @@ $(function() {
             var parts = input.split('/');
             var owner = parts[0] || null;
             var repo = parts[1] || null;
+            var state = 'open';
 
             // Persist the owner/repo to the url.
             router.navigate(owner + '/' + repo);
 
-            self.loadRepoMilestones(owner, repo);
+            self.loadRepoMilestones(owner, repo, state);
         },
         errorHandler: function(model, error) {
             var self = this;
@@ -690,7 +732,7 @@ $(function() {
         renderChart: function() {
             var self = this;
 
-            if (self.openIssues.length > 0 && self.closedIssues.length > 0) {
+            if (self.closedIssues.length > 0) {
                 // Clear the chart of any previous elements.
                 $('#chart').empty();
                 $('#y_axis').empty();
@@ -802,6 +844,13 @@ $(function() {
 
             // Initialize view.
             self.milestone = milestones.getByNumber(id);
+
+            // Manually fetch the milestone if it was not found.
+            if (self.milestone == null) {
+                self.milestone = new Milestone({id: id});
+                self.milestone.fetch({async: false});
+            }
+
             self.openIssues.milestoneId = self.milestone.get('number');
             self.closedIssues.milestoneId = self.milestone.get('number');
             console.log('milestone: ', self.milestone);
@@ -1007,22 +1056,37 @@ $(function() {
         }
     });
 
+
+    //--------------------------------------------------------------------------
     // Router
+    //--------------------------------------------------------------------------
     var Router = Backbone.Router.extend({
         routes: {
             '': 'home',
             ':owner/:repo': 'repository',
             ':owner/:repo/summary': 'summary',
-            ':owner/:repo/:id': 'milestone'
+            ':owner/:repo/:id': 'milestone',
+            ':owner/:repo/milestones': 'repository',
+            ':owner/:repo/milestones/:state': 'repository'
         }
     });
 
-    // Instantiations.
+
+    //--------------------------------------------------------------------------
+    // Instantiations
+    //--------------------------------------------------------------------------
+    var session = new Session();
+    var milestones = new Milestones();
+
     var repoView = new RepoView();
     var milestoneView = new MilestoneView();
     var summaryView = new SummaryView();
     var router = new Router();
 
+
+    //--------------------------------------------------------------------------
+    // Route Handlers
+    //--------------------------------------------------------------------------
     router.on('route:home', function() {
         console.log('Load the home page!');
         // unset any previously existing session 'owner' or 'repo' attributes.
@@ -1039,15 +1103,20 @@ $(function() {
         // load milestones
         // renders repoView
         // safe: load milestoneView!
-        repoView.loadRepoMilestones(owner, repo);
+        var state = milestones.state || 'open';
+        repoView.loadRepoMilestones(owner, repo, state);
         milestones.once('sync', function() {
             milestoneView.loadMilestone(id);
         });
     });
 
-    router.on('route:repository', function(owner, repo) {
+    router.on('route:repository', function(owner, repo, state) {
         console.log('Load the repository page!');
-        repoView.loadRepoMilestones(owner, repo);
+        if (!state) {
+            state = 'open'
+        }
+        console.log('state: ', state);
+        repoView.loadRepoMilestones(owner, repo, state);
     });
 
     router.on('route:summary', function(owner, repo) {
