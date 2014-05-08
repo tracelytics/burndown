@@ -598,7 +598,8 @@ $(function() {
         initialize: function() {
             _.bindAll(this, 'render', 'loadMilestone', 'toggleLabelFilter',
                             'renderIssues', 'renderChart', 'getIdealLine',
-                            'getActualLine', 'getCreatedLine');
+                            'getActualLine', 'getCreatedLine',
+                            'isMilestoneDueDateSet');
             var self = this;
 
             self.filter = null;
@@ -667,6 +668,10 @@ $(function() {
             $('.closed', self.el).html(template);
             $('#closed-issues-count', self.el).text('[' + closed.length + ']');
         },
+        isMilestoneDueDateSet: function() {
+            var self = this;
+            return (self.milestone.get('due_on') != null);
+        },
         getIdealLine: function(openIssues, closedIssues) {
             var self = this;
 
@@ -733,14 +738,34 @@ $(function() {
                 $('#y_axis').empty();
                 $('#legend').empty();
 
-                // Add ideal velocity line.
-                var ideal = self.getIdealLine(self.openIssues, self.closedIssues);
+                var series = [];
+
+                // Only add the ideal velocity line if the milestone due date
+                // is set.
+                if (self.isMilestoneDueDateSet()) {
+                    var ideal = self.getIdealLine(self.openIssues, self.closedIssues);
+                    series.push({
+                        data:  ideal,
+                        color: '#75ABC5',
+                        name:  'Ideal'
+                    });
+                }
 
                 // Add actual velocity line.
                 var actual = self.getActualLine(self.openIssues, self.closedIssues);
+                series.push({
+                    data: actual,
+                    color: '#30c020',
+                    name:  'Closed'
+                });
 
                 // Add creation line.
                 var created = self.getCreatedLine(self.openIssues, self.closedIssues);
+                series.push({
+                    data:  created,
+                    color: '#F89406',
+                    name:  'Opened'
+                });
 
                 // Build graph!
                 var graph = new Rickshaw.Graph({
@@ -749,19 +774,7 @@ $(function() {
                     height: self.height,
                     renderer: 'line',
                     interpolation: 'basis',
-                    series: [{
-                        data:  ideal,
-                        color: '#75ABC5',
-                        name:  'Ideal'
-                    }, {
-                        data:  actual,
-                        color: '#F89406',
-                        name:  'Actual'
-                    }, {
-                        data:  created,
-                        color: '#30c020',
-                        name:  'Created'
-                    }]
+                    series: series
                 });
                 graph.render();
 
