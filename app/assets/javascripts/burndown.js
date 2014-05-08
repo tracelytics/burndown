@@ -7,7 +7,18 @@ $(function() {
         evaluate: /\{\{(.+?)\}\}/g
     };
 
+
+    //--------------------------------------------------------------------------
+    // Helper Methods
+    //--------------------------------------------------------------------------
+    function capitaliseFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+
+
+    //--------------------------------------------------------------------------
     // Models
+    //--------------------------------------------------------------------------
     var Session = Backbone.Model.extend({
         defaults: {
             'owner': '',
@@ -480,7 +491,10 @@ $(function() {
         }
     });
 
+
+    //--------------------------------------------------------------------------
     // Views
+    //--------------------------------------------------------------------------
     var RepoView = Backbone.View.extend({
         el: '.content',
         events: {
@@ -508,6 +522,7 @@ $(function() {
                                        session: session,
                                        message: self.message,
                                        state: state,
+                                       stateFormatted: capitaliseFirstLetter(state),
                                        adverseState: adverseState});
             this.$el.html( template );
             return this;
@@ -1028,7 +1043,10 @@ $(function() {
         }
     });
 
+
+    //--------------------------------------------------------------------------
     // Router
+    //--------------------------------------------------------------------------
     var Router = Backbone.Router.extend({
         routes: {
             '': 'home',
@@ -1040,7 +1058,10 @@ $(function() {
         }
     });
 
-    // Instantiations.
+
+    //--------------------------------------------------------------------------
+    // Instantiations
+    //--------------------------------------------------------------------------
     var session = new Session();
     var milestones = new Milestones();
 
@@ -1049,6 +1070,10 @@ $(function() {
     var summaryView = new SummaryView();
     var router = new Router();
 
+
+    //--------------------------------------------------------------------------
+    // Route Handlers
+    //--------------------------------------------------------------------------
     router.on('route:home', function() {
         console.log('Load the home page!');
         // unset any previously existing session 'owner' or 'repo' attributes.

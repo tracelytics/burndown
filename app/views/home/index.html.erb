@@ -85,7 +85,7 @@
     {{ if (session.has('owner') && session.has('repo')) { }}
     <div class="milestones">
         <h3>
-            <a href="#{{=session.getURL()}}/milestones/{{=adverseState}}">{{=state}}</a>
+            <a href="#{{=session.getURL()}}/milestones/{{=adverseState}}">{{=stateFormatted}}</a>
             Milestones in {{=session.getURL()}}
         </h3>
         {{ if (milestones.length > 0) { }}
