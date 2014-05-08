@@ -501,11 +501,14 @@ $(function() {
         },
         render: function() {
             var self = this;
+            var state = milestones.state;
+            var adverseState = (state === 'open') ? 'closed' : 'open';
             var template = _.template($("#tmpl_repo").html(),
                                       {milestones: milestones.models,
                                        session: session,
                                        message: self.message,
-                                       state: milestones.state});
+                                       state: state,
+                                       adverseState: adverseState});
             this.$el.html( template );
             return this;
         },
