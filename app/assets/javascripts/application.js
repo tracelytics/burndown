@@ -12,7 +12,7 @@
 //
 //= require jquery_ujs
 //= require underscore
-//= require backbone
+//= require backbone-min
 //= require moment.min
 //= require d3.v2
 //= require rickshaw
