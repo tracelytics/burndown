@@ -901,7 +901,7 @@ $(function() {
 
             // When all issues (both closed and open) are fetched, re-render
             // the view.
-            $.when(self.openIssues.fetch(), self.closedIssues.fetch())
+            $.when(self.openIssues.all(), self.closedIssues.all())
              .done(function(openResp, closedResp) {
                 // Fetch labels from issues.
                 self.labels.reset();
