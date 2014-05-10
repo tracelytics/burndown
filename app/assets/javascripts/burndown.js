@@ -1132,8 +1132,10 @@ $(function() {
 
     router.on('route:milestone', function(owner, repo, id) {
         console.log('Load the milestone page!');
+        // load owner/repo
         // load milestoneView!
         var state = milestones.state || 'open';
+        repoView.loadRepo(owner, repo);
         milestoneView.loadMilestone(id);
     });
 
