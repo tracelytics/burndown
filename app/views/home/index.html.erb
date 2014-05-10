@@ -177,21 +177,21 @@
             <li>{{=milestone.getPercentComplete()}}%</li>
         </ul>
         <div class="chart_wrapper">
-            {{ if (milestone.get('closed_issues') > 0) { }}
+        {{ if (milestone.get('closed_issues') > 0) { }}
             <div id="chart_container">
                 <div id="y_axis"></div>
                 <div id="chart"></div>
             </div>
-            {{ } else { }}
-                <h2>~ A Burndown Haiku ~</h2>
-                <p>
-                without closing issues
-                <br>
-                there can be no GitHub peace
-                <br>
-                open&nbsp;&raquo;&nbsp;closed is the way
-                </p>
-            {{ } }}
+        {{ } else { }}
+            <h2>~ A Burndown Haiku ~</h2>
+            <p>
+            without closing issues
+            <br>
+            there can be no GitHub peace
+            <br>
+            open&nbsp;&raquo;&nbsp;closed is the way
+            </p>
+        {{ } }}
             <div id="legend"></div>
         </div>
     </div>
