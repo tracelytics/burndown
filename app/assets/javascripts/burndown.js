@@ -612,7 +612,7 @@ $(function() {
             _.bindAll(this, 'render', 'loadMilestone', 'toggleLabelFilter',
                             'renderIssues', 'renderChart', 'getIdealLine',
                             'getClosedLine', 'getCreatedLine',
-                            'isMilestoneDueDateSet');
+                            'isMilestoneDueDateSet', 'resetView');
             var self = this;
 
             self.filter = null;
@@ -873,8 +873,21 @@ $(function() {
 
             return false;
         },
+        resetView: function() {
+            var self = this;
+
+            // Clear any previous messages.
+            self.message.clear();
+
+            self.labels.reset();
+            //self.milestone.reset();
+            self.openIssues.reset();
+            self.closedIssues.reset();
+        },
         loadMilestone: function(id) {
             var self = this;
+
+            self.resetView();
 
             // Initialize view.
             self.milestone = milestones.getByNumber(id);
@@ -889,9 +902,6 @@ $(function() {
             self.closedIssues.milestoneId = self.milestone.get('number');
             console.log('milestone: ', self.milestone);
 
-            // Clear any previous messages.
-            self.message.clear();
-
             // Set a message if the milestone has no due date.
             if (self.milestone.get('due_on') === null) {
                 self.message.setProblem('Milestone has no due date!');
@@ -904,7 +914,6 @@ $(function() {
             $.when(self.openIssues.all(), self.closedIssues.all())
              .done(function(openResp, closedResp) {
                 // Fetch labels from issues.
-                self.labels.reset();
                 self.labels.addLabelsFromIssues(self.openIssues.models);
                 self.labels.addLabelsFromIssues(self.closedIssues.models);
 
