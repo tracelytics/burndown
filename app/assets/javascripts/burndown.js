@@ -1,11 +1,38 @@
 $(function() {
 
+    //--------------------------------------------------------------------------
     // Magic underscore settings to allow underscore templates to play
     // nicely with Rails ERB templates!
+    //--------------------------------------------------------------------------
     _.templateSettings = {
         interpolate: /\{\{\=(.+?)\}\}/g,
         evaluate: /\{\{(.+?)\}\}/g
     };
+
+
+    //--------------------------------------------------------------------------
+    // Setup XHR Pool
+    //--------------------------------------------------------------------------
+    $.xhrPool = [];
+    $.xhrPool.abortAll = function() {
+        $(this).each(function(idx, jqXHR) {
+            jqXHR.abort();
+        });
+        $.xhrPool.length = 0
+        console.log('xhrPool cleared.');
+    };
+
+    $.ajaxSetup({
+        beforeSend: function(jqXHR) {
+            $.xhrPool.push(jqXHR);
+        },
+        complete: function(jqXHR) {
+            var index = $.xhrPool.indexOf(jqXHR);
+            if (index > -1) {
+                $.xhrPool.splice(index, 1);
+            }
+        }
+    });
 
 
     //--------------------------------------------------------------------------
@@ -1111,6 +1138,9 @@ $(function() {
             ':owner/:repo/:id': 'milestone',
             ':owner/:repo/milestones': 'repository',
             ':owner/:repo/milestones/:state': 'repository'
+        },
+        execute: function(callback, args) {
+            $.xhrPool.abortAll();
         }
     });
 
