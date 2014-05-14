@@ -423,6 +423,16 @@ $(function() {
         },
         isOpen: function() {
             return (this.get('state') == 'open');
+        },
+        isPastDueDate: function() {
+            var now = new Date();
+            var due = this.get('due_on');
+            return moment(now).isAfter(due);
+        },
+        isDueToday: function() {
+            var now = new Date();
+            var due = this.get('due_on') || 0;
+            return moment(now).isSame(due, 'day');
         }
     });
     var Milestones = PaginatedCollection.extend({
