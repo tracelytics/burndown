@@ -11,6 +11,12 @@ $(function() {
 
 
     //--------------------------------------------------------------------------
+    // Constants
+    //--------------------------------------------------------------------------
+    SUMMARY_DEFAULT_DAYS = 30;
+
+
+    //--------------------------------------------------------------------------
     // Setup XHR Pool
     //--------------------------------------------------------------------------
     $.xhrPool = [];
@@ -330,6 +336,7 @@ $(function() {
                 return memo + issue.getWeight();
             }, 0);
         },
+        days: SUMMARY_DEFAULT_DAYS,
         // URL parameter proprties.
         // http://developer.github.com/v3/issues/#list-issues-for-a-repository
         state: null,
@@ -347,14 +354,14 @@ $(function() {
         state: 'open',
         direction: 'asc',
         since: function() {
-            return this.getDateSince(30);
+            return this.getDateSince(this.days);
         }
     });
     var SummaryClosedIssues = IssuesBase.extend({
         state: 'closed',
         direction: 'asc',
         since: function() {
-            return this.getDateSince(30);
+            return this.getDateSince(this.days);
         }
     });
 
@@ -973,6 +980,7 @@ $(function() {
                             'renderChart');
             var self = this;
 
+            self.days = SUMMARY_DEFAULT_DAYS;
             self.loaded = false;
             self.progress = {open: 0, closed: 0};
             // All issue collections
@@ -995,7 +1003,8 @@ $(function() {
                                        loaded: self.loaded,
                                        progress: self.progress,
                                        created: self.createdIssues.models,
-                                       resolved: self.resolvedIssues.models});
+                                       resolved: self.resolvedIssues.models,
+                                       days: self.days});
             this.$el.html( template );
 
             // Render the chart.
@@ -1016,11 +1025,17 @@ $(function() {
             self.progress = {open: 0, closed: 0};
             self.openIssues.reset();
             self.closedIssues.reset();
+
+            self.openIssues.days = self.days;
+            self.closedIssues.days = self.days;
+
             self.createdIssues.reset();
             self.resolvedIssues.reset();
         },
-        loadRepoIssues: function() {
+        loadRepoIssues: function(days) {
             var self = this;
+
+            self.days = days;
 
             self.resetView();
 
@@ -1145,6 +1160,7 @@ $(function() {
             '': 'home',
             ':owner/:repo': 'repository',
             ':owner/:repo/summary': 'summary',
+            ':owner/:repo/summary/:days': 'summary',
             ':owner/:repo/:id': 'milestone',
             ':owner/:repo/milestones': 'repository',
             ':owner/:repo/milestones/:state': 'repository'
@@ -1197,13 +1213,16 @@ $(function() {
         repoView.loadRepoMilestones(owner, repo, state);
     });
 
-    router.on('route:summary', function(owner, repo) {
+    router.on('route:summary', function(owner, repo, days) {
         console.log('Load the repository summary page!');
         // load token
         // load owner/repo
         // not waiting on any xhr, so safe to load summaryView!
+        if (!days) {
+            days = SUMMARY_DEFAULT_DAYS;
+        }
         repoView.loadRepo(owner, repo);
-        summaryView.loadRepoIssues();
+        summaryView.loadRepoIssues(days);
     });
 
     // Once the session token finishes loading, start the application!
