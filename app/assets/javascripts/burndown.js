@@ -291,6 +291,12 @@ $(function() {
             }
 
             return rval;
+        },
+        isClosed: function() {
+            return this.get('state') === 'closed';
+        },
+        isOpen: function() {
+            return this.get('state') === 'open';
         }
     });
     var IssuesBase = PaginatedCollection.extend({
@@ -360,6 +366,12 @@ $(function() {
         since: function() {
             return this.getDateSince(this.days);
         }
+    });
+    var SummaryIssuesCreated = SummaryIssues.extend({
+        compareProperty: 'created_at'
+    });
+    var SummaryIssuesResolved = SummaryIssues.extend({
+        compareProperty: 'closed_at'
     });
 
     var Milestone = Backbone.Model.extend({
@@ -982,8 +994,9 @@ $(function() {
             // All issue collections
             self.issues = new SummaryIssues();
             // Filtered issue collections
-            self.createdIssues = new SummaryIssues();
-            self.resolvedIssues = new SummaryIssues();
+            self.createdIssues = new SummaryIssuesCreated();
+            self.resolvedIssues = new SummaryIssuesResolved();
+            self.openIssues = new SummaryIssuesCreated();
 
             // Enable a responsive design by re-rendering the chart if the
             // window resizes.
@@ -999,6 +1012,7 @@ $(function() {
                                        progress: self.progress,
                                        created: self.createdIssues.models,
                                        resolved: self.resolvedIssues.models,
+                                       opened: self.openIssues.models,
                                        days: self.days});
             this.$el.html( template );
 
@@ -1007,7 +1021,7 @@ $(function() {
 
             // Populate issue lists.
             var template = _.template($('#tmpl_issues').html(),
-                                      {issues: self.createdIssues.models});
+                                      {issues: self.openIssues.models});
             $('.open', self.el).html(template);
             var template = _.template($('#tmpl_issues').html(),
                                       {issues: self.resolvedIssues.models});
@@ -1024,6 +1038,7 @@ $(function() {
 
             self.createdIssues.reset();
             self.resolvedIssues.reset();
+            self.openIssues.reset();
         },
         loadRepoIssues: function(days) {
             var self = this;
@@ -1040,22 +1055,28 @@ $(function() {
              .done(function(openResp) {
                 console.log('done!');
 
-                // Sort results accordingly!
+                _.each(self.issues.models, function(issue) {
+                    var past = new Date(self.issues.since());
+                    var created = issue.get('created_at');
+                    var closed = issue.get('closed_at');
 
-                var createdIssues = _.filter(self.issues.models, function(issue) {
-                    var past = new Date(self.issues.since());
-                    var d = new Date(issue.get('created_at'));
-                    return (d.getTime() > past.getTime());
-                });
-                var resolvedIssues = _.filter(self.issues.models, function(issue) {
-                    var past = new Date(self.issues.since());
-                    var d = new Date(issue.get('closed_at'));
-                    return (d.getTime() > past.getTime());
+                    // Find created issues
+                    if (moment(created).isAfter(past)) {
+                        self.createdIssues.add(issue);
+                    }
+
+                    // Find created issues that are still open
+                    if (issue.isOpen() && moment(created).isAfter(past)) {
+                        self.openIssues.add(issue);
+                    }
+
+                    // Find created issues that have been resolved
+                    if (issue.isClosed() && moment(closed).isAfter(past)) {
+                        self.resolvedIssues.add(issue);
+                    }
                 });
 
                 self.loaded = true;
-                self.createdIssues.reset(createdIssues);
-                self.resolvedIssues.reset(resolvedIssues);
 
                 self.render();
             });
@@ -1108,7 +1129,7 @@ $(function() {
                     }, {
                         data:  resolved,
                         color: 'green',
-                        name:  'Resolved'
+                        name:  'Closed'
                     }]
                 });
                 graph.render();
