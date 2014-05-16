@@ -350,16 +350,13 @@ $(function() {
     var MilestoneClosedIssues = IssuesBase.extend({
         state: 'closed'
     });
-    var SummaryOpenIssues = IssuesBase.extend({
-        state: 'open',
+    var SummaryIssues = IssuesBase.extend({
+        state: 'all',
         direction: 'asc',
-        since: function() {
-            return this.getDateSince(this.days);
-        }
-    });
-    var SummaryClosedIssues = IssuesBase.extend({
-        state: 'closed',
-        direction: 'asc',
+        compareProperty: 'created_at',
+        comparator: function(issue) {
+            return issue.get(this.compareProperty);
+        },
         since: function() {
             return this.getDateSince(this.days);
         }
@@ -976,19 +973,17 @@ $(function() {
         el: '.content',
         initialize: function() {
             _.bindAll(this, 'render', 'resetView', 'loadRepoIssues',
-                            'renderOpenProgress', 'renderClosedProgress',
-                            'renderChart');
+                            'renderProgress', 'renderChart');
             var self = this;
 
             self.days = SUMMARY_DEFAULT_DAYS;
             self.loaded = false;
-            self.progress = {open: 0, closed: 0};
+            self.progress = 0;
             // All issue collections
-            self.openIssues = new SummaryOpenIssues();
-            self.closedIssues = new SummaryClosedIssues();
+            self.issues = new SummaryIssues();
             // Filtered issue collections
-            self.createdIssues = new SummaryOpenIssues();
-            self.resolvedIssues = new SummaryClosedIssues();
+            self.createdIssues = new SummaryIssues();
+            self.resolvedIssues = new SummaryIssues();
 
             // Enable a responsive design by re-rendering the chart if the
             // window resizes.
@@ -1022,12 +1017,10 @@ $(function() {
             var self = this;
 
             self.loaded = false;
-            self.progress = {open: 0, closed: 0};
-            self.openIssues.reset();
-            self.closedIssues.reset();
+            self.progress = 0;
+            self.issues.reset();
 
-            self.openIssues.days = self.days;
-            self.closedIssues.days = self.days;
+            self.issues.days = self.days;
 
             self.createdIssues.reset();
             self.resolvedIssues.reset();
@@ -1043,17 +1036,19 @@ $(function() {
 
             // When all issues (both closed and open) are fetched, filter them
             // and reset the filtered collections.
-            $.when(self.openIssues.all(self.renderOpenProgress), self.closedIssues.all(self.renderClosedProgress))
-             .done(function(openResp, closedResp) {
+            $.when(self.issues.all(self.renderProgress))
+             .done(function(openResp) {
                 console.log('done!');
 
-                var createdIssues = _.filter(self.openIssues.models, function(issue) {
-                    var past = new Date(self.openIssues.since());
+                // Sort results accordingly!
+
+                var createdIssues = _.filter(self.issues.models, function(issue) {
+                    var past = new Date(self.issues.since());
                     var d = new Date(issue.get('created_at'));
                     return (d.getTime() > past.getTime());
                 });
-                var resolvedIssues = _.filter(self.closedIssues.models, function(issue) {
-                    var past = new Date(self.closedIssues.since());
+                var resolvedIssues = _.filter(self.issues.models, function(issue) {
+                    var past = new Date(self.issues.since());
                     var d = new Date(issue.get('closed_at'));
                     return (d.getTime() > past.getTime());
                 });
@@ -1065,14 +1060,9 @@ $(function() {
                 self.render();
             });
         },
-        renderOpenProgress: function(progress) {
+        renderProgress: function(progress) {
             var self = this;
-            self.progress.open = (progress * 100).toFixed();
-            self.render();
-        },
-        renderClosedProgress: function(progress) {
-            var self = this;
-            self.progress.closed = (progress * 100).toFixed();
+            self.progress = (progress * 100).toFixed();
             self.render();
         },
         renderChart: function() {
