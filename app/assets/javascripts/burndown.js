@@ -1063,6 +1063,11 @@ $(function() {
                     var created = issue.get('created_at');
                     var closed = issue.get('closed_at');
 
+                    // Skip pull requests
+                    if (issue.isPullRequest()) {
+                        return;
+                    }
+
                     // Find created issues
                     if (moment(created).isAfter(past)) {
                         self.createdIssues.add(issue);
