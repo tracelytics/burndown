@@ -997,9 +997,8 @@ $(function() {
             // All issue collections
             self.issues = new SummaryIssues();
             // Filtered issue collections
-            self.createdIssues = new SummaryIssuesCreated();
-            self.resolvedIssues = new SummaryIssuesResolved();
-            self.openIssues = new SummaryIssuesCreated();
+            self.closedIssues = new SummaryIssuesResolved();
+            self.newIssues = new SummaryIssuesCreated();
 
             // Enable a responsive design by re-rendering the chart if the
             // window resizes.
@@ -1013,9 +1012,8 @@ $(function() {
                                       {session: session,
                                        loaded: self.loaded,
                                        progress: self.progress,
-                                       created: self.createdIssues.models,
-                                       resolved: self.resolvedIssues.models,
-                                       opened: self.openIssues.models,
+                                       closed: self.closedIssues.models,
+                                       newest: self.newIssues.models,
                                        days: self.days});
             this.$el.html( template );
 
@@ -1024,10 +1022,10 @@ $(function() {
 
             // Populate issue lists.
             var template = _.template($('#tmpl_issues').html(),
-                                      {issues: self.openIssues.models});
+                                      {issues: self.newIssues.models});
             $('.open', self.el).html(template);
             var template = _.template($('#tmpl_issues').html(),
-                                      {issues: self.resolvedIssues.models});
+                                      {issues: self.closedIssues.models});
             $('.closed', self.el).html(template);
         },
         resetView: function() {
@@ -1039,9 +1037,8 @@ $(function() {
 
             self.issues.days = self.days;
 
-            self.createdIssues.reset();
-            self.resolvedIssues.reset();
-            self.openIssues.reset();
+            self.closedIssues.reset();
+            self.newIssues.reset();
         },
         loadRepoIssues: function(days) {
             var self = this;
@@ -1068,19 +1065,14 @@ $(function() {
                         return;
                     }
 
-                    // Find created issues
-                    if (moment(created).isAfter(past)) {
-                        self.createdIssues.add(issue);
-                    }
-
                     // Find created issues that are still open
                     if (issue.isOpen() && moment(created).isAfter(past)) {
-                        self.openIssues.add(issue);
+                        self.newIssues.add(issue);
                     }
 
                     // Find created issues that have been resolved
                     if (issue.isClosed() && moment(closed).isAfter(past)) {
-                        self.resolvedIssues.add(issue);
+                        self.closedIssues.add(issue);
                     }
                 });
 
@@ -1099,7 +1091,7 @@ $(function() {
 
             console.log('render chart!');
 
-            if (self.createdIssues.length > 0 && self.resolvedIssues.length > 0) {
+            if (self.newIssues.length > 0 && self.closedIssues.length > 0) {
 
                 // Clear the chart of any previous elements.
                 $('#chart').empty();
@@ -1107,7 +1099,7 @@ $(function() {
                 $('#legend').empty();
 
                 var count = 1;
-                var created = _.map(self.createdIssues.models, function(issue) {
+                var newest = _.map(self.newIssues.models, function(issue) {
                     return {
                         x: issue.getCreatedTime(),
                         y: count++
@@ -1115,7 +1107,7 @@ $(function() {
                 });
 
                 count = 1;
-                var resolved = _.map(self.resolvedIssues.models, function(issue) {
+                var closed = _.map(self.closedIssues.models, function(issue) {
                     return {
                         x: issue.getClosedTime(),
                         y: count++
@@ -1131,11 +1123,11 @@ $(function() {
                     stroke: true,
                     interpolation: 'basis',
                     series: [{
-                        data:  created,
+                        data:  newest,
                         color: '#cc0000',
-                        name:  'Created'
+                        name:  'New'
                     }, {
-                        data:  resolved,
+                        data:  closed,
                         color: 'green',
                         name:  'Closed'
                     }]
