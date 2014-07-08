@@ -297,6 +297,9 @@ $(function() {
         },
         isOpen: function() {
             return this.get('state') === 'open';
+        },
+        isPullRequest: function() {
+            return this.has('pull_request');
         }
     });
     var IssuesBase = PaginatedCollection.extend({
