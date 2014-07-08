@@ -373,7 +373,7 @@ $(function() {
     var SummaryIssuesCreated = SummaryIssues.extend({
         compareProperty: 'created_at'
     });
-    var SummaryIssuesResolved = SummaryIssues.extend({
+    var SummaryIssuesClosed = SummaryIssues.extend({
         compareProperty: 'closed_at'
     });
 
@@ -997,7 +997,7 @@ $(function() {
             // All issue collections
             self.issues = new SummaryIssues();
             // Filtered issue collections
-            self.closedIssues = new SummaryIssuesResolved();
+            self.closedIssues = new SummaryIssuesClosed();
             self.newIssues = new SummaryIssuesCreated();
 
             // Enable a responsive design by re-rendering the chart if the
