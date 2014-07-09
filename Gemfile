@@ -41,7 +41,7 @@ gem 'omniauth-github', :git => 'git://github.com/intridea/omniauth-github.git'
 # gem 'jbuilder'
 
 # Use unicorn as the app server
-# gem 'unicorn'
+gem 'unicorn'
 
 # Deploy with Capistrano
 # gem 'capistrano'
