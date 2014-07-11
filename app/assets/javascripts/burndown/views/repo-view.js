@@ -1,11 +1,11 @@
-/*global Backbone, jQuery, _, ENTER_KEY, ESC_KEY */
+/*global Backbone, jQuery, _ */
 var app = app || {};
 
 (function ($) {
-	'use strict';
+    'use strict';
 
-	// Repo View
-	// --------------
+    // RepoView
+    // --------
     var RepoView = Backbone.View.extend({
         el: '.content',
 
@@ -114,5 +114,4 @@ var app = app || {};
     });
 
     app.repoView = new RepoView();
-
 })(jQuery);

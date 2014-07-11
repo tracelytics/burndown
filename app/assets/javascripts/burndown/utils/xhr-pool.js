@@ -1,7 +1,8 @@
-/*global Backbone, jQuery, _, ENTER_KEY */
+/*global Backbone, jQuery, _ */
 var app = app || {};
 
 (function () {
+    'use strict';
 
     // Setup XHR Pool
     //---------------
@@ -25,5 +26,4 @@ var app = app || {};
             }
         }
     });
-
 })();

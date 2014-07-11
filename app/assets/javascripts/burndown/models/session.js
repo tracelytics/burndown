@@ -2,10 +2,10 @@
 var app = app || {};
 
 (function () {
-	'use strict';
+    'use strict';
 
-	// Session Model
-	// -------------
+    // Session Model
+    // -------------
     app.Session = Backbone.Model.extend({
         defaults: {
             'owner': '',

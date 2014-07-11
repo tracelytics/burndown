@@ -1,14 +1,13 @@
-/*global Backbone, jQuery, _, ENTER_KEY */
+/*global Backbone, jQuery, _ */
 var app = app || {};
 
 (function () {
+    'use strict';
 
-    // Magic underscore settings to allow underscore templates to play
-    // nicely with Rails ERB templates!
-    //--------------------------------------------------------------------------
+    // Settings
+    //---------
     _.templateSettings = {
         interpolate: /\{\{\=(.+?)\}\}/g,
         evaluate: /\{\{(.+?)\}\}/g
     };
-
 })();

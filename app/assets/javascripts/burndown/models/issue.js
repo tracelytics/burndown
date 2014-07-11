@@ -2,10 +2,10 @@
 var app = app || {};
 
 (function () {
-	'use strict';
+    'use strict';
 
-	// Issue Model
-	// -----------
+    // Issue Model
+    // -----------
     app.Issue = Backbone.Model.extend({
         getClosedTime: function() {
             var closed = this.get('closed_at') || 0;

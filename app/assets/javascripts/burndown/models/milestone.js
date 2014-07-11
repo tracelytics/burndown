@@ -2,10 +2,10 @@
 var app = app || {};
 
 (function () {
-	'use strict';
+    'use strict';
 
-	// Milestone Model
-	// ---------------
+    // Milestone Model
+    // ---------------
     app.Milestone = Backbone.Model.extend({
         id: null,
 

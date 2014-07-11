@@ -2,10 +2,10 @@
 var app = app || {};
 
 (function () {
-	'use strict';
+    'use strict';
 
-	// Session Model
-	// -------------
+    // Session Model
+    // -------------
     app.Label = Backbone.Model.extend({
         defaults: {
             'name': '',

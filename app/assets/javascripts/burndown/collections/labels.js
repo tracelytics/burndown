@@ -2,10 +2,10 @@
 var app = app || {};
 
 (function () {
-	'use strict';
+    'use strict';
 
-	// Issue Related Collections
-	// -------------------------
+    // Labels
+    // -------------------------
     app.Labels = Backbone.Collection.extend({
         model: app.Label,
 

@@ -2,10 +2,10 @@
 var app = app || {};
 
 (function () {
-	'use strict';
+    'use strict';
 
-	// Session Model
-	// -------------
+    // Session Model
+    // -------------
     app.Message = Backbone.Model.extend({
         initialize: function() {
             _.bindAll(this, 'setProblem', 'setError');

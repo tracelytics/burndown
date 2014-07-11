@@ -1,9 +1,8 @@
 /*global $ */
-/*jshint unused:false */
 var app = app || {};
 
 $(function () {
-	'use strict';
+    'use strict';
 
     // Create our global session.
     app.session = new app.Session();

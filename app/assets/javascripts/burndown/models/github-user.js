@@ -2,10 +2,10 @@
 var app = app || {};
 
 (function () {
-	'use strict';
+    'use strict';
 
-	// GithubUser Model
-	// ----------------
+    // GithubUser Model
+    // ----------------
     app.GithubUser = Backbone.Model.extend({
         initialize: function(user) {
             var name = user.login ? user.login : '';

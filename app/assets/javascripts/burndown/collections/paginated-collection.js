@@ -2,10 +2,10 @@
 var app = app || {};
 
 (function () {
-	'use strict';
+    'use strict';
 
-	// Paginated Collection
-	// --------------------
+    // PaginatedCollection
+    // -------------------
     app.PaginatedCollection = Backbone.Collection.extend({
         model: null,
 
@@ -17,47 +17,46 @@ var app = app || {};
             return response;
         },
 
-        /*
-         * parse_link_header()
-         *
-         * Parse the Github Link HTTP header used for pageination
-         * http://developer.github.com/v3/#pagination
-         */
+        // parse_link_header
+        //
+        // Parse the Github Link HTTP header used for pageination
+        // http://developer.github.com/v3/#pagination
+        // ------------------------------------------------------
         parseLinkHeader: function (header) {
-          if (header.length == 0) {
-              throw new Error("input must not be of zero length");
-          }
+            if (header.length == 0) {
+                throw new Error("input must not be of zero length");
+            }
 
-          // Split parts by comma
-          var parts = header.split(',');
-          var links = {};
-          // Parse each part into a named link
-          _.each(parts, function(p) {
-              var section = p.split(';');
-              if (section.length != 2) {
-                  throw new Error("section could not be split on ';'");
-              }
-              var url = section[0].replace(/<(.*)>/, '$1').trim();
-              var name = section[1].replace(/rel="(.*)"/, '$1').trim();
-              links[name] = url;
-          });
+            // Split parts by comma
+            var parts = header.split(',');
+            var links = {};
+            // Parse each part into a named link
+            _.each(parts, function(p) {
+                var section = p.split(';');
+                if (section.length != 2) {
+                    throw new Error("section could not be split on ';'");
+                }
+                var url = section[0].replace(/<(.*)>/, '$1').trim();
+                var name = section[1].replace(/rel="(.*)"/, '$1').trim();
+                links[name] = url;
+            });
 
-          return links;
+            return links;
         },
 
         parseLastPage: function(last) {
-          if (last.length == 0) {
-              throw new Error("input must not be of zero length");
-          }
+            if (last.length == 0) {
+                throw new Error("input must not be of zero length");
+            }
 
-          var patt = /&page=(\d+)/g;
-          var result = patt.exec(last);
+            var patt = /&page=(\d+)/g;
+            var result = patt.exec(last);
 
-          if (result.length != 2) {
-              throw new Error("regex pattern match failed");
-          }
+            if (result.length != 2) {
+                throw new Error("regex pattern match failed");
+            }
 
-          return result[1];
+            return result[1];
         },
 
         getLastPage: function(header) {

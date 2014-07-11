@@ -2,10 +2,10 @@
 var app = app || {};
 
 (function () {
-	'use strict';
+    'use strict';
 
-	// Milestones Collection
-	// ---------------------
+    // Milestones
+    // ----------
     var Milestones = app.PaginatedCollection.extend({
         model: app.Milestone,
 
@@ -46,5 +46,4 @@ var app = app || {};
     });
 
     app.milestones = new Milestones();
-
 })();

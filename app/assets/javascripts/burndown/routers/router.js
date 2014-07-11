@@ -2,10 +2,10 @@
 var app = app || {};
 
 (function () {
-	'use strict';
+    'use strict';
 
-	// Router
-	// ------
+    // Router
+    // ------
     var Router = Backbone.Router.extend({
         routes: {
             '': 'home',

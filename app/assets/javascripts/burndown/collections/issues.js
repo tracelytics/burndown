@@ -2,10 +2,10 @@
 var app = app || {};
 
 (function () {
-	'use strict';
+    'use strict';
 
-	// Issue Related Collections
-	// -------------------------
+    // IssueBase
+    // ---------
     app.IssuesBase = app.PaginatedCollection.extend({
         model: app.Issue,
 
@@ -63,14 +63,20 @@ var app = app || {};
         direction: null
     });
 
+    // MilestoneOpenIssues
+    // -------------------
     app.MilestoneOpenIssues = app.IssuesBase.extend({
         state: 'open'
     });
 
+    // MilestoneClosedIssues
+    // ---------------------
     app.MilestoneClosedIssues = app.IssuesBase.extend({
         state: 'closed'
     });
 
+    // SummaryIssues
+    // -------------
     app.SummaryIssues = app.IssuesBase.extend({
         state: 'all',
 
@@ -87,10 +93,14 @@ var app = app || {};
         }
     });
 
+    // SummaryIssuesCreated
+    // --------------------
     app.SummaryIssuesCreated = app.SummaryIssues.extend({
         compareProperty: 'created_at'
     });
 
+    // SummaryIssuesClosed
+    // -------------------
     app.SummaryIssuesClosed = app.SummaryIssues.extend({
         compareProperty: 'closed_at'
     });
