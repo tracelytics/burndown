@@ -29,7 +29,7 @@ var app = app || {};
                     // If the label has a name and is not in the collection
                     // yet, add it!
                     if (label.name && !self.isDupe(label.name)) {
-                        self.add(new Label(label));
+                        self.add(new app.Label(label));
                     }
                 });
             });

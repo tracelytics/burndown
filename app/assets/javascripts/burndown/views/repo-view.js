@@ -10,7 +10,7 @@ var app = app || {};
 
 	// Repo View
 	// --------------
-    app.RepoView = Backbone.View.extend({
+    var RepoView = Backbone.View.extend({
         el: '.content',
 
         events: {
@@ -84,7 +84,7 @@ var app = app || {};
             var state = 'open';
 
             // Persist the owner/repo to the url.
-            router.navigate(owner + '/' + repo);
+            app.router.navigate(owner + '/' + repo);
 
             self.loadRepoMilestones(owner, repo, state);
         },
@@ -112,4 +112,7 @@ var app = app || {};
             self.render();
         }
     });
+
+    app.repoView = new RepoView();
+
 })(jQuery);

@@ -74,8 +74,8 @@ var app = app || {};
             var work_duration = moment(closed_date).from(created_at, true);
 
             if (creator && title && url) {
-                var creator_user = new GithubUser(creator);
-                var assigned_user = assignee ? new GithubUser(assignee) : null;
+                var creator_user = new app.GithubUser(creator);
+                var assigned_user = assignee ? new app.GithubUser(assignee) : null;
                 rval = ['<ul>',
                         '<li class="title"><a target="_blank" href="' + url + '" title="' + title + '">',
                         title,

@@ -14,9 +14,9 @@ var app = app || {};
         },
 
         url: function() {
-            var token = session.get('token');
-            var owner = session.get('owner');
-            var repo = session.get('repo');
+            var token = app.session.get('token');
+            var owner = app.session.get('owner');
+            var repo = app.session.get('repo');
 
             // Build initial url string.
             var url = ['https://api.github.com',

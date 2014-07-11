@@ -6,7 +6,7 @@ var app = app || {};
 
 	// Repo View
 	// --------------
-    app.SummaryView = Backbone.View.extend({
+    var SummaryView = Backbone.View.extend({
         el: '.content',
 
         initialize: function() {
@@ -18,10 +18,10 @@ var app = app || {};
             self.loaded = false;
             self.progress = 0;
             // All issue collections
-            self.issues = new SummaryIssues();
+            self.issues = new app.SummaryIssues();
             // Filtered issue collections
-            self.closedIssues = new SummaryIssuesClosed();
-            self.newIssues = new SummaryIssuesCreated();
+            self.closedIssues = new app.SummaryIssuesClosed();
+            self.newIssues = new app.SummaryIssuesCreated();
 
             // Enable a responsive design by re-rendering the chart if the
             // window resizes.
@@ -33,7 +33,7 @@ var app = app || {};
 
             // Render main template.
             var template = _.template($('#tmpl_summary').html(),
-                                      {session: session,
+                                      {session: app.session,
                                        loaded: self.loaded,
                                        progress: self.progress,
                                        closed: self.closedIssues.models,
@@ -189,4 +189,7 @@ var app = app || {};
             }
         }
     });
+
+    app.summaryView = new SummaryView();
+
 })(jQuery);

@@ -6,7 +6,7 @@ var app = app || {};
 
 	// Milestone View
 	// --------------
-    app.MilestoneView = Backbone.View.extend({
+    var MilestoneView = Backbone.View.extend({
         el: '.content',
 
         events: {
@@ -39,7 +39,7 @@ var app = app || {};
             // Render main template.
             var template = _.template($('#tmpl_milestone').html(),
                                       {milestone: self.milestone,
-                                       session: session,
+                                       session: app.session,
                                        message: self.message});
             self.$el.html( template );
 
@@ -306,11 +306,11 @@ var app = app || {};
             self.resetView();
 
             // Initialize view.
-            self.milestone = milestones.getByNumber(id);
+            self.milestone = app.milestones.getByNumber(id);
 
             // Manually fetch the milestone if it was not found.
             if (self.milestone == null) {
-                self.milestone = new Milestone({id: id});
+                self.milestone = new app.Milestone({id: id});
                 self.milestone.fetch({async: false});
             }
 
@@ -344,4 +344,7 @@ var app = app || {};
             return false;
         }
     });
+
+    app.milestoneView = new MilestoneView();
+
 })(jQuery);

@@ -12,9 +12,9 @@ var app = app || {};
         url: function() {
             var self = this;
 
-            var token = session.get('token');
-            var owner = session.get('owner');
-            var repo = session.get('repo');
+            var token = app.session.get('token');
+            var owner = app.session.get('owner');
+            var repo = app.session.get('repo');
 
             var url = ['https://api.github.com',
                        '/repos/'+owner+'/'+repo+'/milestones/'+self.id,
@@ -49,7 +49,7 @@ var app = app || {};
             var creator = this.get('creator');
 
             if (creator) {
-                var user = new GithubUser(creator);
+                var user = new app.GithubUser(creator);
                 rval = user.getLink();
             }
 
@@ -70,8 +70,8 @@ var app = app || {};
 
         getEditLink: function() {
             // https://github.com/{owner}/{repo}/issues/milestones/{id}/edit
-            var owner = session.get('owner');
-            var repo = session.get('repo');
+            var owner = app.session.get('owner');
+            var repo = app.session.get('repo');
             var url = ['https://github.com',
                        '/'+owner+'/'+repo,
                        '/issues/milestones/',

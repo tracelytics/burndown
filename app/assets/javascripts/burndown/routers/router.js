@@ -19,15 +19,7 @@ var app = app || {};
 
         execute: function(callback, args) {
             app.xhrPool.abortAll();
-        },
-
-        // Route Handlers
-        // --------------
-
-        home: function() {
-            console.log('home called')
         }
-
     });
 
     app.router = new Router();
@@ -41,39 +33,38 @@ var app = app || {};
         app.session.unset('owner');
         app.session.unset('repo');
 
-        var repoView = new app.RepoView();
-        repoView.render();
+        app.repoView.render();
     });
 
-    //router.on('route:milestone', function(owner, repo, id) {
-    //    console.log('Load the milestone page!');
-    //    // load owner/repo
-    //    // load milestoneView!
-    //    var state = milestones.state || 'open';
-    //    repoView.loadRepo(owner, repo);
-    //    milestoneView.loadMilestone(id);
-    //});
+    app.router.on('route:repository', function(owner, repo, state) {
+        console.log('Load the repository page!');
+        if (!state) {
+            state = 'open'
+        }
+        console.log('state: ', state);
+        app.repoView.loadRepoMilestones(owner, repo, state);
+    });
 
-    //router.on('route:repository', function(owner, repo, state) {
-    //    console.log('Load the repository page!');
-    //    if (!state) {
-    //        state = 'open'
-    //    }
-    //    console.log('state: ', state);
-    //    repoView.loadRepoMilestones(owner, repo, state);
-    //});
+    app.router.on('route:milestone', function(owner, repo, id) {
+        console.log('Load the milestone page!');
+        // load owner/repo
+        // load milestoneView!
+        var state = app.milestones.state || 'open';
+        app.repoView.loadRepo(owner, repo);
+        app.milestoneView.loadMilestone(id);
+    });
 
-    //router.on('route:summary', function(owner, repo, days) {
-    //    console.log('Load the repository summary page!');
-    //    // load token
-    //    // load owner/repo
-    //    // not waiting on any xhr, so safe to load summaryView!
-    //    if (!days) {
-    //        days = SUMMARY_DEFAULT_DAYS;
-    //    }
-    //    repoView.loadRepo(owner, repo);
-    //    summaryView.loadRepoIssues(days);
-    //});
+    app.router.on('route:summary', function(owner, repo, days) {
+        console.log('Load the repository summary page!');
+        // load token
+        // load owner/repo
+        // not waiting on any xhr, so safe to load summaryView!
+        if (!days) {
+            days = SUMMARY_DEFAULT_DAYS;
+        }
+        app.repoView.loadRepo(owner, repo);
+        app.summaryView.loadRepoIssues(days);
+    });
 
     // Once the session token finishes loading, start the application!
     app.session.once('change:token', function(model, value) {
