@@ -16,7 +16,9 @@
 //= require moment.min
 //= require d3.v2
 //= require rickshaw
-//= require burndown/dump
+//= require ./burndown/constants
+//= require ./burndown/settings
+//= require_tree ./burndown/utils/
 //= require_tree ./burndown/models/
 //= require ./burndown/collections/paginated-collection
 //= require_tree ./burndown/collections/

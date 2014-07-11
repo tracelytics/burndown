@@ -1,12 +1,18 @@
 /*global $ */
 /*jshint unused:false */
 var app = app || {};
-var ENTER_KEY = 13;
-var ESC_KEY = 27;
 
 $(function () {
 	'use strict';
 
-	// kick things off by creating the `App`
-	new app.AppView();
+    // Create our global session.
+    app.session = new app.Session();
+
+    // Once the session token finishes loading, start the application!
+    app.session.once('change:token', function(model, value) {
+        console.log('token: ', value);
+
+        // Let's get this party started!
+        Backbone.history.start();
+    });
 });

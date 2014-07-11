@@ -14,7 +14,7 @@ var app = app || {};
                             'renderProgress', 'renderChart');
             var self = this;
 
-            self.days = SUMMARY_DEFAULT_DAYS;
+            self.days = app.SUMMARY_DEFAULT_DAYS;
             self.loaded = false;
             self.progress = 0;
             // All issue collections

@@ -60,18 +60,9 @@ var app = app || {};
         // load owner/repo
         // not waiting on any xhr, so safe to load summaryView!
         if (!days) {
-            days = SUMMARY_DEFAULT_DAYS;
+            days = app.SUMMARY_DEFAULT_DAYS;
         }
         app.repoView.loadRepo(owner, repo);
         app.summaryView.loadRepoIssues(days);
     });
-
-    // Once the session token finishes loading, start the application!
-    app.session.once('change:token', function(model, value) {
-        console.log('token: ', value);
-
-        // Let's get this party started!
-        Backbone.history.start();
-    });
-
 })();

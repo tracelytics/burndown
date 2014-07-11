@@ -54,7 +54,7 @@ var app = app || {};
             }, 0);
         },
 
-        days: SUMMARY_DEFAULT_DAYS,
+        days: app.SUMMARY_DEFAULT_DAYS,
         // URL parameter proprties.
         // http://developer.github.com/v3/issues/#list-issues-for-a-repository
         state: null,

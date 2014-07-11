@@ -4,10 +4,6 @@ var app = app || {};
 (function ($) {
 	'use strict';
 
-    function capitaliseFirstLetter(string) {
-        return string.charAt(0).toUpperCase() + string.slice(1);
-    }
-
 	// Repo View
 	// --------------
     var RepoView = Backbone.View.extend({
@@ -37,10 +33,14 @@ var app = app || {};
                                        session: app.session,
                                        message: self.message,
                                        state: state,
-                                       stateFormatted: capitaliseFirstLetter(state),
+                                       stateFormatted: self.capitaliseFirstLetter(state),
                                        adverseState: adverseState});
             this.$el.html( template );
             return this;
+        },
+
+        capitaliseFirstLetter: function(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
         },
 
         filterKeypress: function(e) {

@@ -6,7 +6,7 @@ var app = app || {};
 
 	// Session Model
 	// -------------
-    var Session = Backbone.Model.extend({
+    app.Session = Backbone.Model.extend({
         defaults: {
             'owner': '',
             'repo': ''
@@ -31,7 +31,4 @@ var app = app || {};
             return self.get('owner') + '/' + self.get('repo');
         }
     });
-
-    app.session = new Session();
-
 })();
