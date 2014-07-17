@@ -16,6 +16,8 @@
 //= require moment.min
 //= require d3.v2
 //= require rickshaw
+//= require picker
+//= require picker.date
 //= require ./burndown/constants
 //= require ./burndown/settings
 //= require_tree ./burndown/utils/
