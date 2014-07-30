@@ -18,7 +18,8 @@ var app = app || {};
             _.bindAll(this, 'render', 'loadMilestone', 'toggleLabelFilter',
                             'renderIssues', 'renderChart', 'getIdealLine',
                             'getClosedLine', 'getCreatedLine',
-                            'isMilestoneDueDateSet', 'resetView');
+                            'isMilestoneDueDateSet', 'resetView',
+                            'initializeDatePicker', 'onDateSet');
             var self = this;
 
             self.filter = null;
@@ -27,6 +28,7 @@ var app = app || {};
             self.labels = new app.Labels();
             self.openIssues = new app.MilestoneOpenIssues();
             self.closedIssues = new app.MilestoneClosedIssues();
+            self.startDate = null;
 
             // Enable a responsive design by re-rendering the chart if the
             // window resizes.
@@ -54,7 +56,40 @@ var app = app || {};
             // Render issues.
             self.renderIssues();
 
+            self.initializeDatePicker();
+
             return this;
+        },
+
+        onDateSet: function(context) {
+            var self = this;
+
+            if (!context.select) {
+                console.log('no date selected!', context);
+                return;
+            }
+
+            self.startDate = new Date(context.select);
+            console.log('selected', self.startDate);
+
+            self.renderChart();
+        },
+
+        initializeDatePicker: function() {
+            var self = this;
+
+            var $picker = $('.datepicker', self.el);
+
+            if ($picker.length) {
+                // Initialize date picker.
+                $picker.pickadate({
+                    format: 'yyyy/mm/dd',
+                    onSet: self.onDateSet
+                });
+
+                var picker = $picker.pickadate('picker');
+                picker.set('select', self.startDate);
+            }
         },
 
         renderIssues: function() {
@@ -101,9 +136,8 @@ var app = app || {};
             var totalIssueCount = openIssues.getTotalWeight() + closedIssues.getTotalWeight();
 
             // Add ideal velocity line.
-            var start = self.milestone.get('created_at');
             var end = self.milestone.get('due_on') || new Date().toISOString();
-            var startDate = new Date(start).getTime() / 1000;
+            var startDate = self.startDate.getTime() / 1000;
             var endDate = new Date(end).getTime() / 1000;
 
             return [
@@ -115,8 +149,7 @@ var app = app || {};
         getClosedLine: function(openIssues, closedIssues) {
             var self = this;
 
-            var start = self.milestone.get('created_at');
-            var startDate = new Date(start).getTime() / 1000;
+            var startDate = self.startDate.getTime() / 1000;
             var closedCount = openIssues.getTotalWeight() + closedIssues.getTotalWeight();
 
             // Creates a starting point for the closed burndown.
@@ -148,8 +181,7 @@ var app = app || {};
         getCreatedLine: function(openIssues, closedIssues) {
             var self = this;
 
-            var start = self.milestone.get('created_at');
-            var startDate = new Date(start).getTime() / 1000;
+            var startDate = self.startDate.getTime() / 1000;
             var allIssues = openIssues.models.concat(closedIssues.models);
             allIssues = _.sortBy(allIssues, function(issue) { return issue.getCreatedTime(); });
 
@@ -295,7 +327,6 @@ var app = app || {};
             self.message.clear();
 
             self.labels.reset();
-            //self.milestone.reset();
             self.openIssues.reset();
             self.closedIssues.reset();
         },
@@ -317,6 +348,8 @@ var app = app || {};
             self.openIssues.milestoneId = self.milestone.get('number');
             self.closedIssues.milestoneId = self.milestone.get('number');
             console.log('milestone: ', self.milestone);
+
+            self.startDate = self.milestone.getCreatedDate();
 
             // Set a message if the milestone has no due date.
             if (self.milestone.get('due_on') === null) {
