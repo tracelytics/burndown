@@ -152,6 +152,7 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
+    yui-compressor (0.12.0)
 
 PLATFORMS
   ruby
@@ -170,3 +171,4 @@ DEPENDENCIES
   uglifier (>= 1.0.3)
   underscore-rails
   unicorn
+  yui-compressor
