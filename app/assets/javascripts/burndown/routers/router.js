@@ -65,4 +65,12 @@ var app = app || {};
         app.repoView.loadRepo(owner, repo);
         app.summaryView.loadRepoIssues(days);
     });
+
+    // Send google analytics pageviews when routes are loaded.
+    if (window.ga) {
+        Backbone.history.on("route", function() {
+            var url = Backbone.history.root + Backbone.history.getFragment();
+            ga('send', 'pageview', url);
+        });
+    }
 })();

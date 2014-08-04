@@ -68,5 +68,5 @@ RailsGithubSkeleton::Application.configure do
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
 
   # Google Analytics
-  GA.tracker = ENV['BURNDOWN_GA_ID']
+  config.google_analytics = ENV['BURNDOWN_GA_ID']
 end
