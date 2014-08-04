@@ -66,7 +66,7 @@ var app = app || {};
         app.summaryView.loadRepoIssues(days);
     });
 
-    // Map routes to pageview analytics.
+    // Send google analytics pageviews when routes are loaded.
     if (window.ga) {
         Backbone.history.on("route", function() {
             var url = Backbone.history.root + Backbone.history.getFragment();
