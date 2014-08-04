@@ -56,8 +56,12 @@ var app = app || {};
             return rval;
         },
 
+        getCreatedDate: function() {
+            return new Date(this.get('created_at'));
+        },
+
         getCreatedDateFormatted: function() {
-            var date = new Date(this.get('created_at'));
+            var date = this.getCreatedDate();
             var dateArray = date.toString().split(' ');
             return dateArray.slice(0, 4).join(' ');
         },

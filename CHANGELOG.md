@@ -1,5 +1,11 @@
 # Changes
 
+## 0.4.0 (?)
+
+Features
+
+- Add ability to set the milestone start date #49
+
 ## 0.3.0 (2014-07-17)
 
 Features

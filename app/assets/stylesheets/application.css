@@ -10,7 +10,8 @@
  *
  *= require_self
  *= require rickshaw
+ *= require classic
+ *= require classic.date
  *= require_tree .
  *= require burnitdown
  */
-
