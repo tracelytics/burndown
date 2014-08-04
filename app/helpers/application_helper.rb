@@ -2,9 +2,7 @@ module ApplicationHelper
 
   def analyticsjs_init
     js = ""
-    tracking_code_exists = Rails.application.respond_to?('GA') and
-                           Rails.application.GA.respond_to?('tracker')
-    if tracking_code_exists
+    if Rails.application.config.respond_to?('google_analytics')
       js = """<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
