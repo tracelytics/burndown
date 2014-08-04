@@ -8,7 +8,6 @@ gem 'rails', '3.2.11'
 
 group :production, :staging do
   gem 'pg'
-  gem 'google-analytics-rails'
 end
 
 group :development, :test do

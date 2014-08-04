@@ -60,7 +60,6 @@ GEM
       multi_json (~> 1.0)
     faraday (0.8.7)
       multipart-post (~> 1.1)
-    google-analytics-rails (0.0.4)
     hashie (2.0.4)
     hike (1.2.2)
     httpauth (0.2.0)
@@ -158,7 +157,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  google-analytics-rails
   jquery-rails-cdn
   less-rails
   omniauth-github!
