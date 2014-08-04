@@ -69,7 +69,7 @@ var app = app || {};
     // Send google analytics pageviews when routes are loaded.
     if (window.ga) {
         Backbone.history.on("route", function() {
-            var url = Backbone.history.root + Backbone.history.getFragment();
+            var url = Backbone.history.root + '#' + Backbone.history.getFragment();
             ga('send', 'pageview', url);
         });
     }
