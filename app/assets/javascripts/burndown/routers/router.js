@@ -65,4 +65,12 @@ var app = app || {};
         app.repoView.loadRepo(owner, repo);
         app.summaryView.loadRepoIssues(days);
     });
+
+    // Map routes to pageview analytics.
+    if (window.ga) {
+        Backbone.history.on("route", function() {
+            var url = Backbone.history.root + Backbone.history.getFragment();
+            ga('send', 'pageview', url);
+        });
+    }
 })();
