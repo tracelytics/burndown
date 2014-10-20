@@ -1,5 +1,11 @@
 # Changes
 
+## 0.4.0 (2014-??-??)
+
+Bugfixes
+
+- Fix milestone edit link #63
+
 ## 0.3.0 (2014-07-17)
 
 Features
