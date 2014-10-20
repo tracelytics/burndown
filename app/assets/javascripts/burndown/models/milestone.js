@@ -74,7 +74,7 @@ var app = app || {};
             var repo = app.session.get('repo');
             var url = ['https://github.com',
                        '/'+owner+'/'+repo,
-                       '/issues/milestones/',
+                       '/milestones/',
                        this.get('number')+'/edit'].join('');
             return url;
         },
