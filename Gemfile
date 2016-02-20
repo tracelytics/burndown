@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.0.0'
+ruby '2.2.4'
 gem 'rails', '3.2.11'
 
 # Bundle edge Rails instead:
@@ -24,7 +24,7 @@ group :assets do
 end
 
 gem 'jquery-rails-cdn'
-gem 'underscore-rails'
+gem 'underscore-rails', '1.4.4'
 gem 'twitter-bootstrap-rails', :git => 'git://github.com/seyhunak/twitter-bootstrap-rails.git'
 gem 'rickshaw_rails', :git => 'git://github.com/logical42/rickshaw_rails.git'
 
