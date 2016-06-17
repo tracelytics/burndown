@@ -59,7 +59,7 @@ favorite browser and start burning down!
 
 Assuming you have docker installed and running...
 
-1. Pull the source code from git. 'git clone git@github.com:appneta/burndown.git'
+1. Pull the source code from git. `git clone git@github.com:appneta/burndown.git`
 2. Add your Github Application Key and Secret into the docker-compose.yml file.
 3. Run docker compose. `docker-compose up` 
 
