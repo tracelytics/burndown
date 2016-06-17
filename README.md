@@ -54,3 +54,14 @@ $ rails s
 
 Now, just head over to [http://127.0.0.1:3000](http://127.0.0.1:3000) in your
 favorite browser and start burning down!
+
+### Run using docker
+
+Assuming you have docker installed and running...
+
+1. pull the source code from git.
+2. Add your Github Application Key and Secret into the docker-compose.yml file
+3. Run docker compose `docker-compose up` 
+
+
+
