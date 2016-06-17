@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+    burndown:
+        build: .
+        ports:
+            - 3000:3000
+        environment:
+            GITHUB_KEY: <your key here>
+            GITHUB_SECRET: <your secret here>
+        command: rails s
