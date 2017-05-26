@@ -15,3 +15,6 @@
 /tmp
 
 *.DS_Store
+
+# Ignore sensitive stuff
+.env
