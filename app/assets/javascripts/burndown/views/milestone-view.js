@@ -18,7 +18,7 @@ var app = app || {};
             _.bindAll(this, 'render', 'loadMilestone', 'toggleLabelFilter',
                             'renderIssues', 'renderChart', 'getIdealLine',
                             'getClosedLine', 'getCreatedLine',
-                            'isMilestoneDueDateSet', 'resetView');
+                            'isMilestoneDueDateSet', 'resetView', 'sortSeries');
             var self = this;
 
             self.filter = null;
@@ -95,6 +95,18 @@ var app = app || {};
             return (self.milestone.get('due_on') != null);
         },
 
+        sortSeries: function (series) {
+            return series.sort(function (a, b) {
+                if (a.x < b.x) {
+                    return -1;
+                }
+                if (a.x > b.x) {
+                    return 1;
+                }
+                return 0;
+            });
+        },
+
         getIdealLine: function(openIssues, closedIssues) {
             var self = this;
 
@@ -142,7 +154,7 @@ var app = app || {};
                 start = start.concat(end);
             }
 
-            return start;
+            return this.sortSeries(start);
         },
 
         getCreatedLine: function(openIssues, closedIssues) {
@@ -173,7 +185,7 @@ var app = app || {};
                 created = created.concat(end);
             }
 
-            return created;
+            return this.sortSeries(created);
         },
 
         renderChart: function() {
